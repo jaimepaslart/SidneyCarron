@@ -28,6 +28,21 @@ public/         # Fichiers statiques
 - `pnpm build` — build de production
 - `pnpm preview` — prévisualiser le build
 
+## Context7 — Documentation automatique
+Quand tu codes ou réponds à une question technique, consulte TOUJOURS la doc à jour via le MCP Context7 (`query-docs`) avant de répondre. Ne te fie pas uniquement à ta mémoire.
+
+| Librairie | Library ID Context7 |
+|---|---|
+| Astro | `/withastro/docs` |
+| Tailwind CSS | `/websites/v3_tailwindcss` |
+| GSAP | `/llmstxt/gsap_llms_txt` |
+| Motion | `/websites/motion_dev` |
+
+## Agent Teams
+- En mode équipe, le chef (lead) ne code JAMAIS. Il coordonne uniquement : il crée les tâches, assigne le travail, synthétise les résultats et communique avec l'utilisateur.
+- Tout le code est écrit par les coéquipiers (teammates).
+- Le chef doit activer le mode délégation (Maj+Tab) dès la création de l'équipe.
+
 ## Notes
 - Optimisation des images : priorité absolue (site d'artiste = beaucoup d'images)
 - Performance : viser 95+ sur Lighthouse
