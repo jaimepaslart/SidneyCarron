@@ -1,0 +1,133 @@
+---
+// Custom cursor: decorative circle that follows mouse pointer
+// Enlarges over [data-work-card] elements, shrinks on links
+// Hidden on touch devices. Purely decorative (aria-hidden).
+---
+
+<div id="custom-cursor" class="custom-cursor" aria-hidden="true">
+  <span class="custom-cursor__label">Voir</span>
+</div>
+
+<style>
+  .custom-cursor {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    border: 1.5px solid #1a1a2e;
+    pointer-events: none;
+    z-index: 9999;
+    opacity: 0;
+    transform: translate(-50%, -50%);
+    transition: width 300ms cubic-bezier(0.25, 0.1, 0.25, 1),
+                height 300ms cubic-bezier(0.25, 0.1, 0.25, 1),
+                opacity 300ms ease,
+                background-color 300ms ease;
+    will-change: transform;
+    mix-blend-mode: difference;
+    background-color: transparent;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .custom-cursor.is-active {
+    opacity: 1;
+  }
+
+  .custom-cursor.is-hovering-card {
+    width: 60px;
+    height: 60px;
+    background-color: rgba(26, 26, 46, 0.9);
+    border-color: transparent;
+  }
+
+  .custom-cursor.is-hovering-link {
+    width: 8px;
+    height: 8px;
+    background-color: #1a1a2e;
+    border-color: transparent;
+  }
+
+  .custom-cursor__label {
+    font-family: 'Relative', 'Helvetica Neue', Arial, sans-serif;
+    font-size: 0.625rem;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: #ffffff;
+    opacity: 0;
+    transition: opacity 200ms ease;
+    white-space: nowrap;
+  }
+
+  .custom-cursor.is-hovering-card .custom-cursor__label {
+    opacity: 1;
+  }
+
+  /* Hide on touch / small screens */
+  @media (hover: none), (max-width: 768px) {
+    .custom-cursor {
+      display: none !important;
+    }
+  }
+
+  /* Disable if reduced motion */
+  @media (prefers-reduced-motion: reduce) {
+    .custom-cursor {
+      display: none !important;
+    }
+  }
+</style>
+
+<script>
+  const cursor = document.getElementById('custom-cursor') as HTMLElement | null;
+  if (!cursor) throw new Error('Custom cursor element not found');
+
+  const prefersReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const isTouch = window.matchMedia('(hover: none)').matches;
+
+  if (!prefersReduced && !isTouch) {
+    let mouseX = 0;
+    let mouseY = 0;
+    let cursorX = 0;
+    let cursorY = 0;
+    const lerp = 0.15;
+
+    // Track mouse position
+    document.addEventListener('mousemove', (e: MouseEvent) => {
+      mouseX = e.clientX;
+      mouseY = e.clientY;
+      if (!cursor.classList.contains('is-active')) {
+        cursor.classList.add('is-active');
+      }
+    });
+
+    // Hide when mouse leaves window
+    document.addEventListener('mouseleave', () => {
+      cursor.classList.remove('is-active');
+    });
+
+    // Animation loop with lerp for smoothness
+    function animate(): void {
+      cursorX += (mouseX - cursorX) * lerp;
+      cursorY += (mouseY - cursorY) * lerp;
+      cursor!.style.transform = `translate(${cursorX - 6}px, ${cursorY - 6}px)`;
+      requestAnimationFrame(animate);
+    }
+    requestAnimationFrame(animate);
+
+    // Hover state: work cards
+    document.querySelectorAll('[data-work-card]').forEach((card) => {
+      card.addEventListener('mouseenter', () => cursor.classList.add('is-hovering-card'));
+      card.addEventListener('mouseleave', () => cursor.classList.remove('is-hovering-card'));
+    });
+
+    // Hover state: regular links (excluding work cards)
+    document.querySelectorAll('a:not([data-work-card])').forEach((link) => {
+      link.addEventListener('mouseenter', () => cursor.classList.add('is-hovering-link'));
+      link.addEventListener('mouseleave', () => cursor.classList.remove('is-hovering-link'));
+    });
+  }
+</script>

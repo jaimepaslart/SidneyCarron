@@ -1,0 +1,231 @@
+---
+import WorkCard from '@/components/WorkCard.astro';
+import { type Lang } from '@/i18n';
+
+interface WorkItem {
+  slug: string;
+  title: string;
+  year: number;
+  medium: string;
+  image: { src: string; alt: string };
+}
+
+interface Props {
+  works: WorkItem[];
+  lang: Lang;
+}
+
+const { works, lang } = Astro.props;
+const total = works.length;
+---
+
+<div class="horizontal-works" data-horizontal-scroll>
+  <!-- Scroll track -->
+  <div class="horizontal-works__track" data-scroll-track>
+    {works.map((work, i) => (
+      <div class="horizontal-works__card" data-scroll-index={i}>
+        <WorkCard
+          slug={work.slug}
+          title={work.title}
+          year={work.year}
+          medium={work.medium}
+          image={work.image}
+        />
+      </div>
+    ))}
+  </div>
+  <!-- Scroll indicator -->
+  <div class="horizontal-works__indicator" aria-hidden="true">
+    <span class="horizontal-works__counter" data-scroll-counter>1 / {total}</span>
+    <div class="horizontal-works__bar">
+      <div class="horizontal-works__bar-fill" data-scroll-bar></div>
+    </div>
+  </div>
+</div>
+
+<style>
+  .horizontal-works {
+    position: relative;
+    overflow: hidden;
+  }
+
+  .horizontal-works__track {
+    display: flex;
+    gap: 1.5rem;
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+    cursor: grab;
+    padding-bottom: 1rem;
+    /* Add horizontal padding so first/last cards aren't flush with edges */
+    padding-left: max(1rem, calc((100vw - 1280px) / 2 + 1rem));
+    padding-right: max(1rem, calc((100vw - 1280px) / 2 + 1rem));
+  }
+
+  .horizontal-works__track::-webkit-scrollbar {
+    display: none;
+  }
+
+  .horizontal-works__track.is-dragging {
+    cursor: grabbing;
+    scroll-snap-type: none;
+  }
+
+  .horizontal-works__card {
+    flex: 0 0 auto;
+    width: 85vw;
+    scroll-snap-align: center;
+  }
+
+  @media (min-width: 768px) {
+    .horizontal-works__card {
+      width: 40vw;
+    }
+
+    .horizontal-works__track {
+      gap: 2rem;
+    }
+  }
+
+  @media (min-width: 1024px) {
+    .horizontal-works__card {
+      width: 38vw;
+      max-width: 520px;
+    }
+
+    .horizontal-works__track {
+      gap: 2.5rem;
+    }
+  }
+
+  .horizontal-works__indicator {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    padding: 1rem 0 0;
+    justify-content: center;
+  }
+
+  .horizontal-works__counter {
+    font-family: 'RelativeMono', 'Courier New', Courier, monospace;
+    font-size: 0.75rem;
+    color: #888888;
+    min-width: 3rem;
+  }
+
+  .horizontal-works__bar {
+    width: 80px;
+    height: 2px;
+    background-color: #e5e5e3;
+    border-radius: 1px;
+    overflow: hidden;
+  }
+
+  .horizontal-works__bar-fill {
+    height: 100%;
+    background-color: #1a1a2e;
+    border-radius: 1px;
+    width: 33%;
+    transition: width 200ms ease;
+  }
+
+  /* Reduced motion */
+  @media (prefers-reduced-motion: reduce) {
+    .horizontal-works__track {
+      scroll-snap-type: none;
+    }
+
+    .horizontal-works__bar-fill {
+      transition: none;
+    }
+  }
+</style>
+
+<script>
+  document.querySelectorAll<HTMLElement>('[data-horizontal-scroll]').forEach((container) => {
+    const track = container.querySelector<HTMLElement>('[data-scroll-track]');
+    const counter = container.querySelector<HTMLElement>('[data-scroll-counter]');
+    const barFill = container.querySelector<HTMLElement>('[data-scroll-bar]');
+    if (!track) return;
+
+    const cards = track.querySelectorAll<HTMLElement>('[data-scroll-index]');
+    const total = cards.length;
+    if (total === 0) return;
+
+    // Update indicator on scroll
+    function updateIndicator(): void {
+      if (!track) return;
+      const scrollLeft = track.scrollLeft;
+      const scrollWidth = track.scrollWidth - track.clientWidth;
+      const progress = scrollWidth > 0 ? scrollLeft / scrollWidth : 0;
+
+      // Update counter
+      const currentIndex = Math.round(progress * (total - 1)) + 1;
+      if (counter) counter.textContent = `${currentIndex} / ${total}`;
+
+      // Update bar
+      if (barFill) {
+        const fillPercent = ((currentIndex - 1) / (total - 1)) * 100;
+        barFill.style.width = `${Math.max(33, fillPercent)}%`;
+      }
+    }
+
+    track.addEventListener('scroll', updateIndicator, { passive: true });
+
+    // Desktop: convert vertical wheel to horizontal scroll
+    const isTouch = window.matchMedia('(hover: none)').matches;
+    if (!isTouch) {
+      track.addEventListener('wheel', (e: WheelEvent) => {
+        if (Math.abs(e.deltaY) > Math.abs(e.deltaX)) {
+          e.preventDefault();
+          track.scrollLeft += e.deltaY;
+        }
+      }, { passive: false });
+    }
+
+    // Drag to scroll
+    let isDragging = false;
+    let startX = 0;
+    let scrollLeft = 0;
+
+    track.addEventListener('mousedown', (e: MouseEvent) => {
+      isDragging = true;
+      startX = e.pageX - track.offsetLeft;
+      scrollLeft = track.scrollLeft;
+      track.classList.add('is-dragging');
+    });
+
+    track.addEventListener('mouseleave', () => {
+      if (isDragging) {
+        isDragging = false;
+        track.classList.remove('is-dragging');
+        track.style.scrollSnapType = 'x mandatory';
+      }
+    });
+
+    track.addEventListener('mouseup', () => {
+      if (isDragging) {
+        isDragging = false;
+        track.classList.remove('is-dragging');
+        // Re-enable snap after drag
+        track.style.scrollSnapType = 'x mandatory';
+      }
+    });
+
+    track.addEventListener('mousemove', (e: MouseEvent) => {
+      if (!isDragging) return;
+      e.preventDefault();
+      const x = e.pageX - track.offsetLeft;
+      const walk = (x - startX) * 1.5;
+      track.scrollLeft = scrollLeft - walk;
+    });
+
+    // Prevent link clicks during drag
+    track.addEventListener('click', (e: MouseEvent) => {
+      if (Math.abs(track.scrollLeft - scrollLeft) > 5) {
+        e.preventDefault();
+      }
+    }, true);
+  });
+</script>
