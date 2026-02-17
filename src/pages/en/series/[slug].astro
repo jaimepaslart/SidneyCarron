@@ -1,0 +1,14 @@
+---
+import SeriesDetailPage from '@/components/pages/SeriesDetailPage.astro';
+import { getCollection } from 'astro:content';
+
+export async function getStaticPaths() {
+  const series = await getCollection('series');
+  return series.map(s => ({
+    params: { slug: s.data.slug_en },
+  }));
+}
+
+const { slug } = Astro.params;
+---
+<SeriesDetailPage lang="en" slug={slug!} />

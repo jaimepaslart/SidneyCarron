@@ -1,0 +1,229 @@
+---
+import PageLayout from '@/layouts/PageLayout.astro';
+import WorkCard from '@/components/WorkCard.astro';
+import { getCollection } from 'astro:content';
+import { getTranslation, getLocalizedPath, type Lang } from '@/i18n';
+
+interface Props {
+  lang: Lang;
+  slug: string;
+}
+
+const { lang, slug } = Astro.props;
+const t = getTranslation(lang);
+
+const allExhibitions = await getCollection('exhibitions');
+const exhibition = allExhibitions.find(e =>
+  (lang === 'en' ? e.data.slug_en : e.data.slug) === slug
+);
+
+if (!exhibition) return Astro.redirect(getLocalizedPath(lang, '/exhibitions'));
+
+const title = lang === 'en' ? exhibition.data.title_en : exhibition.data.title_fr;
+const venue = lang === 'en' ? exhibition.data.venue_en : exhibition.data.venue_fr;
+const description = lang === 'en' ? exhibition.data.description_en : exhibition.data.description_fr;
+
+function formatMuseumDates(startStr: string, endStr: string): string {
+  const start = new Date(startStr);
+  const end = new Date(endStr);
+  const sd = String(start.getDate()).padStart(2, '0');
+  const sm = String(start.getMonth() + 1).padStart(2, '0');
+  const ed = String(end.getDate()).padStart(2, '0');
+  const em = String(end.getMonth() + 1).padStart(2, '0');
+  const ey = end.getFullYear();
+  if (start.getFullYear() === end.getFullYear()) {
+    return `${sd}.${sm} \u2014 ${ed}.${em}.${ey}`;
+  }
+  return `${sd}.${sm}.${start.getFullYear()} \u2014 ${ed}.${em}.${ey}`;
+}
+
+// Get exhibited works
+const allWorks = await getCollection('works');
+const exhibitedWorks = allWorks.filter(w =>
+  exhibition.data.works_slugs.includes(w.data.slug)
+);
+
+const siteUrl = 'https://sidneycarron.com';
+
+const jsonLd = {
+  '@context': 'https://schema.org',
+  '@graph': [
+    {
+      '@type': 'ExhibitionEvent',
+      name: title,
+      description: description || `${title} — ${venue}, ${exhibition.data.city}`,
+      startDate: exhibition.data.start_date,
+      endDate: exhibition.data.end_date,
+      location: {
+        '@type': 'Place',
+        name: venue,
+        address: {
+          '@type': 'PostalAddress',
+          addressLocality: exhibition.data.city,
+        },
+      },
+      organizer: {
+        '@type': 'Person',
+        name: 'Sidney Carron',
+        url: siteUrl,
+      },
+      image: exhibition.data.image ? `${siteUrl}${exhibition.data.image.src}` : undefined,
+      url: `${siteUrl}${getLocalizedPath(lang, `/exhibitions/${exhibition.data.slug}`)}`,
+    },
+    {
+      '@type': 'BreadcrumbList',
+      itemListElement: [
+        { '@type': 'ListItem', position: 1, name: 'Sidney Carron', item: siteUrl },
+        { '@type': 'ListItem', position: 2, name: lang === 'fr' ? 'Expositions' : 'Exhibitions', item: `${siteUrl}${getLocalizedPath(lang, '/exhibitions')}` },
+        { '@type': 'ListItem', position: 3, name: title },
+      ],
+    },
+  ],
+};
+---
+
+<PageLayout
+  title={`${title} — ${t('exhibitions.title')} — Sidney Carron`}
+  description={description || `${title} — ${venue}, ${exhibition.data.city}`}
+  ogImage={exhibition.data.image?.src}
+  canonicalPath={`/exhibitions/${exhibition.data.slug}`}
+  enCanonicalPath={`/exhibitions/${exhibition.data.slug_en}`}
+  jsonLd={jsonLd}
+>
+  <section class="museum-section">
+    <div class="museum-container">
+      <a
+        href={getLocalizedPath(lang, '/exhibitions')}
+        class="inline-block font-sans text-small text-museum-label hover:text-museum-text transition-colors duration-base ease-museum mb-8"
+      >
+        ← {t('exhibitions.back')}
+      </a>
+
+      <div class="grid grid-cols-1 lg:grid-cols-2 gap-gutter-lg animate-on-scroll">
+        {exhibition.data.image && (
+          <div>
+            <img
+              src={exhibition.data.image.src}
+              alt={lang === 'en' ? exhibition.data.image.alt_en : exhibition.data.image.alt_fr}
+              width="800"
+              height="533"
+              loading="eager"
+              class="w-full aspect-[3/2] object-cover bg-[#E8E6E0]"
+            />
+          </div>
+        )}
+
+        <div class={exhibition.data.image ? '' : 'lg:col-span-2 max-w-3xl'}>
+          {exhibition.data.status !== 'past' && (
+            <span class="museum-label text-museum-warm">
+              {exhibition.data.status === 'current'
+                ? t('exhibitions.current_badge').toUpperCase()
+                : t('exhibitions.upcoming_badge').toUpperCase()}
+            </span>
+          )}
+          {exhibition.data.status === 'past' && (
+            <span class="museum-label">PAST</span>
+          )}
+          <h1 class="text-h1 font-serif font-light text-museum-text mt-2">{title}</h1>
+
+          <dl class="mt-6 space-y-3">
+            <div>
+              <dt class="museum-label">{t('exhibitions.venue').toUpperCase()}</dt>
+              <dd class="font-sans text-body text-museum-text mt-1">{venue}</dd>
+              <dd class="museum-label mt-1">{exhibition.data.city.toUpperCase()}</dd>
+            </div>
+            <div>
+              <dt class="museum-label">{t('exhibitions.dates').toUpperCase()}</dt>
+              <dd class="museum-mono text-body text-museum-text mt-1">
+                {formatMuseumDates(exhibition.data.start_date, exhibition.data.end_date)}
+              </dd>
+            </div>
+          </dl>
+
+          {description && (
+            <div class="mt-8 border-t border-museum-border pt-8">
+              <p class="font-sans text-body text-museum-text" style="line-height: 1.7;">{description}</p>
+            </div>
+          )}
+
+          {exhibition.data.venue_url && (
+            <div class="mt-6">
+              <a
+                href={exhibition.data.venue_url}
+                target="_blank"
+                rel="noopener noreferrer"
+                class="font-sans text-caption text-museum-caption hover:text-museum-text transition-colors duration-base ease-museum"
+              >
+                {t('exhibitions.visit_venue')} →
+              </a>
+            </div>
+          )}
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Exhibited works -->
+  {exhibitedWorks.length > 0 && (
+    <section class="museum-section bg-museum-surface">
+      <div class="museum-container">
+        <h2 class="text-h2 font-serif font-light text-museum-text mb-8 md:mb-12">
+          {t('exhibitions.works_shown')}
+        </h2>
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-gutter-md lg:gap-gutter-lg">
+          {exhibitedWorks.map((work) => (
+            <div class="animate-on-scroll">
+              <WorkCard
+                slug={lang === 'en' ? work.data.slug_en : work.data.slug}
+                title={lang === 'en' ? work.data.title_en : work.data.title_fr}
+                year={work.data.year}
+                medium={lang === 'en' ? work.data.medium_en : work.data.medium_fr}
+                image={{
+                  src: work.data.images[0].src,
+                  alt: lang === 'en' ? work.data.images[0].alt_en : work.data.images[0].alt_fr,
+                }}
+              />
+            </div>
+          ))}
+        </div>
+      </div>
+    </section>
+  )}
+</PageLayout>
+
+<style>
+  .animate-on-scroll {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  .animate-on-scroll.is-visible {
+    opacity: 1;
+    transform: translateY(0);
+    transition: opacity 500ms ease-out, transform 500ms ease-out;
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .animate-on-scroll {
+      opacity: 1;
+      transform: none;
+    }
+  }
+</style>
+
+<script>
+  const items = document.querySelectorAll('.animate-on-scroll');
+  if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+    const observer = new IntersectionObserver(
+      (entries) => {
+        const visible = entries.filter(e => e.isIntersecting);
+        visible.forEach((entry, i) => {
+          setTimeout(() => {
+            entry.target.classList.add('is-visible');
+          }, i * 80);
+          observer.unobserve(entry.target);
+        });
+      },
+      { threshold: 0.1, rootMargin: '0px 0px -40px 0px' }
+    );
+    items.forEach(item => observer.observe(item));
+  }
+</script>

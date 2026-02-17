@@ -1,0 +1,75 @@
+---
+import { getLangFromUrl, getTranslation, getLocalizedPath } from '@/i18n';
+
+const lang = getLangFromUrl(Astro.url);
+const t = getTranslation(lang);
+const year = new Date().getFullYear();
+
+const navLinks = [
+  { label: t('nav.works'), href: getLocalizedPath(lang, '/works') },
+  { label: t('nav.series'), href: getLocalizedPath(lang, '/series') },
+  { label: t('nav.exhibitions'), href: getLocalizedPath(lang, '/exhibitions') },
+  { label: t('nav.press'), href: getLocalizedPath(lang, '/press') },
+  { label: t('nav.about'), href: getLocalizedPath(lang, '/about') },
+  { label: t('nav.contact'), href: getLocalizedPath(lang, '/contact') },
+];
+---
+
+<footer class="bg-[#F5F5F3]">
+  <div class="museum-container py-section-sm md:py-section-md lg:py-section-lg">
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-12 md:gap-8">
+      <!-- Col 1: Identity -->
+      <div>
+        <p class="font-serif text-h3 text-museum-text">Sidney Carron</p>
+        <p class="museum-label mt-2">{t('footer.artist_title')}</p>
+      </div>
+
+      <!-- Col 2: Navigation -->
+      <div>
+        <ul class="space-y-2">
+          {navLinks.map(({ label, href }) => (
+            <li>
+              <a
+                href={href}
+                class="font-sans text-small font-normal uppercase tracking-widest text-museum-caption hover:text-museum-text bg-none transition-colors duration-base ease-museum"
+              >
+                {label}
+              </a>
+            </li>
+          ))}
+        </ul>
+      </div>
+
+      <!-- Col 3: Contact & Social -->
+      <div class="space-y-3">
+        <a
+          href="mailto:contact@sidneycarron.com"
+          class="block font-mono text-caption text-museum-text hover:text-museum-accent transition-colors duration-base ease-museum"
+        >
+          contact@sidneycarron.com
+        </a>
+        <a
+          href="https://instagram.com/sidneycarron"
+          target="_blank"
+          rel="noopener noreferrer"
+          class="block font-sans text-caption text-museum-text hover:text-museum-accent bg-none transition-colors duration-base ease-museum"
+        >
+          Instagram
+        </a>
+      </div>
+    </div>
+
+    <!-- Separator + Copyright -->
+    <div class="border-t border-museum-border mt-12 pt-6 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-2">
+      <p class="museum-mono text-small text-museum-label">
+        {t('footer.copyright', { year: String(year) })}
+      </p>
+      <a
+        href={getLocalizedPath(lang, '/legal')}
+        class="text-small text-museum-label hover:text-museum-text bg-none transition-colors duration-base ease-museum"
+      >
+        {t('footer.legal')}
+      </a>
+    </div>
+  </div>
+</footer>

@@ -1,0 +1,120 @@
+---
+import PageLayout from '@/layouts/PageLayout.astro';
+import WorkCard from '@/components/WorkCard.astro';
+import FilterBar from '@/components/FilterBar.astro';
+import { getCollection } from 'astro:content';
+import { getTranslation, getLocalizedPath, type Lang } from '@/i18n';
+
+interface Props {
+  lang: Lang;
+}
+
+const { lang } = Astro.props;
+const t = getTranslation(lang);
+
+const allWorks = await getCollection('works');
+const works = allWorks.sort((a, b) => a.data.order - b.data.order);
+
+const allSeries = await getCollection('series');
+const seriesOptions = allSeries
+  .sort((a, b) => a.data.order - b.data.order)
+  .map(s => ({
+    value: s.data.slug,
+    label: lang === 'en' ? s.data.title_en : s.data.title_fr,
+  }));
+
+const mediums = [...new Set(works.map(w => lang === 'en' ? w.data.medium_en : w.data.medium_fr))];
+const mediumOptions = mediums.map(m => ({ value: m, label: m }));
+
+const years = [...new Set(works.map(w => w.data.year))].sort((a, b) => b - a);
+const yearOptions = years.map(y => ({ value: String(y), label: String(y) }));
+
+const filters = [
+  { name: 'series', label: t('works.series'), options: seriesOptions },
+  { name: 'medium', label: t('works.medium'), options: mediumOptions },
+  { name: 'year', label: t('works.year'), options: yearOptions },
+];
+
+const jsonLd = {
+  '@context': 'https://schema.org',
+  '@type': 'CollectionPage',
+  name: t('works.title'),
+  url: `https://sidneycarron.com${getLocalizedPath(lang, '/works')}`,
+  hasPart: works.map(w => ({
+    '@type': 'VisualArtwork',
+    name: lang === 'en' ? w.data.title_en : w.data.title_fr,
+    url: `https://sidneycarron.com${getLocalizedPath(lang, `/works/${lang === 'en' ? w.data.slug_en : w.data.slug}`)}`,
+  })),
+};
+---
+
+<PageLayout
+  title={`${t('works.title')} — Sidney Carron`}
+  description={t('works.description')}
+  canonicalPath="/works"
+  jsonLd={jsonLd}
+>
+  <section class="museum-section">
+    <div class="museum-container">
+      <h1 class="text-h1 font-serif font-light text-museum-text mb-8 md:mb-12">
+        {t('works.title')}
+      </h1>
+    </div>
+
+    <FilterBar filters={filters} />
+
+    <div class="museum-container">
+      <div id="works-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10">
+        {works.map((work) => (
+          <div
+            class="reveal-card"
+            data-work-card
+            data-series={work.data.series}
+            data-medium={lang === 'en' ? work.data.medium_en : work.data.medium_fr}
+            data-year={String(work.data.year)}
+          >
+            <WorkCard
+              slug={lang === 'en' ? work.data.slug_en : work.data.slug}
+              title={lang === 'en' ? work.data.title_en : work.data.title_fr}
+              year={work.data.year}
+              medium={lang === 'en' ? work.data.medium_en : work.data.medium_fr}
+              image={{
+                src: work.data.images[0].src,
+                alt: lang === 'en' ? work.data.images[0].alt_en : work.data.images[0].alt_fr,
+              }}
+            />
+          </div>
+        ))}
+      </div>
+    </div>
+  </section>
+</PageLayout>
+
+<style>
+  .reveal-card {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  .reveal-card.is-visible {
+    opacity: 1;
+    transform: translateY(0);
+    transition: opacity 500ms ease-out, transform 500ms ease-out;
+  }
+</style>
+
+<script>
+  const cards = document.querySelectorAll('.reveal-card');
+  const observer = new IntersectionObserver(
+    (entries) => {
+      const visible = entries.filter(e => e.isIntersecting);
+      visible.forEach((entry, i) => {
+        setTimeout(() => {
+          entry.target.classList.add('is-visible');
+        }, i * 80);
+        observer.unobserve(entry.target);
+      });
+    },
+    { threshold: 0.1, rootMargin: '0px 0px -40px 0px' }
+  );
+  cards.forEach(card => observer.observe(card));
+</script>

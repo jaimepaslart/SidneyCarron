@@ -1,0 +1,96 @@
+---
+import '@/styles/global.css';
+import { getLangFromUrl, getTranslation, getLocalizedPath } from '@/i18n';
+
+interface Props {
+  title: string;
+  description: string;
+  ogImage?: string;
+  ogType?: string;
+  canonicalPath?: string;
+  enCanonicalPath?: string;
+  jsonLd?: Record<string, unknown>;
+}
+
+const { title, description, ogImage, ogType = 'website', canonicalPath, enCanonicalPath, jsonLd } = Astro.props;
+
+const lang = getLangFromUrl(Astro.url);
+const t = getTranslation(lang);
+const siteUrl = Astro.site?.toString().replace(/\/$/, '') || 'https://sidneycarron.com';
+
+const currentPath = Astro.url.pathname;
+const frPath = canonicalPath || currentPath.replace(/^\/en/, '') || '/';
+const enPath = enCanonicalPath
+  ? getLocalizedPath('en', enCanonicalPath)
+  : canonicalPath
+    ? getLocalizedPath('en', canonicalPath)
+    : (currentPath.startsWith('/en') ? currentPath : getLocalizedPath('en', currentPath));
+
+const canonicalUrl = `${siteUrl}${currentPath}`;
+const ogImageUrl = ogImage ? `${siteUrl}${ogImage}` : `${siteUrl}/images/og-default.jpg`;
+---
+
+<!DOCTYPE html>
+<html lang={lang === 'fr' ? 'fr' : 'en'}>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="generator" content={Astro.generator} />
+
+    <title>{title}</title>
+    <meta name="description" content={description} />
+    <meta name="author" content="Sidney Carron" />
+    <meta name="theme-color" content="#ffffff" />
+
+    <link rel="canonical" href={canonicalUrl} />
+    <link rel="alternate" hreflang="fr" href={`${siteUrl}${frPath}`} />
+    <link rel="alternate" hreflang="en" href={`${siteUrl}${enPath}`} />
+    <link rel="alternate" hreflang="x-default" href={`${siteUrl}${frPath}`} />
+
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:image" content={ogImageUrl} />
+    <meta property="og:url" content={canonicalUrl} />
+    <meta property="og:type" content={ogType} />
+    <meta property="og:locale" content={lang === 'fr' ? 'fr_FR' : 'en_US'} />
+    <meta property="og:locale:alternate" content={lang === 'fr' ? 'en_US' : 'fr_FR'} />
+    <meta property="og:site_name" content="Sidney Carron" />
+
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content={title} />
+    <meta name="twitter:description" content={description} />
+    <meta name="twitter:image" content={ogImageUrl} />
+
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+
+    <!-- TODO: Activer les preload quand les fichiers de fonts seront ajoutés -->
+    <!-- <link rel="preload" href="/fonts/elizeth-light.woff2" as="font" type="font/woff2" crossorigin /> -->
+    <!-- <link rel="preload" href="/fonts/relative-regular.woff2" as="font" type="font/woff2" crossorigin /> -->
+    <!-- <link rel="preload" href="/fonts/relativemono-regular.woff2" as="font" type="font/woff2" crossorigin /> -->
+
+    {jsonLd && (
+      <script type="application/ld+json" set:html={JSON.stringify(jsonLd)} />
+    )}
+  </head>
+  <body class="flex flex-col min-h-dvh">
+    <a
+      href="#main-content"
+      class="sr-only focus:not-sr-only focus:fixed focus:top-4 focus:left-4 focus:z-[200] focus:bg-museum-accent focus:text-museum-white focus:px-4 focus:py-2 focus:text-caption focus:font-sans"
+    >
+      {t('a11y.skip')}
+    </a>
+    <slot />
+    <script defer src="https://identity.netlify.com/v1/netlify-identity-widget.js"></script>
+    <script is:inline>
+      if (window.netlifyIdentity) {
+        window.netlifyIdentity.on('init', function (user) {
+          if (!user) {
+            window.netlifyIdentity.on('login', function () {
+              document.location.href = '/admin/';
+            });
+          }
+        });
+      }
+    </script>
+  </body>
+</html>

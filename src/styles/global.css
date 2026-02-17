@@ -1,0 +1,187 @@
+/* ============================================
+   Sidney Carron — Global Styles
+   Theme: "Blanc Musée" v2
+   ============================================ */
+
+/* --- @font-face : Elizeth (titres) --- */
+/* TODO: Ajouter les fichiers .woff2 dans src/assets/fonts/ */
+@font-face {
+  font-family: 'Elizeth';
+  src: url('../assets/fonts/elizeth-light.woff2') format('woff2');
+  font-weight: 300;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Elizeth';
+  src: url('../assets/fonts/elizeth-regular.woff2') format('woff2');
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Elizeth';
+  src: url('../assets/fonts/elizeth-medium.woff2') format('woff2');
+  font-weight: 500;
+  font-style: normal;
+  font-display: swap;
+}
+
+/* --- @font-face : Relative (corps/UI) --- */
+@font-face {
+  font-family: 'Relative';
+  src: url('../assets/fonts/relative-regular.woff2') format('woff2');
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Relative';
+  src: url('../assets/fonts/relative-medium.woff2') format('woff2');
+  font-weight: 500;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'RelativeBook';
+  src: url('../assets/fonts/relativebook-regular.woff2') format('woff2');
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+/* --- @font-face : RelativeMono (données techniques) --- */
+@font-face {
+  font-family: 'RelativeMono';
+  src: url('../assets/fonts/relativemono-regular.woff2') format('woff2');
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+/* --- Tailwind Layers --- */
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* --- Base Reset & Defaults --- */
+@layer base {
+  html {
+    @apply antialiased scroll-smooth;
+    text-rendering: optimizeLegibility;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  body {
+    @apply bg-museum-white font-sans text-body;
+    color: #1A1A1A;
+    min-height: 100dvh;
+  }
+
+  /* Headings default to Elizeth Light */
+  h1, h2, h3, h4, h5, h6 {
+    @apply font-serif;
+    font-weight: 300;
+    color: #1A1A1A;
+    text-wrap: balance;
+  }
+
+  h1 { @apply text-h1; }
+  h2 { @apply text-h2; }
+  h3 { @apply text-h3; }
+
+  /* Links: animated underline from left to right */
+  a {
+    @apply text-museum-accent;
+    background-image: linear-gradient(currentColor, currentColor);
+    background-size: 0% 1px;
+    background-position: left bottom;
+    background-repeat: no-repeat;
+    transition: background-size 300ms ease;
+  }
+
+  a:hover {
+    background-size: 100% 1px;
+  }
+
+  /* Images: prevent layout shift, fallback background for broken images */
+  img {
+    @apply max-w-full h-auto block;
+    background-color: #E8E6E0;
+  }
+
+  /* Focus visible: accessible accent ring */
+  :focus-visible {
+    @apply outline-2 outline-offset-2 outline-museum-accent;
+  }
+
+  /* Remove default focus for mouse users */
+  :focus:not(:focus-visible) {
+    outline: none;
+  }
+
+  /* Selection: light accent */
+  ::selection {
+    background-color: rgba(26, 26, 46, 0.12);
+    color: #1A1A1A;
+  }
+}
+
+/* --- Component Utilities --- */
+@layer components {
+  /* Museum container with max-width and responsive gutters */
+  .museum-container {
+    @apply mx-auto w-full max-w-container px-gutter-sm md:px-gutter-md lg:px-gutter-lg;
+  }
+
+  /* Section spacing */
+  .museum-section {
+    @apply py-section-sm md:py-section-md lg:py-section-lg;
+  }
+
+  /* 12-column grid */
+  .museum-grid {
+    @apply grid grid-cols-layout-sm gap-gutter-sm md:grid-cols-layout-md md:gap-gutter-md lg:grid-cols-layout lg:gap-gutter-lg;
+  }
+
+  /* Caption text styling */
+  .museum-caption {
+    @apply text-caption text-museum-caption font-sans;
+  }
+
+  /* Museum label: uppercase, spaced, small */
+  .museum-label {
+    font-family: 'Relative', 'Helvetica Neue', Arial, sans-serif;
+    text-transform: uppercase;
+    letter-spacing: 0.15em;
+    font-size: 0.75rem;
+    color: #888888;
+  }
+
+  /* Museum mono: for dates, dimensions, medium */
+  .museum-mono {
+    font-family: 'RelativeMono', 'Courier New', Courier, monospace;
+  }
+}
+
+/* --- Utility Additions --- */
+@layer utilities {
+  /* Hover image overlay effect */
+  .museum-hover-overlay {
+    @apply relative overflow-hidden;
+  }
+
+  .museum-hover-overlay::after {
+    content: '';
+    @apply absolute inset-0 bg-museum-text/0 transition-colors duration-base ease-museum;
+  }
+
+  .museum-hover-overlay:hover::after {
+    @apply bg-museum-text/15;
+  }
+}

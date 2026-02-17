@@ -1,0 +1,158 @@
+---
+import { getLangFromUrl, getTranslation, getLocalizedPath, getAlternateLang } from '@/i18n';
+import LanguageToggle from './LanguageToggle.astro';
+
+const lang = getLangFromUrl(Astro.url);
+const t = getTranslation(lang);
+
+const navItems = [
+  { label: t('nav.works'), href: getLocalizedPath(lang, '/works') },
+  { label: t('nav.series'), href: getLocalizedPath(lang, '/series') },
+  { label: t('nav.exhibitions'), href: getLocalizedPath(lang, '/exhibitions') },
+  { label: t('nav.press'), href: getLocalizedPath(lang, '/press') },
+  { label: t('nav.about'), href: getLocalizedPath(lang, '/about') },
+  { label: t('nav.contact'), href: getLocalizedPath(lang, '/contact') },
+];
+
+const currentPath = Astro.url.pathname;
+const homePath = getLocalizedPath(lang, '/');
+---
+
+<header
+  id="site-header"
+  class="sticky top-0 z-50 transition-all duration-base ease-museum"
+>
+  <div class="museum-container flex items-center justify-between h-16 lg:h-20">
+    <a
+      href={homePath}
+      class="font-sans text-[1.1rem] font-medium tracking-museum uppercase text-museum-text bg-none"
+    >
+      Sidney Carron
+    </a>
+
+    <nav class="hidden md:flex items-center gap-5 lg:gap-7" aria-label="Navigation principale">
+      {navItems.map(({ label, href }) => {
+        const isActive = currentPath === href || (href !== homePath && currentPath.startsWith(href));
+        const isContact = href.includes('/contact');
+        return isContact ? (
+          <a
+            href={href}
+            class:list={[
+              'font-sans text-small font-normal uppercase tracking-widest bg-none transition-colors duration-base ease-museum',
+              'border border-current rounded-full px-4 py-1',
+              isActive ? 'text-museum-text' : 'text-museum-caption hover:text-museum-text',
+            ]}
+          >
+            {label}
+          </a>
+        ) : (
+          <a
+            href={href}
+            class:list={[
+              'font-sans text-small font-normal uppercase tracking-widest bg-none transition-colors duration-base ease-museum',
+              isActive
+                ? 'text-museum-text underline underline-offset-[6px] decoration-[1px]'
+                : 'text-museum-caption hover:text-museum-text',
+            ]}
+          >
+            {label}
+          </a>
+        );
+      })}
+      <LanguageToggle />
+    </nav>
+
+    <button
+      id="menu-toggle"
+      class="md:hidden flex flex-col justify-center items-center w-10 h-10 gap-1.5"
+      aria-label={t('a11y.menu_open')}
+      aria-expanded="false"
+      aria-controls="mobile-menu"
+    >
+      <span class="block w-6 h-0.5 bg-museum-text transition-transform duration-slow ease-museum origin-center" id="menu-line-1"></span>
+      <span class="block w-6 h-0.5 bg-museum-text transition-transform duration-slow ease-museum origin-center" id="menu-line-2"></span>
+    </button>
+  </div>
+
+  <div
+    id="mobile-menu"
+    class="fixed inset-0 bg-museum-white z-[90] flex flex-col items-center justify-center gap-8 translate-x-full transition-transform duration-slow ease-museum md:hidden"
+    aria-hidden="true"
+  >
+    <button
+      id="menu-close"
+      class="absolute top-4 right-4 w-10 h-10 flex items-center justify-center text-museum-text"
+      aria-label={t('a11y.menu_close')}
+    >
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <line x1="4" y1="4" x2="20" y2="20" />
+        <line x1="20" y1="4" x2="4" y2="20" />
+      </svg>
+    </button>
+
+    <nav class="flex flex-col items-center gap-6" aria-label="Menu mobile">
+      {navItems.map(({ label, href }) => (
+        <a
+          href={href}
+          class="font-sans text-h3 font-normal uppercase tracking-widest text-museum-text hover:text-museum-accent bg-none transition-colors duration-base ease-museum"
+        >
+          {label}
+        </a>
+      ))}
+    </nav>
+    <LanguageToggle />
+  </div>
+</header>
+
+<script>
+  const header = document.getElementById('site-header');
+  const menuToggle = document.getElementById('menu-toggle');
+  const menuClose = document.getElementById('menu-close');
+  const mobileMenu = document.getElementById('mobile-menu');
+
+  // Scroll: transparent → white
+  function handleScroll() {
+    if (!header) return;
+    if (window.scrollY > 20) {
+      header.classList.add('bg-white', 'shadow-sm');
+    } else {
+      header.classList.remove('bg-white', 'shadow-sm');
+    }
+  }
+  window.addEventListener('scroll', handleScroll, { passive: true });
+  handleScroll();
+
+  // Mobile menu
+  function openMenu() {
+    if (!mobileMenu || !menuToggle) return;
+    mobileMenu.classList.remove('translate-x-full');
+    mobileMenu.classList.add('translate-x-0');
+    mobileMenu.setAttribute('aria-hidden', 'false');
+    menuToggle.setAttribute('aria-expanded', 'true');
+    document.body.style.overflow = 'hidden';
+  }
+
+  function closeMenu() {
+    if (!mobileMenu || !menuToggle) return;
+    mobileMenu.classList.remove('translate-x-0');
+    mobileMenu.classList.add('translate-x-full');
+    mobileMenu.setAttribute('aria-hidden', 'true');
+    menuToggle.setAttribute('aria-expanded', 'false');
+    document.body.style.overflow = '';
+  }
+
+  menuToggle?.addEventListener('click', openMenu);
+  menuClose?.addEventListener('click', closeMenu);
+
+  // Close on link click
+  mobileMenu?.querySelectorAll('a').forEach(link => {
+    link.addEventListener('click', closeMenu);
+  });
+
+  // Close on Escape
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape' && mobileMenu?.getAttribute('aria-hidden') === 'false') {
+      closeMenu();
+    }
+  });
+</script>

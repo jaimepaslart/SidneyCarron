@@ -1,0 +1,215 @@
+---
+import PageLayout from '@/layouts/PageLayout.astro';
+import WorkCard from '@/components/WorkCard.astro';
+import { getCollection } from 'astro:content';
+import { getTranslation, getLocalizedPath, type Lang } from '@/i18n';
+
+interface Props {
+  lang: Lang;
+  slug: string;
+}
+
+const { lang, slug } = Astro.props;
+const t = getTranslation(lang);
+
+const allSeries = await getCollection('series');
+const series = allSeries.find(s =>
+  (lang === 'en' ? s.data.slug_en : s.data.slug) === slug
+);
+
+if (!series) return Astro.redirect(getLocalizedPath(lang, '/series'));
+
+const title = lang === 'en' ? series.data.title_en : series.data.title_fr;
+const description = lang === 'en' ? series.data.description_en : series.data.description_fr;
+const curatorial = lang === 'en' ? series.data.curatorial_en : series.data.curatorial_fr;
+
+const allWorks = await getCollection('works');
+const seriesWorks = allWorks
+  .filter(w => w.data.series === series.data.slug)
+  .sort((a, b) => a.data.order - b.data.order);
+
+const otherSeries = allSeries
+  .filter(s => s.data.slug !== series.data.slug)
+  .sort((a, b) => a.data.order - b.data.order);
+
+const siteUrl = 'https://sidneycarron.com';
+
+const jsonLd = {
+  '@context': 'https://schema.org',
+  '@graph': [
+    {
+      '@type': 'CollectionPage',
+      name: title,
+      description: description,
+      url: `${siteUrl}${getLocalizedPath(lang, `/series/${series.data.slug}`)}`,
+    },
+    {
+      '@type': 'BreadcrumbList',
+      itemListElement: [
+        { '@type': 'ListItem', position: 1, name: 'Sidney Carron', item: siteUrl },
+        { '@type': 'ListItem', position: 2, name: lang === 'fr' ? 'Séries' : 'Series', item: `${siteUrl}${getLocalizedPath(lang, '/series')}` },
+        { '@type': 'ListItem', position: 3, name: title },
+      ],
+    },
+  ],
+};
+---
+
+<PageLayout
+  title={`${title} — ${t('series.title')} — Sidney Carron`}
+  description={description}
+  ogImage={series.data.cover.src}
+  canonicalPath={`/series/${series.data.slug}`}
+  enCanonicalPath={`/series/${series.data.slug_en}`}
+  jsonLd={jsonLd}
+>
+  <!-- Hero: full-width cover -->
+  <section class="relative">
+    <div class="aspect-[21/9] overflow-hidden bg-[#E8E6E0]">
+      <img
+        src={series.data.cover.src}
+        alt={lang === 'en' ? series.data.cover.alt_en : series.data.cover.alt_fr}
+        width="1280"
+        height="550"
+        loading="eager"
+        class="w-full h-full object-cover"
+      />
+    </div>
+    <div class="absolute inset-0 flex items-end">
+      <div class="museum-container pb-8 md:pb-12">
+        <h1 class="text-hero font-serif font-light text-museum-white drop-shadow-lg">
+          {title}
+        </h1>
+      </div>
+    </div>
+  </section>
+
+  <!-- Content -->
+  <section class="museum-section animate-on-scroll">
+    <div class="museum-container">
+      <a
+        href={getLocalizedPath(lang, '/series')}
+        class="inline-block font-sans text-small text-museum-label hover:text-museum-text transition-colors duration-base ease-museum mb-8"
+      >
+        ← {t('series.back')}
+      </a>
+
+      <p class="museum-mono text-small text-museum-label mt-2">
+        {t('series.works_count', { count: seriesWorks.length })}
+      </p>
+
+      {curatorial && (
+        <div class="mt-8 grid grid-cols-1 lg:grid-cols-2 gap-gutter-md lg:gap-gutter-lg">
+          {curatorial.split('\n\n').length > 1 ? (
+            curatorial.split('\n\n').map(paragraph => (
+              <p class="font-sans text-body text-museum-text" style="line-height: 1.7;">
+                {paragraph}
+              </p>
+            ))
+          ) : (
+            <p class="font-sans text-body text-museum-text lg:col-span-2 max-w-3xl" style="line-height: 1.7;">
+              {curatorial}
+            </p>
+          )}
+        </div>
+      )}
+    </div>
+  </section>
+
+  <!-- Works in this series -->
+  <section class="museum-section bg-museum-surface">
+    <div class="museum-container">
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-gutter-md lg:gap-gutter-lg">
+        {seriesWorks.map((work) => (
+          <div class="animate-on-scroll">
+            <WorkCard
+              slug={lang === 'en' ? work.data.slug_en : work.data.slug}
+              title={lang === 'en' ? work.data.title_en : work.data.title_fr}
+              year={work.data.year}
+              medium={lang === 'en' ? work.data.medium_en : work.data.medium_fr}
+              image={{
+                src: work.data.images[0].src,
+                alt: lang === 'en' ? work.data.images[0].alt_en : work.data.images[0].alt_fr,
+              }}
+            />
+          </div>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <!-- Other series -->
+  {otherSeries.length > 0 && (
+    <section class="museum-section animate-on-scroll">
+      <div class="museum-container">
+        <h2 class="text-h2 font-serif font-light text-museum-text mb-8 md:mb-12">
+          {t('series.other')}
+        </h2>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-gutter-md lg:gap-gutter-lg">
+          {otherSeries.map((s) => (
+            <a
+              href={getLocalizedPath(lang, `/series/${lang === 'en' ? s.data.slug_en : s.data.slug}`)}
+              class="group flex gap-6 items-start animate-on-scroll"
+            >
+              <div class="w-24 h-24 shrink-0 overflow-hidden bg-[#E8E6E0]">
+                <img
+                  src={s.data.cover.src}
+                  alt={lang === 'en' ? s.data.cover.alt_en : s.data.cover.alt_fr}
+                  width="96"
+                  height="96"
+                  loading="lazy"
+                  class="w-full h-full object-cover"
+                />
+              </div>
+              <div>
+                <h3 class="font-serif text-h3 text-museum-text group-hover:text-museum-accent transition-colors duration-base ease-museum">
+                  {lang === 'en' ? s.data.title_en : s.data.title_fr}
+                </h3>
+                <p class="font-sans text-caption text-museum-caption mt-1 line-clamp-2">
+                  {lang === 'en' ? s.data.description_en : s.data.description_fr}
+                </p>
+              </div>
+            </a>
+          ))}
+        </div>
+      </div>
+    </section>
+  )}
+</PageLayout>
+
+<style>
+  .animate-on-scroll {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  .animate-on-scroll.is-visible {
+    opacity: 1;
+    transform: translateY(0);
+    transition: opacity 500ms ease-out, transform 500ms ease-out;
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .animate-on-scroll {
+      opacity: 1;
+      transform: none;
+    }
+  }
+</style>
+
+<script>
+  const items = document.querySelectorAll('.animate-on-scroll');
+  if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+    const observer = new IntersectionObserver(
+      (entries) => {
+        const visible = entries.filter(e => e.isIntersecting);
+        visible.forEach((entry, i) => {
+          setTimeout(() => {
+            entry.target.classList.add('is-visible');
+          }, i * 80);
+          observer.unobserve(entry.target);
+        });
+      },
+      { threshold: 0.1, rootMargin: '0px 0px -40px 0px' }
+    );
+    items.forEach(item => observer.observe(item));
+  }
+</script>

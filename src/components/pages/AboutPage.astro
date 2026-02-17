@@ -1,0 +1,231 @@
+---
+import PageLayout from '@/layouts/PageLayout.astro';
+import { getTranslation, getLocalizedPath, type Lang } from '@/i18n';
+
+interface Props {
+  lang: Lang;
+}
+
+const { lang } = Astro.props;
+const t = getTranslation(lang);
+
+const siteUrl = 'https://sidneycarron.com';
+
+const jsonLd = {
+  '@context': 'https://schema.org',
+  '@graph': [
+    {
+      '@type': 'Person',
+      name: 'Sidney Carron',
+      jobTitle: lang === 'fr' ? 'Artiste sculpteur' : 'Sculptor',
+      description: lang === 'fr'
+        ? 'Artiste sculpteur contemporain, travaillant le bronze, la pierre et l\'acier.'
+        : 'Contemporary sculptor, working with bronze, stone and steel.',
+      image: `${siteUrl}/images/portrait-sidney-carron.jpg`,
+      url: siteUrl,
+      email: 'contact@sidneycarron.com',
+      birthDate: '1985',
+      nationality: lang === 'fr' ? 'Française' : 'French',
+      workLocation: {
+        '@type': 'Place',
+        name: 'Montreuil, Seine-Saint-Denis',
+      },
+      alumniOf: {
+        '@type': 'EducationalOrganization',
+        name: 'École Nationale Supérieure des Beaux-Arts de Paris',
+      },
+      sameAs: [
+        'https://instagram.com/sidneycarron',
+      ],
+    },
+    {
+      '@type': 'BreadcrumbList',
+      itemListElement: [
+        { '@type': 'ListItem', position: 1, name: 'Sidney Carron', item: siteUrl },
+        { '@type': 'ListItem', position: 2, name: lang === 'fr' ? 'À propos' : 'About' },
+      ],
+    },
+  ],
+};
+
+const bio = lang === 'fr' ? {
+  title: 'À propos de Sidney Carron',
+  intro: 'Née en 1985 en banlieue parisienne, Sidney Carron est une artiste sculpteur dont le travail explore les relations entre matière, mémoire et présence.',
+  bioTitle: 'Biographie',
+  bioText: `Diplômée de l'École Nationale Supérieure des Beaux-Arts de Paris en 2010, Sidney Carron a développé une pratique sculpturale qui embrasse plusieurs matériaux — bronze, pierre calcaire, acier corten, béton — pour questionner notre rapport au vivant et à l'espace construit.
+
+Ses premières expositions, à partir de 2012, révèlent déjà une sensibilité particulière pour la sculpture animalière, qu'elle aborde avec une liberté formelle qui la distingue de la tradition académique. Parallèlement, son intérêt pour l'architecture et l'urbanisme la conduit à développer la série Fragments urbains, où elle travaille à grande échelle avec des matériaux industriels.
+
+En 2018, elle entame la série Figures, une exploration de l'archétype humain à travers des formes totémiques qui puisent aux sources les plus anciennes de la sculpture. Ce travail a été remarqué lors du Salon de Montrouge 2023 et à la Fondation Maeght en 2024.
+
+Sidney Carron vit et travaille à Montreuil, en Seine-Saint-Denis.`,
+  statementTitle: 'Démarche artistique',
+  statementText: `« Mon travail naît de la rencontre entre la main et la matière. Chaque matériau possède sa propre mémoire, sa propre résistance, ses propres histoires à raconter. Le bronze garde la trace du feu, la pierre celle des millions d'années de sédimentation, l'acier celle de l'industrie humaine. »
+
+« Je ne cherche pas à imposer une forme à la matière, mais à révéler celle qui s'y cache déjà. C'est un dialogue, parfois un combat, toujours une découverte. La sculpture est pour moi un acte de présence : rendre visible ce qui ne l'est pas encore, donner corps à une intuition, ancrer dans l'espace une émotion. »
+
+« Mes trois séries — Animaux, Fragments urbains, Figures — sont trois façons de poser la même question : comment la forme peut-elle porter du sens ? Comment une masse de métal ou de pierre peut-elle évoquer le mouvement, la mémoire, la présence ? »`,
+  cvTitle: 'Parcours',
+  cvItems: [
+    { year: '2010', text: 'DNSAP, École Nationale Supérieure des Beaux-Arts de Paris' },
+    { year: '2012-2014', text: 'Résidence à la Cité internationale des arts, Paris' },
+    { year: '2016', text: 'Résidence de création, Fondation de Coubertin, Saint-Rémy-lès-Chevreuse' },
+    { year: '2018', text: 'Début de la série Animaux' },
+    { year: '2020', text: 'Installation permanente, Parc de sculptures de Chaumont-sur-Loire' },
+    { year: '2023', text: 'Sélection au Salon de Montrouge (67e édition)' },
+    { year: '2024', text: 'Exposition collective, Fondation Maeght' },
+    { year: '2025', text: 'Biennale de Lyon, section Matérialités' },
+  ],
+} : {
+  title: 'About Sidney Carron',
+  intro: 'Born in 1985 in the suburbs of Paris, Sidney Carron is a sculptor whose work explores the relationships between material, memory and presence.',
+  bioTitle: 'Biography',
+  bioText: `A graduate of the École Nationale Supérieure des Beaux-Arts de Paris in 2010, Sidney Carron has developed a sculptural practice that embraces multiple materials — bronze, limestone, corten steel, concrete — to question our relationship with the living world and built space.
+
+Her first exhibitions, from 2012 onwards, already reveal a particular sensitivity for animal sculpture, which she approaches with a formal freedom that sets her apart from academic tradition. In parallel, her interest in architecture and urbanism led her to develop the Urban Fragments series, where she works on a large scale with industrial materials.
+
+In 2018, she began the Figures series, an exploration of the human archetype through totemic forms that draw from the oldest sources of sculpture. This work was noted at the Salon de Montrouge 2023 and at the Maeght Foundation in 2024.
+
+Sidney Carron lives and works in Montreuil, Seine-Saint-Denis.`,
+  statementTitle: 'Artistic Statement',
+  statementText: `« My work is born from the encounter between hand and material. Each material possesses its own memory, its own resistance, its own stories to tell. Bronze retains the trace of fire, stone that of millions of years of sedimentation, steel that of human industry. »
+
+« I do not seek to impose a form on the material, but to reveal the one that is already hidden within it. It is a dialogue, sometimes a struggle, always a discovery. Sculpture is for me an act of presence: making visible what is not yet seen, giving body to an intuition, anchoring an emotion in space. »
+
+« My three series — Animals, Urban Fragments, Figures — are three ways of asking the same question: how can form carry meaning? How can a mass of metal or stone evoke movement, memory, presence? »`,
+  cvTitle: 'Background',
+  cvItems: [
+    { year: '2010', text: 'DNSAP, École Nationale Supérieure des Beaux-Arts de Paris' },
+    { year: '2012-2014', text: 'Residency at the Cité internationale des arts, Paris' },
+    { year: '2016', text: 'Creative residency, Coubertin Foundation, Saint-Rémy-lès-Chevreuse' },
+    { year: '2018', text: 'Beginning of the Animals series' },
+    { year: '2020', text: 'Permanent installation, Chaumont-sur-Loire Sculpture Park' },
+    { year: '2023', text: 'Selected for the Salon de Montrouge (67th edition)' },
+    { year: '2024', text: 'Group exhibition, Maeght Foundation' },
+    { year: '2025', text: 'Lyon Biennial, Materialities section' },
+  ],
+};
+---
+
+<PageLayout
+  title={`${t('about.title')} — Sidney Carron`}
+  description={t('about.description')}
+  ogImage="/images/portrait-sidney-carron.jpg"
+  canonicalPath="/about"
+  jsonLd={jsonLd}
+>
+  <!-- Hero: Portrait + Intro -->
+  <section class="museum-section animate-on-scroll">
+    <div class="museum-container">
+      <div class="grid grid-cols-1 lg:grid-cols-2 gap-gutter-lg">
+        <!-- Portrait -->
+        <div>
+          <div class="aspect-[3/4] bg-[#E8E6E0] overflow-hidden">
+            <img
+              src="/images/portrait-sidney-carron.jpg"
+              alt={lang === 'fr' ? 'Portrait de Sidney Carron dans son atelier' : 'Portrait of Sidney Carron in her studio'}
+              width="600"
+              height="800"
+              loading="eager"
+              class="w-full h-full object-cover"
+            />
+          </div>
+        </div>
+
+        <!-- Intro -->
+        <div class="flex flex-col justify-center">
+          <h1 class="text-h1 font-serif font-light text-museum-text">{bio.title}</h1>
+          <p class="font-sans text-body text-museum-text mt-6 text-lg" style="line-height: 1.7;">
+            {bio.intro}
+          </p>
+          <div class="mt-8">
+            <a
+              href={getLocalizedPath(lang, '/contact')}
+              class="inline-block font-sans text-small uppercase tracking-museum px-6 py-2.5 border border-current rounded-full text-museum-text bg-none hover:bg-museum-text hover:text-museum-white transition-colors duration-base ease-museum"
+            >
+              {t('about.contact_cta')}
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Biography -->
+  <section class="museum-section bg-museum-surface animate-on-scroll">
+    <div class="museum-container max-w-3xl">
+      <h2 class="text-h2 font-serif font-light text-museum-text mb-8">{bio.bioTitle}</h2>
+      <div class="font-sans text-body text-museum-text space-y-4" style="line-height: 1.7;">
+        {bio.bioText.split('\n\n').map(paragraph => (
+          <p>{paragraph}</p>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <!-- Statement: Elizeth italic, larger size, with guillemets « » -->
+  <section class="museum-section animate-on-scroll">
+    <div class="museum-container max-w-3xl">
+      <h2 class="text-h2 font-serif font-light text-museum-text mb-8">{bio.statementTitle}</h2>
+      <div class="space-y-6">
+        {bio.statementText.split('\n\n').map(paragraph => (
+          <p class="font-serif text-h3 text-museum-text italic" style="line-height: 1.5;">
+            {paragraph}
+          </p>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <!-- CV / Parcours -->
+  <section class="museum-section bg-museum-surface animate-on-scroll">
+    <div class="museum-container max-w-3xl">
+      <h2 class="text-h2 font-serif font-light text-museum-text mb-8">{bio.cvTitle}</h2>
+      <div class="space-y-0">
+        {bio.cvItems.map(({ year, text }) => (
+          <div class="flex gap-6 items-baseline border-b border-museum-border py-4 animate-on-scroll">
+            <span class="museum-mono text-body text-museum-label w-28 shrink-0">{year}</span>
+            <span class="font-sans text-body text-museum-text">{text}</span>
+          </div>
+        ))}
+      </div>
+    </div>
+  </section>
+</PageLayout>
+
+<style>
+  .animate-on-scroll {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  .animate-on-scroll.is-visible {
+    opacity: 1;
+    transform: translateY(0);
+    transition: opacity 500ms ease-out, transform 500ms ease-out;
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .animate-on-scroll {
+      opacity: 1;
+      transform: none;
+    }
+  }
+</style>
+
+<script>
+  const items = document.querySelectorAll('.animate-on-scroll');
+  if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+    const observer = new IntersectionObserver(
+      (entries) => {
+        const visible = entries.filter(e => e.isIntersecting);
+        visible.forEach((entry, i) => {
+          setTimeout(() => {
+            entry.target.classList.add('is-visible');
+          }, i * 100);
+          observer.unobserve(entry.target);
+        });
+      },
+      { threshold: 0.1, rootMargin: '0px 0px -40px 0px' }
+    );
+    items.forEach(item => observer.observe(item));
+  }
+</script>

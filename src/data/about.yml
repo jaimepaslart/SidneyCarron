@@ -1,0 +1,111 @@
+portrait: /images/portrait-sidney-carron.jpg
+
+intro_fr: "Née en 1985 en banlieue parisienne, Sidney Carron est une artiste sculpteur dont le travail explore les relations entre matière, mémoire et présence."
+intro_en: "Born in 1985 in the suburbs of Paris, Sidney Carron is a sculptor whose work explores the relationships between material, memory and presence."
+
+bio_fr: >-
+  Diplômée de l'École Nationale Supérieure des Beaux-Arts de Paris en 2010,
+  Sidney Carron a développé une pratique sculpturale qui embrasse plusieurs
+  matériaux — bronze, pierre calcaire, acier corten, béton — pour questionner
+  notre rapport au vivant et à l'espace construit.
+
+
+  Ses premières expositions, à partir de 2012, révèlent déjà une sensibilité
+  particulière pour la sculpture animalière, qu'elle aborde avec une liberté
+  formelle qui la distingue de la tradition académique. Parallèlement, son
+  intérêt pour l'architecture et l'urbanisme la conduit à développer la série
+  Fragments urbains, où elle travaille à grande échelle avec des matériaux
+  industriels.
+
+
+  En 2018, elle entame la série Figures, une exploration de l'archétype humain
+  à travers des formes totémiques qui puisent aux sources les plus anciennes
+  de la sculpture. Ce travail a été remarqué lors du Salon de Montrouge 2023
+  et à la Fondation Maeght en 2024.
+
+
+  Sidney Carron vit et travaille à Montreuil, en Seine-Saint-Denis.
+
+bio_en: >-
+  A graduate of the École Nationale Supérieure des Beaux-Arts de Paris in 2010,
+  Sidney Carron has developed a sculptural practice that embraces multiple
+  materials — bronze, limestone, corten steel, concrete — to question our
+  relationship with the living world and built space.
+
+
+  Her first exhibitions, from 2012 onwards, already reveal a particular
+  sensitivity for animal sculpture, which she approaches with a formal freedom
+  that sets her apart from academic tradition. In parallel, her interest in
+  architecture and urbanism led her to develop the Urban Fragments series,
+  where she works on a large scale with industrial materials.
+
+
+  In 2018, she began the Figures series, an exploration of the human archetype
+  through totemic forms that draw from the oldest sources of sculpture. This
+  work was noted at the Salon de Montrouge 2023 and at the Maeght Foundation
+  in 2024.
+
+
+  Sidney Carron lives and works in Montreuil, Seine-Saint-Denis.
+
+statement_fr: >-
+  Mon travail naît de la rencontre entre la main et la matière. Chaque matériau
+  possède sa propre mémoire, sa propre résistance, ses propres histoires à
+  raconter. Le bronze garde la trace du feu, la pierre celle des millions
+  d'années de sédimentation, l'acier celle de l'industrie humaine.
+
+
+  Je ne cherche pas à imposer une forme à la matière, mais à révéler celle qui
+  s'y cache déjà. C'est un dialogue, parfois un combat, toujours une
+  découverte. La sculpture est pour moi un acte de présence : rendre visible
+  ce qui ne l'est pas encore, donner corps à une intuition, ancrer dans
+  l'espace une émotion.
+
+
+  Mes trois séries — Animaux, Fragments urbains, Figures — sont trois façons
+  de poser la même question : comment la forme peut-elle porter du sens ?
+  Comment une masse de métal ou de pierre peut-elle évoquer le mouvement,
+  la mémoire, la présence ?
+
+statement_en: >-
+  My work is born from the encounter between hand and material. Each material
+  possesses its own memory, its own resistance, its own stories to tell. Bronze
+  retains the trace of fire, stone that of millions of years of sedimentation,
+  steel that of human industry.
+
+
+  I do not seek to impose a form on the material, but to reveal the one that is
+  already hidden within it. It is a dialogue, sometimes a struggle, always a
+  discovery. Sculpture is for me an act of presence: making visible what is not
+  yet seen, giving body to an intuition, anchoring an emotion in space.
+
+
+  My three series — Animals, Urban Fragments, Figures — are three ways of
+  asking the same question: how can form carry meaning? How can a mass of metal
+  or stone evoke movement, memory, presence?
+
+cv:
+  - year: "2010"
+    text_fr: "DNSAP, École Nationale Supérieure des Beaux-Arts de Paris"
+    text_en: "DNSAP, École Nationale Supérieure des Beaux-Arts de Paris"
+  - year: "2012-2014"
+    text_fr: "Résidence à la Cité internationale des arts, Paris"
+    text_en: "Residency at the Cité internationale des arts, Paris"
+  - year: "2016"
+    text_fr: "Résidence de création, Fondation de Coubertin, Saint-Rémy-lès-Chevreuse"
+    text_en: "Creative residency, Coubertin Foundation, Saint-Rémy-lès-Chevreuse"
+  - year: "2018"
+    text_fr: "Début de la série Animaux"
+    text_en: "Beginning of the Animals series"
+  - year: "2020"
+    text_fr: "Installation permanente, Parc de sculptures de Chaumont-sur-Loire"
+    text_en: "Permanent installation, Chaumont-sur-Loire Sculpture Park"
+  - year: "2023"
+    text_fr: "Sélection au Salon de Montrouge (67e édition)"
+    text_en: "Selected for the Salon de Montrouge (67th edition)"
+  - year: "2024"
+    text_fr: "Exposition collective, Fondation Maeght"
+    text_en: "Group exhibition, Maeght Foundation"
+  - year: "2025"
+    text_fr: "Biennale de Lyon, section Matérialités"
+    text_en: "Lyon Biennial, Materialities section"

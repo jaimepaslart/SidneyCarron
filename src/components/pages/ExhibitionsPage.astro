@@ -1,0 +1,71 @@
+---
+import PageLayout from '@/layouts/PageLayout.astro';
+import ExhibitionList from '@/components/ExhibitionList.astro';
+import { getCollection } from 'astro:content';
+import { getTranslation, getLocalizedPath, type Lang } from '@/i18n';
+
+interface Props {
+  lang: Lang;
+}
+
+const { lang } = Astro.props;
+const t = getTranslation(lang);
+
+const allExhibitions = await getCollection('exhibitions');
+
+const upcoming = allExhibitions
+  .filter(e => e.data.status === 'upcoming' || e.data.status === 'current')
+  .sort((a, b) => new Date(a.data.start_date).getTime() - new Date(b.data.start_date).getTime())
+  .map(e => ({
+    slug: lang === 'en' ? e.data.slug_en : e.data.slug,
+    title: lang === 'en' ? e.data.title_en : e.data.title_fr,
+    venue: lang === 'en' ? e.data.venue_en : e.data.venue_fr,
+    city: e.data.city,
+    start_date: e.data.start_date,
+    end_date: e.data.end_date,
+    status: e.data.status,
+    image: e.data.image ? {
+      src: e.data.image.src,
+      alt: lang === 'en' ? e.data.image.alt_en : e.data.image.alt_fr,
+    } : undefined,
+  }));
+
+const past = allExhibitions
+  .filter(e => e.data.status === 'past')
+  .sort((a, b) => new Date(b.data.start_date).getTime() - new Date(a.data.start_date).getTime())
+  .map(e => ({
+    slug: lang === 'en' ? e.data.slug_en : e.data.slug,
+    title: lang === 'en' ? e.data.title_en : e.data.title_fr,
+    venue: lang === 'en' ? e.data.venue_en : e.data.venue_fr,
+    city: e.data.city,
+    start_date: e.data.start_date,
+    end_date: e.data.end_date,
+    status: e.data.status as 'upcoming' | 'current' | 'past',
+    image: e.data.image ? {
+      src: e.data.image.src,
+      alt: lang === 'en' ? e.data.image.alt_en : e.data.image.alt_fr,
+    } : undefined,
+  }));
+
+const jsonLd = {
+  '@context': 'https://schema.org',
+  '@type': 'CollectionPage',
+  name: t('exhibitions.title'),
+  url: `https://sidneycarron.com${getLocalizedPath(lang, '/exhibitions')}`,
+};
+---
+
+<PageLayout
+  title={`${t('exhibitions.title')} — Sidney Carron`}
+  description={t('exhibitions.description')}
+  canonicalPath="/exhibitions"
+  jsonLd={jsonLd}
+>
+  <div class="museum-container pt-section-sm md:pt-section-md lg:pt-section-lg">
+    <h1 class="text-h1 font-serif font-light text-museum-text mb-0">
+      {t('exhibitions.title')}
+    </h1>
+  </div>
+
+  <ExhibitionList upcoming={upcoming} past={past} />
+</PageLayout>

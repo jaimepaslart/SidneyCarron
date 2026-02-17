@@ -1,0 +1,133 @@
+---
+import { getLangFromUrl, getTranslation } from '@/i18n';
+
+interface ImageData {
+  src: string;
+  alt: string;
+}
+
+interface Props {
+  images: ImageData[];
+  title: string;
+  details: string;
+}
+
+const { images, title, details } = Astro.props;
+const lang = getLangFromUrl(Astro.url);
+const t = getTranslation(lang);
+---
+
+<div id="work-viewer" class="fixed inset-0 z-[100] bg-museum-white viewer-overlay" role="dialog" aria-modal="true" aria-label={title}>
+  <div class="h-full flex flex-col">
+    <!-- Top bar: close button -->
+    <div class="flex justify-end px-gutter-sm md:px-gutter-md lg:px-gutter-lg py-4">
+      <button
+        id="viewer-close"
+        class="font-sans text-small text-museum-label hover:text-museum-text transition-colors duration-fast ease-museum"
+        aria-label={t('lightbox.close')}
+      >
+        ✕
+      </button>
+    </div>
+
+    <!-- Image area with navigation arrows -->
+    <div class="flex-1 flex items-center justify-center relative px-gutter-sm md:px-gutter-md lg:px-gutter-lg">
+      <!-- Previous arrow -->
+      <button
+        id="viewer-prev"
+        class="absolute left-4 md:left-8 font-sans text-caption text-museum-label hover:text-museum-text transition-colors duration-fast ease-museum disabled:opacity-20 disabled:cursor-default z-10"
+        aria-label={t('lightbox.prev')}
+      >
+        ←
+      </button>
+
+      <img
+        id="viewer-image"
+        src={images[0]?.src}
+        alt={images[0]?.alt}
+        class="max-h-[75vh] max-w-full object-contain transition-opacity duration-slow ease-museum-out"
+      />
+
+      <!-- Next arrow -->
+      <button
+        id="viewer-next"
+        class="absolute right-4 md:right-8 font-sans text-caption text-museum-label hover:text-museum-text transition-colors duration-fast ease-museum disabled:opacity-20 disabled:cursor-default z-10"
+        aria-label={t('lightbox.next')}
+      >
+        →
+      </button>
+    </div>
+
+    <!-- Bottom info bar -->
+    <div class="px-gutter-sm md:px-gutter-md lg:px-gutter-lg py-4 flex items-center justify-between">
+      <p class="museum-mono text-small text-museum-label">{title} — {details}</p>
+      <div id="viewer-counter" class="museum-mono text-small text-museum-label"></div>
+    </div>
+  </div>
+</div>
+
+<style>
+  .viewer-overlay {
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 300ms ease-out;
+  }
+  .viewer-overlay.is-open {
+    opacity: 1;
+    pointer-events: auto;
+  }
+</style>
+
+<script define:vars={{ images }}>
+  const viewer = document.getElementById('work-viewer');
+  const viewerImage = document.getElementById('viewer-image');
+  const viewerClose = document.getElementById('viewer-close');
+  const viewerPrev = document.getElementById('viewer-prev');
+  const viewerNext = document.getElementById('viewer-next');
+  const viewerCounter = document.getElementById('viewer-counter');
+  let currentIndex = 0;
+
+  function updateViewer() {
+    if (!viewerImage || !viewerCounter) return;
+    viewerImage.style.opacity = '0';
+    setTimeout(() => {
+      viewerImage.src = images[currentIndex].src;
+      viewerImage.alt = images[currentIndex].alt;
+      viewerImage.style.opacity = '1';
+    }, 200);
+    viewerCounter.textContent = `${currentIndex + 1} / ${images.length}`;
+    if (viewerPrev) viewerPrev.disabled = currentIndex === 0;
+    if (viewerNext) viewerNext.disabled = currentIndex === images.length - 1;
+  }
+
+  function openViewer(index = 0) {
+    currentIndex = index;
+    updateViewer();
+    viewer?.classList.add('is-open');
+    document.body.style.overflow = 'hidden';
+  }
+
+  function closeViewer() {
+    viewer?.classList.remove('is-open');
+    document.body.style.overflow = '';
+  }
+
+  window.openWorkViewer = openViewer;
+
+  viewerClose?.addEventListener('click', closeViewer);
+  viewerPrev?.addEventListener('click', () => { if (currentIndex > 0) { currentIndex--; updateViewer(); } });
+  viewerNext?.addEventListener('click', () => { if (currentIndex < images.length - 1) { currentIndex++; updateViewer(); } });
+
+  document.addEventListener('keydown', (e) => {
+    if (!viewer?.classList.contains('is-open')) return;
+    if (e.key === 'Escape') closeViewer();
+    if (e.key === 'ArrowLeft' && currentIndex > 0) { currentIndex--; updateViewer(); }
+    if (e.key === 'ArrowRight' && currentIndex < images.length - 1) { currentIndex++; updateViewer(); }
+  });
+
+  viewer?.addEventListener('click', (e) => {
+    if (e.target === viewer || (e.target?.closest && !e.target.closest('button') && !e.target.closest('img'))) {
+      closeViewer();
+    }
+  });
+</script>

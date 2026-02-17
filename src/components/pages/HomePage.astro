@@ -1,0 +1,297 @@
+---
+import PageLayout from '@/layouts/PageLayout.astro';
+import WorkCard from '@/components/WorkCard.astro';
+import { getCollection } from 'astro:content';
+import { getTranslation, getLocalizedPath, type Lang } from '@/i18n';
+
+interface Props {
+  lang: Lang;
+}
+
+const { lang } = Astro.props;
+const t = getTranslation(lang);
+
+const allWorks = await getCollection('works');
+const featuredWorks = allWorks
+  .filter(w => w.data.featured)
+  .sort((a, b) => a.data.order - b.data.order)
+  .slice(0, 3);
+
+const allExhibitions = await getCollection('exhibitions');
+const currentExhibition = allExhibitions
+  .filter(e => e.data.status === 'upcoming' || e.data.status === 'current')
+  .sort((a, b) => new Date(a.data.start_date).getTime() - new Date(b.data.start_date).getTime())
+  [0];
+
+const allPress = await getCollection('press');
+const recentPress = allPress
+  .sort((a, b) => new Date(b.data.date).getTime() - new Date(a.data.date).getTime())
+  .slice(0, 3);
+
+function formatMuseumDates(startStr: string, endStr: string): string {
+  const start = new Date(startStr);
+  const end = new Date(endStr);
+  const sd = String(start.getDate()).padStart(2, '0');
+  const sm = String(start.getMonth() + 1).padStart(2, '0');
+  const ed = String(end.getDate()).padStart(2, '0');
+  const em = String(end.getMonth() + 1).padStart(2, '0');
+  const ey = end.getFullYear();
+  if (start.getFullYear() === end.getFullYear()) {
+    return `${sd}.${sm} \u2014 ${ed}.${em}.${ey}`;
+  }
+  return `${sd}.${sm}.${start.getFullYear()} \u2014 ${ed}.${em}.${ey}`;
+}
+
+function formatPressDate(dateStr: string): string {
+  const d = new Date(dateStr);
+  const day = String(d.getDate()).padStart(2, '0');
+  const month = String(d.getMonth() + 1).padStart(2, '0');
+  const year = d.getFullYear();
+  return `${day}.${month}.${year}`;
+}
+
+const jsonLd = {
+  '@context': 'https://schema.org',
+  '@graph': [
+    {
+      '@type': 'WebSite',
+      name: 'Sidney Carron',
+      url: 'https://sidneycarron.com',
+      inLanguage: [lang === 'fr' ? 'fr-FR' : 'en-US'],
+    },
+    {
+      '@type': 'Person',
+      name: 'Sidney Carron',
+      jobTitle: lang === 'fr' ? 'Artiste sculpteur' : 'Sculptor',
+      url: 'https://sidneycarron.com',
+      image: 'https://sidneycarron.com/images/portrait-sidney-carron.jpg',
+      sameAs: [
+        'https://instagram.com/sidneycarron',
+      ],
+    },
+  ],
+};
+---
+
+<PageLayout
+  title={t('home.title')}
+  description={t('home.description')}
+  jsonLd={jsonLd}
+>
+  <!-- Hero -->
+  <section class="min-h-[90vh] flex items-center justify-center bg-museum-surface">
+    <div class="museum-container text-center max-w-3xl mx-auto">
+      <p class="museum-label mb-8 hero-fade" style="animation-delay: 100ms;">
+        {t('home.hero.subtitle')}
+      </p>
+      <h1 class="font-serif text-hero text-museum-text whitespace-pre-line hero-fade" style="animation-delay: 280ms;">
+        {t('home.hero.statement')}
+      </h1>
+      <div class="mt-12 hero-fade" style="animation-delay: 480ms;">
+        <a
+          href={getLocalizedPath(lang, '/works')}
+          class="inline-block font-sans text-small uppercase tracking-museum px-8 py-3 border border-museum-text text-museum-text bg-none hover:bg-museum-text hover:text-museum-white transition-colors duration-base ease-museum"
+        >
+          {t('home.featured.cta')}
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- Featured Works -->
+  <section class="museum-section">
+    <div class="museum-container">
+      <p class="museum-label mb-12" data-animate>{t('home.featured.label')}</p>
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-gutter-md lg:gap-gutter-lg">
+        {featuredWorks.map((work, i) => (
+          <div data-animate style={`transition-delay: ${i * 120}ms;`}>
+            <WorkCard
+              slug={lang === 'en' ? work.data.slug_en : work.data.slug}
+              title={lang === 'en' ? work.data.title_en : work.data.title_fr}
+              year={work.data.year}
+              medium={lang === 'en' ? work.data.medium_en : work.data.medium_fr}
+              image={{
+                src: work.data.images[0].src,
+                alt: lang === 'en' ? work.data.images[0].alt_en : work.data.images[0].alt_fr,
+              }}
+            />
+          </div>
+        ))}
+      </div>
+      <div class="text-center mt-12" data-animate>
+        <a
+          href={getLocalizedPath(lang, '/works')}
+          class="font-sans text-small text-museum-caption hover:text-museum-text bg-none transition-colors duration-base ease-museum"
+        >
+          {t('home.featured.cta')} &rarr;
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- Current Exhibition -->
+  {currentExhibition && (
+    <section class="museum-section bg-museum-surface">
+      <div class="museum-container">
+        <p class="museum-label mb-12" data-animate>{t('home.exhibitions.label')}</p>
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-gutter-lg items-center" data-animate>
+          <div class="aspect-[4/3] bg-[#E8E6E0] overflow-hidden">
+            <img
+              src={currentExhibition.data.image.src}
+              alt={lang === 'en' ? currentExhibition.data.image.alt_en : currentExhibition.data.image.alt_fr}
+              width="800"
+              height="600"
+              loading="lazy"
+              class="w-full h-full object-cover"
+            />
+          </div>
+          <div>
+            <h2 class="font-serif text-h2 text-museum-text">
+              {lang === 'en' ? currentExhibition.data.title_en : currentExhibition.data.title_fr}
+            </h2>
+            <p class="font-sans text-body text-museum-caption mt-4">
+              {lang === 'en' ? currentExhibition.data.venue_en : currentExhibition.data.venue_fr}, {currentExhibition.data.city}
+            </p>
+            <p class="museum-mono text-small text-museum-label mt-2">
+              {formatMuseumDates(currentExhibition.data.start_date, currentExhibition.data.end_date)}
+            </p>
+            <div class="mt-8">
+              <a
+                href={getLocalizedPath(lang, `/exhibitions/${lang === 'en' ? currentExhibition.data.slug_en : currentExhibition.data.slug}`)}
+                class="font-sans text-small text-museum-caption hover:text-museum-text bg-none transition-colors duration-base ease-museum"
+              >
+                {t('home.exhibitions.cta')} &rarr;
+              </a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+  )}
+
+  <!-- Press -->
+  {recentPress.length > 0 && (
+    <section class="museum-section">
+      <div class="museum-container">
+        <p class="museum-label mb-12" data-animate>{t('home.press.label')}</p>
+        <div class="space-y-8">
+          {recentPress.map((article, i) => (
+            <div class="border-b border-museum-border pb-8 last:border-0 last:pb-0" data-animate style={`transition-delay: ${i * 120}ms;`}>
+              <div class="flex items-baseline gap-4">
+                <span class="museum-label">{article.data.publication}</span>
+                <span class="museum-mono text-small text-museum-label">{formatPressDate(article.data.date)}</span>
+              </div>
+              <p class="font-serif text-h3 text-museum-text mt-3 italic">
+                {lang === 'en' ? article.data.title_en : article.data.title_fr}
+              </p>
+              {article.data.url && (
+                <a
+                  href={article.data.url}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  class="inline-block font-sans text-small text-museum-caption hover:text-museum-text bg-none mt-3 transition-colors duration-base ease-museum"
+                >
+                  {t('press.read_article')} &rarr;
+                </a>
+              )}
+            </div>
+          ))}
+        </div>
+        <div class="text-center mt-12" data-animate>
+          <a
+            href={getLocalizedPath(lang, '/press')}
+            class="font-sans text-small text-museum-caption hover:text-museum-text bg-none transition-colors duration-base ease-museum"
+          >
+            {t('home.press.cta')} &rarr;
+          </a>
+        </div>
+      </div>
+    </section>
+  )}
+
+  <!-- CTA Contact -->
+  <section class="museum-section bg-museum-surface">
+    <div class="museum-container text-center" data-animate>
+      <p class="font-sans text-body text-museum-caption">
+        {t('home.contact.intro')}
+      </p>
+      <a
+        href={getLocalizedPath(lang, '/contact')}
+        class="inline-block font-serif text-h2 text-museum-text mt-4 italic"
+      >
+        {t('home.contact.cta')}
+      </a>
+    </div>
+  </section>
+</PageLayout>
+
+<style>
+  /* Hero load animation */
+  .hero-fade {
+    opacity: 0;
+    transform: translateY(12px);
+    animation: heroFadeIn 600ms ease-out forwards;
+  }
+
+  @keyframes heroFadeIn {
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  /* Scroll reveal: initial hidden state */
+  [data-animate] {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+
+  /* Scroll reveal: visible state */
+  [data-animate].is-visible {
+    opacity: 1;
+    transform: translateY(0);
+    transition-property: opacity, transform;
+    transition-duration: 500ms;
+    transition-timing-function: ease-out;
+  }
+
+  /* Respect reduced motion */
+  @media (prefers-reduced-motion: reduce) {
+    .hero-fade {
+      opacity: 1;
+      transform: none;
+      animation: none;
+    }
+
+    [data-animate] {
+      opacity: 1;
+      transform: none;
+    }
+
+    [data-animate].is-visible {
+      transition: none;
+    }
+  }
+</style>
+
+<script>
+  const prefersReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  if (!prefersReduced) {
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            entry.target.classList.add('is-visible');
+            observer.unobserve(entry.target);
+          }
+        });
+      },
+      { rootMargin: '0px 0px -60px 0px', threshold: 0.1 }
+    );
+
+    document.querySelectorAll('[data-animate]').forEach((el) => {
+      observer.observe(el);
+    });
+  }
+</script>

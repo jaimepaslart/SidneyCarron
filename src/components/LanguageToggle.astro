@@ -1,0 +1,20 @@
+---
+import { getLangFromUrl, getLocalizedPath, getAlternateLang } from '@/i18n';
+
+const lang = getLangFromUrl(Astro.url);
+const altLang = getAlternateLang(lang);
+
+const currentPath = Astro.url.pathname;
+const cleanPath = currentPath.replace(/^\/en/, '') || '/';
+const altHref = getLocalizedPath(altLang, cleanPath);
+---
+
+<a
+  href={altHref}
+  class="font-mono text-small font-normal uppercase inline-flex items-center gap-1 bg-none"
+  aria-label={lang === 'fr' ? 'Switch to English' : 'Passer en français'}
+>
+  <span class={lang === 'fr' ? 'text-museum-text' : 'text-museum-caption hover:text-museum-text transition-colors duration-base'}>FR</span>
+  <span class="text-museum-border">/</span>
+  <span class={lang === 'en' ? 'text-museum-text' : 'text-museum-caption hover:text-museum-text transition-colors duration-base'}>EN</span>
+</a>

@@ -1,0 +1,14 @@
+---
+import ExhibitionDetailPage from '@/components/pages/ExhibitionDetailPage.astro';
+import { getCollection } from 'astro:content';
+
+export async function getStaticPaths() {
+  const exhibitions = await getCollection('exhibitions');
+  return exhibitions.map(e => ({
+    params: { slug: e.data.slug },
+  }));
+}
+
+const { slug } = Astro.params;
+---
+<ExhibitionDetailPage lang="fr" slug={slug!} />

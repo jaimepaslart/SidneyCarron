@@ -1,0 +1,138 @@
+---
+import { getLangFromUrl, getTranslation } from '@/i18n';
+
+interface FilterOption {
+  value: string;
+  label: string;
+}
+
+interface Props {
+  filters: {
+    name: string;
+    label: string;
+    options: FilterOption[];
+  }[];
+}
+
+const { filters } = Astro.props;
+const lang = getLangFromUrl(Astro.url);
+const t = getTranslation(lang);
+---
+
+<div id="filter-bar" class="museum-container mb-12 md:mb-16">
+  {filters.map(({ name, options }) => (
+    <div class="flex flex-wrap items-center gap-1 mb-3 last:mb-0" data-filter-group={name}>
+      <button
+        class="filter-item active font-sans text-small uppercase tracking-museum text-museum-text font-medium"
+        data-filter={name}
+        data-value="all"
+      >
+        {t('works.filter.all')}
+      </button>
+      {options.map(({ value, label }) => (
+        <>
+          <span class="text-small text-museum-label select-none mx-1">/</span>
+          <button
+            class="filter-item font-sans text-small uppercase tracking-museum text-museum-label transition-colors duration-fast ease-museum hover:text-museum-text"
+            data-filter={name}
+            data-value={value}
+          >
+            {label}
+          </button>
+        </>
+      ))}
+    </div>
+  ))}
+  <div class="mt-4">
+    <p id="works-count" class="museum-mono text-small text-museum-label"></p>
+  </div>
+</div>
+
+<style>
+  .filter-item {
+    position: relative;
+    padding-bottom: 2px;
+    cursor: pointer;
+    background: none;
+    border: none;
+  }
+
+  .filter-item::after {
+    content: '';
+    position: absolute;
+    left: 0;
+    bottom: 0;
+    width: 0;
+    height: 1px;
+    background-color: currentColor;
+    transition: width 200ms ease;
+  }
+
+  .filter-item.active {
+    color: #1A1A1A;
+    font-weight: 500;
+  }
+
+  .filter-item.active::after {
+    width: 100%;
+  }
+
+  .filter-item:hover::after {
+    width: 100%;
+  }
+</style>
+
+<script>
+  const filterBar = document.getElementById('filter-bar');
+  const worksCount = document.getElementById('works-count');
+  const activeFilters: Record<string, string> = {};
+
+  function getCards(): HTMLElement[] {
+    return Array.from(document.querySelectorAll('[data-work-card]'));
+  }
+
+  function applyFilters() {
+    const cards = getCards();
+    let visibleCount = 0;
+
+    cards.forEach((card) => {
+      let show = true;
+      for (const [filterName, filterValue] of Object.entries(activeFilters)) {
+        if (filterValue === 'all') continue;
+        const cardValue = card.getAttribute(`data-${filterName}`);
+        if (cardValue !== filterValue) {
+          show = false;
+          break;
+        }
+      }
+      card.style.display = show ? '' : 'none';
+      if (show) visibleCount++;
+    });
+
+    if (worksCount) {
+      worksCount.textContent = `${visibleCount} ${visibleCount <= 1 ? 'œuvre' : 'œuvres'}`;
+    }
+  }
+
+  filterBar?.addEventListener('click', (e) => {
+    const item = (e.target as HTMLElement).closest('.filter-item') as HTMLElement;
+    if (!item) return;
+
+    const filterName = item.dataset.filter!;
+    const filterValue = item.dataset.value!;
+    activeFilters[filterName] = filterValue;
+
+    const group = item.closest('[data-filter-group]');
+    group?.querySelectorAll('.filter-item').forEach(el => {
+      el.classList.remove('active');
+      el.classList.add('text-museum-label');
+      el.classList.remove('text-museum-text', 'font-medium');
+    });
+    item.classList.add('active');
+    item.classList.remove('text-museum-label');
+
+    applyFilters();
+  });
+
+  applyFilters();
+</script>

@@ -1,0 +1,130 @@
+---
+import PageLayout from '@/layouts/PageLayout.astro';
+import { getCollection } from 'astro:content';
+import { getTranslation, getLocalizedPath, type Lang } from '@/i18n';
+
+interface Props {
+  lang: Lang;
+}
+
+const { lang } = Astro.props;
+const t = getTranslation(lang);
+
+const allPress = await getCollection('press');
+const articles = allPress.sort((a, b) =>
+  new Date(b.data.date).getTime() - new Date(a.data.date).getTime()
+);
+
+function formatMuseumDate(dateStr: string): string {
+  const d = new Date(dateStr);
+  const day = String(d.getDate()).padStart(2, '0');
+  const month = String(d.getMonth() + 1).padStart(2, '0');
+  const year = d.getFullYear();
+  return `${day}.${month}.${year}`;
+}
+
+const jsonLd = {
+  '@context': 'https://schema.org',
+  '@type': 'CollectionPage',
+  name: t('press.title'),
+  url: `https://sidneycarron.com${getLocalizedPath(lang, '/press')}`,
+};
+---
+
+<PageLayout
+  title={`${t('press.title')} — Sidney Carron`}
+  description={t('press.description')}
+  canonicalPath="/press"
+  jsonLd={jsonLd}
+>
+  <section class="museum-section">
+    <div class="museum-container max-w-4xl">
+      <h1 class="text-h1 font-serif font-light text-museum-text mb-8 md:mb-12">
+        {t('press.title')}
+      </h1>
+
+      <div class="divide-y divide-[#E8E6E0]">
+        {articles.map((article) => {
+          const articleTitle = lang === 'en' ? article.data.title_en : article.data.title_fr;
+          const excerpt = lang === 'en' ? article.data.excerpt_en : article.data.excerpt_fr;
+
+          return (
+            <article class="py-8 first:pt-0 animate-on-scroll">
+              <div class="flex items-baseline gap-4">
+                <span class="museum-label">{article.data.publication.toUpperCase()}</span>
+                <span class="museum-mono text-small text-museum-label">{formatMuseumDate(article.data.date)}</span>
+              </div>
+              <h2 class="font-serif text-h3 text-museum-text mt-3 italic">
+                {articleTitle}
+              </h2>
+              {excerpt && (
+                <p class="font-sans text-body text-museum-caption mt-3 line-clamp-3">
+                  {excerpt}
+                </p>
+              )}
+              <div class="flex gap-4 mt-4">
+                {article.data.url && (
+                  <a
+                    href={article.data.url}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    class="font-sans text-caption text-museum-caption hover:text-museum-text transition-colors duration-base ease-museum"
+                  >
+                    {t('press.read_article')} →
+                  </a>
+                )}
+                {article.data.pdf && (
+                  <a
+                    href={article.data.pdf}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    class="font-sans text-caption text-museum-caption hover:text-museum-text transition-colors duration-base ease-museum"
+                  >
+                    {t('press.download_pdf')} ↓
+                  </a>
+                )}
+              </div>
+            </article>
+          );
+        })}
+      </div>
+    </div>
+  </section>
+</PageLayout>
+
+<style>
+  .animate-on-scroll {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  .animate-on-scroll.is-visible {
+    opacity: 1;
+    transform: translateY(0);
+    transition: opacity 500ms ease-out, transform 500ms ease-out;
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .animate-on-scroll {
+      opacity: 1;
+      transform: none;
+    }
+  }
+</style>
+
+<script>
+  const items = document.querySelectorAll('.animate-on-scroll');
+  if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+    const observer = new IntersectionObserver(
+      (entries) => {
+        const visible = entries.filter(e => e.isIntersecting);
+        visible.forEach((entry, i) => {
+          setTimeout(() => {
+            entry.target.classList.add('is-visible');
+          }, i * 80);
+          observer.unobserve(entry.target);
+        });
+      },
+      { threshold: 0.1, rootMargin: '0px 0px -40px 0px' }
+    );
+    items.forEach(item => observer.observe(item));
+  }
+</script>

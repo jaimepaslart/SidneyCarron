@@ -1,0 +1,14 @@
+---
+import WorkDetailPage from '@/components/pages/WorkDetailPage.astro';
+import { getCollection } from 'astro:content';
+
+export async function getStaticPaths() {
+  const works = await getCollection('works');
+  return works.map(work => ({
+    params: { slug: work.data.slug },
+  }));
+}
+
+const { slug } = Astro.params;
+---
+<WorkDetailPage lang="fr" slug={slug!} />

@@ -1,0 +1,179 @@
+---
+import { getLangFromUrl, getTranslation, getLocalizedPath } from '@/i18n';
+
+interface Exhibition {
+  slug: string;
+  title: string;
+  venue: string;
+  city: string;
+  start_date: string;
+  end_date: string;
+  status: 'upcoming' | 'current' | 'past';
+  image?: {
+    src: string;
+    alt: string;
+  };
+}
+
+interface Props {
+  upcoming: Exhibition[];
+  past: Exhibition[];
+}
+
+const { upcoming, past } = Astro.props;
+const lang = getLangFromUrl(Astro.url);
+const t = getTranslation(lang);
+
+function formatMuseumDates(startStr: string, endStr: string): string {
+  const start = new Date(startStr);
+  const end = new Date(endStr);
+  const sd = String(start.getDate()).padStart(2, '0');
+  const sm = String(start.getMonth() + 1).padStart(2, '0');
+  const ed = String(end.getDate()).padStart(2, '0');
+  const em = String(end.getMonth() + 1).padStart(2, '0');
+  const ey = end.getFullYear();
+  if (start.getFullYear() === end.getFullYear()) {
+    return `${sd}.${sm} \u2014 ${ed}.${em}.${ey}`;
+  }
+  return `${sd}.${sm}.${start.getFullYear()} \u2014 ${ed}.${em}.${ey}`;
+}
+
+// Group past exhibitions by year
+const pastByYear: Record<number, Exhibition[]> = {};
+past.forEach((ex) => {
+  const year = new Date(ex.start_date).getFullYear();
+  if (!pastByYear[year]) pastByYear[year] = [];
+  pastByYear[year].push(ex);
+});
+const sortedYears = Object.keys(pastByYear).map(Number).sort((a, b) => b - a);
+---
+
+{upcoming.length > 0 && (
+  <section class="museum-section">
+    <div class="museum-container">
+      <h2 class="text-h2 font-serif font-light text-museum-text mb-8 md:mb-12">
+        {t('exhibitions.upcoming')}
+      </h2>
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-gutter-lg">
+        {upcoming.map((ex) => (
+          <a
+            href={getLocalizedPath(lang, `/exhibitions/${ex.slug}`)}
+            class="group block animate-on-scroll"
+          >
+            {ex.image && (
+              <div class="overflow-hidden mb-4 bg-[#E8E6E0]">
+                <img
+                  src={ex.image.src}
+                  alt={ex.image.alt}
+                  width="600"
+                  height="400"
+                  loading="lazy"
+                  class="w-full aspect-[3/2] object-cover transition-transform duration-slow ease-museum group-hover:scale-[1.02]"
+                />
+              </div>
+            )}
+            <div>
+              {ex.status === 'current' && (
+                <span class="museum-label text-museum-warm">
+                  {t('exhibitions.current_badge').toUpperCase()}
+                </span>
+              )}
+              {ex.status === 'upcoming' && (
+                <span class="museum-label text-museum-accent">
+                  {t('exhibitions.upcoming_badge').toUpperCase()}
+                </span>
+              )}
+              <h3 class="font-serif text-h2 text-museum-text mt-1">{ex.title}</h3>
+              <p class="font-sans text-body text-museum-caption mt-1">{ex.venue}</p>
+              <p class="museum-label mt-1">{ex.city.toUpperCase()}</p>
+              <p class="museum-mono text-small text-museum-label mt-2">
+                {formatMuseumDates(ex.start_date, ex.end_date)}
+              </p>
+              <span class="inline-block font-sans text-caption text-museum-caption hover:text-museum-text mt-3 transition-colors duration-base ease-museum bg-none">
+                {t('exhibitions.learn_more')} →
+              </span>
+            </div>
+          </a>
+        ))}
+      </div>
+    </div>
+  </section>
+)}
+
+{sortedYears.length > 0 && (
+  <section class="museum-section bg-museum-surface">
+    <div class="museum-container">
+      <h2 class="text-h2 font-serif font-light text-museum-text mb-8 md:mb-12">
+        {t('exhibitions.past')}
+      </h2>
+      {sortedYears.map((year) => (
+        <div class="animate-on-scroll">
+          <h3 class="museum-mono text-h3 text-museum-text mb-4 mt-12 first:mt-0">{year}</h3>
+          <div class="divide-y divide-museum-border">
+            {pastByYear[year].map((ex) => (
+              <a
+                href={getLocalizedPath(lang, `/exhibitions/${ex.slug}`)}
+                class="flex flex-col sm:flex-row sm:justify-between sm:items-baseline gap-1 sm:gap-4 py-4 group"
+              >
+                <div class="flex items-baseline gap-3">
+                  <span class="museum-label shrink-0">
+                    {t('exhibitions.current_badge') === 'En cours' ? 'PASSÉ' : 'PAST'}
+                  </span>
+                  <span class="font-serif text-body text-museum-text group-hover:text-museum-accent transition-colors duration-base">
+                    {ex.title}
+                  </span>
+                </div>
+                <div class="flex items-baseline gap-3 sm:text-right shrink-0">
+                  <span class="font-sans text-caption text-museum-caption">
+                    {ex.venue}
+                  </span>
+                  <span class="museum-label">{ex.city.toUpperCase()}</span>
+                  <span class="museum-mono text-small text-museum-label">
+                    {formatMuseumDates(ex.start_date, ex.end_date)}
+                  </span>
+                </div>
+              </a>
+            ))}
+          </div>
+        </div>
+      ))}
+    </div>
+  </section>
+)}
+
+<style>
+  .animate-on-scroll {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  .animate-on-scroll.is-visible {
+    opacity: 1;
+    transform: translateY(0);
+    transition: opacity 500ms ease-out, transform 500ms ease-out;
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .animate-on-scroll {
+      opacity: 1;
+      transform: none;
+    }
+  }
+</style>
+
+<script>
+  const items = document.querySelectorAll('.animate-on-scroll');
+  if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+    const observer = new IntersectionObserver(
+      (entries) => {
+        const visible = entries.filter(e => e.isIntersecting);
+        visible.forEach((entry, i) => {
+          setTimeout(() => {
+            entry.target.classList.add('is-visible');
+          }, i * 80);
+          observer.unobserve(entry.target);
+        });
+      },
+      { threshold: 0.1, rootMargin: '0px 0px -40px 0px' }
+    );
+    items.forEach(item => observer.observe(item));
+  }
+</script>

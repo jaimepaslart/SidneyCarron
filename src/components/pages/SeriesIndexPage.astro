@@ -1,0 +1,117 @@
+---
+import PageLayout from '@/layouts/PageLayout.astro';
+import { getCollection } from 'astro:content';
+import { getTranslation, getLocalizedPath, type Lang } from '@/i18n';
+
+interface Props {
+  lang: Lang;
+}
+
+const { lang } = Astro.props;
+const t = getTranslation(lang);
+
+const allSeries = await getCollection('series');
+const series = allSeries.sort((a, b) => a.data.order - b.data.order);
+
+const allWorks = await getCollection('works');
+
+function getWorksCount(seriesSlug: string): number {
+  return allWorks.filter(w => w.data.series === seriesSlug).length;
+}
+
+const jsonLd = {
+  '@context': 'https://schema.org',
+  '@type': 'CollectionPage',
+  name: t('series.title'),
+  url: `https://sidneycarron.com${getLocalizedPath(lang, '/series')}`,
+};
+---
+
+<PageLayout
+  title={`${t('series.title')} — Sidney Carron`}
+  description={t('series.description')}
+  canonicalPath="/series"
+  jsonLd={jsonLd}
+>
+  <section class="museum-section">
+    <div class="museum-container">
+      <h1 class="text-h1 font-serif font-light text-museum-text mb-8 md:mb-12">
+        {t('series.title')}
+      </h1>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-gutter-md lg:gap-gutter-lg">
+        {series.map((s) => {
+          const seriesTitle = lang === 'en' ? s.data.title_en : s.data.title_fr;
+          const seriesDesc = lang === 'en' ? s.data.description_en : s.data.description_fr;
+          const seriesSlug = lang === 'en' ? s.data.slug_en : s.data.slug;
+          const count = getWorksCount(s.data.slug);
+
+          return (
+            <a
+              href={getLocalizedPath(lang, `/series/${seriesSlug}`)}
+              class="group block animate-on-scroll"
+            >
+              <div class="relative overflow-hidden aspect-video bg-[#E8E6E0]">
+                <img
+                  src={s.data.cover.src}
+                  alt={lang === 'en' ? s.data.cover.alt_en : s.data.cover.alt_fr}
+                  width="600"
+                  height="338"
+                  loading="lazy"
+                  class="w-full h-full object-cover transition-transform duration-slow ease-museum group-hover:scale-[1.02]"
+                />
+                <div class="absolute inset-0 bg-museum-text/0 group-hover:bg-museum-text/10 transition-colors duration-base ease-museum" />
+              </div>
+              <h2 class="font-serif text-h3 text-museum-text mt-4 group-hover:text-museum-accent transition-colors duration-base ease-museum">
+                {seriesTitle}
+              </h2>
+              <p class="font-sans text-body text-museum-caption mt-1 line-clamp-2">
+                {seriesDesc}
+              </p>
+              <p class="museum-mono text-small text-museum-label mt-2">
+                {t('series.works_count', { count })}
+              </p>
+            </a>
+          );
+        })}
+      </div>
+    </div>
+  </section>
+</PageLayout>
+
+<style>
+  .animate-on-scroll {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  .animate-on-scroll.is-visible {
+    opacity: 1;
+    transform: translateY(0);
+    transition: opacity 500ms ease-out, transform 500ms ease-out;
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .animate-on-scroll {
+      opacity: 1;
+      transform: none;
+    }
+  }
+</style>
+
+<script>
+  const items = document.querySelectorAll('.animate-on-scroll');
+  if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+    const observer = new IntersectionObserver(
+      (entries) => {
+        const visible = entries.filter(e => e.isIntersecting);
+        visible.forEach((entry, i) => {
+          setTimeout(() => {
+            entry.target.classList.add('is-visible');
+          }, i * 80);
+          observer.unobserve(entry.target);
+        });
+      },
+      { threshold: 0.1, rootMargin: '0px 0px -40px 0px' }
+    );
+    items.forEach(item => observer.observe(item));
+  }
+</script>
