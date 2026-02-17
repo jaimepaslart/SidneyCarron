@@ -179,7 +179,7 @@ const jsonLd = {
           <!-- Desktop: stacked vertical images -->
           <div class="hidden lg:flex lg:flex-col lg:gap-6">
             {images.map((img, i) => (
-              <figure class="reveal-horizontal">
+              <figure class="reveal-image">
                 <button
                   class="w-full cursor-pointer bg-[#E8E6E0]"
                   onclick={`window.openWorkViewer && window.openWorkViewer(${i})`}
@@ -272,11 +272,20 @@ const jsonLd = {
     }
   }
 
-  /* reveal-image styles now in global.css — detail page uses horizontal reveal */
+  /* Right column images fade-in on scroll */
+  .reveal-image {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  .reveal-image.is-visible {
+    opacity: 1;
+    transform: translateY(0);
+    transition: opacity 500ms ease-out, transform 500ms ease-out;
+  }
 </style>
 
 <script>
-  const images = document.querySelectorAll('.reveal-horizontal');
+  const images = document.querySelectorAll('.reveal-image');
   const observer = new IntersectionObserver(
     (entries) => {
       entries.forEach((entry) => {

@@ -184,48 +184,4 @@
   .museum-hover-overlay:hover::after {
     @apply bg-museum-text/15;
   }
-
-  /* Image reveal: vertical curtain (opens from center vertically) */
-  .reveal-image,
-  .reveal-card {
-    clip-path: inset(50% 0);
-    opacity: 0;
-  }
-
-  .reveal-image.is-visible,
-  .reveal-card.is-visible {
-    clip-path: inset(0);
-    opacity: 1;
-    transition: clip-path 800ms cubic-bezier(0.76, 0, 0.24, 1),
-                opacity 400ms ease-out;
-  }
-
-  /* Image reveal: horizontal curtain (opens from center horizontally) */
-  .reveal-horizontal {
-    clip-path: inset(0 50%);
-    opacity: 0;
-  }
-
-  .reveal-horizontal.is-visible {
-    clip-path: inset(0);
-    opacity: 1;
-    transition: clip-path 800ms cubic-bezier(0.76, 0, 0.24, 1),
-                opacity 400ms ease-out;
-  }
-
-  /* Respect reduced motion for reveals */
-  @media (prefers-reduced-motion: reduce) {
-    .reveal-image,
-    .reveal-card,
-    .reveal-horizontal {
-      clip-path: none;
-      opacity: 1;
-    }
-
-    .reveal-image.is-visible,
-    .reveal-card.is-visible,
-    .reveal-horizontal.is-visible {
-      transition: none;
-    }
-  }
 }

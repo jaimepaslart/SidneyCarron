@@ -1,7 +1,6 @@
 ---
 import PageLayout from '@/layouts/PageLayout.astro';
 import WorkCard from '@/components/WorkCard.astro';
-import HorizontalWorks from '@/components/HorizontalWorks.astro';
 import { getCollection } from 'astro:content';
 import { getTranslation, getLocalizedPath, type Lang } from '@/i18n';
 
@@ -79,65 +78,46 @@ const jsonLd = {
   description={t('home.description')}
   jsonLd={jsonLd}
 >
-  <!-- Hero: text overlapping sculpture image -->
-  <section class="hero-section relative min-h-[90vh] flex items-center bg-museum-surface overflow-hidden" data-hero-parallax>
-    <div class="museum-container relative z-10">
-      <div class="hero-grid">
-        <!-- Text column -->
-        <div class="hero-text-col flex flex-col justify-center">
-          <p class="museum-label mb-8 hero-fade" style="animation-delay: 100ms;" data-parallax-layer="0.02">
-            {t('home.hero.subtitle')}
-          </p>
-          <h1 class="font-serif text-hero text-museum-text whitespace-pre-line hero-fade hero-statement" style="animation-delay: 280ms;" data-parallax-layer="0.04">
-            {t('home.hero.statement')}
-          </h1>
-          <div class="mt-12 hero-fade" style="animation-delay: 480ms;" data-parallax-layer="0.02">
-            <a
-              href={getLocalizedPath(lang, '/works')}
-              class="inline-block font-sans text-small uppercase tracking-museum px-8 py-3 border border-museum-text text-museum-text bg-none hover:bg-museum-text hover:text-museum-white transition-colors duration-base ease-museum"
-            >
-              {t('home.featured.cta')}
-            </a>
-          </div>
-        </div>
-        <!-- Image column -->
-        <div class="hero-image-col hero-fade" style="animation-delay: 150ms;" data-parallax-layer="0.06">
-          <div class="hero-image-wrapper">
-            <img
-              src="/images/hero-sculpture.jpg"
-              alt={lang === 'fr' ? 'Sculpture de Sidney Carron' : 'Sculpture by Sidney Carron'}
-              width="800"
-              height="1000"
-              loading="eager"
-              class="w-full h-full object-cover"
-            />
-          </div>
-        </div>
+  <!-- Hero -->
+  <section class="min-h-[90vh] flex items-center justify-center bg-museum-surface">
+    <div class="museum-container text-center max-w-3xl mx-auto">
+      <p class="museum-label mb-8 hero-fade" style="animation-delay: 100ms;">
+        {t('home.hero.subtitle')}
+      </p>
+      <h1 class="font-serif text-hero text-museum-text whitespace-pre-line hero-fade" style="animation-delay: 280ms;">
+        {t('home.hero.statement')}
+      </h1>
+      <div class="mt-12 hero-fade" style="animation-delay: 480ms;">
+        <a
+          href={getLocalizedPath(lang, '/works')}
+          class="inline-block font-sans text-small uppercase tracking-museum px-8 py-3 border border-museum-text text-museum-text bg-none hover:bg-museum-text hover:text-museum-white transition-colors duration-base ease-museum"
+        >
+          {t('home.featured.cta')}
+        </a>
       </div>
     </div>
   </section>
 
-  <!-- Featured Works — horizontal scroll -->
+  <!-- Featured Works -->
   <section class="museum-section">
     <div class="museum-container">
       <p class="museum-label mb-12" data-animate>{t('home.featured.label')}</p>
-    </div>
-    <div data-animate>
-      <HorizontalWorks
-        lang={lang}
-        works={featuredWorks.map((work) => ({
-          slug: lang === 'en' ? work.data.slug_en : work.data.slug,
-          title: lang === 'en' ? work.data.title_en : work.data.title_fr,
-          year: work.data.year,
-          medium: lang === 'en' ? work.data.medium_en : work.data.medium_fr,
-          image: {
-            src: work.data.images[0].src,
-            alt: lang === 'en' ? work.data.images[0].alt_en : work.data.images[0].alt_fr,
-          },
-        }))}
-      />
-    </div>
-    <div class="museum-container">
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-gutter-md lg:gap-gutter-lg">
+        {featuredWorks.map((work, i) => (
+          <div data-animate style={`transition-delay: ${i * 120}ms;`}>
+            <WorkCard
+              slug={lang === 'en' ? work.data.slug_en : work.data.slug}
+              title={lang === 'en' ? work.data.title_en : work.data.title_fr}
+              year={work.data.year}
+              medium={lang === 'en' ? work.data.medium_en : work.data.medium_fr}
+              image={{
+                src: work.data.images[0].src,
+                alt: lang === 'en' ? work.data.images[0].alt_en : work.data.images[0].alt_fr,
+              }}
+            />
+          </div>
+        ))}
+      </div>
       <div class="text-center mt-12" data-animate>
         <a
           href={getLocalizedPath(lang, '/works')}
@@ -246,58 +226,6 @@ const jsonLd = {
 </PageLayout>
 
 <style>
-  /* Hero grid: overlapping text + image layout */
-  .hero-grid {
-    display: grid;
-    grid-template-columns: 1fr;
-    gap: 2rem;
-    align-items: center;
-    min-height: 70vh;
-  }
-
-  @media (min-width: 768px) {
-    .hero-grid {
-      grid-template-columns: 1fr 1fr;
-      gap: 0;
-    }
-
-    .hero-text-col {
-      position: relative;
-      z-index: 2;
-      padding-right: 0;
-    }
-
-    .hero-image-col {
-      position: relative;
-      z-index: 1;
-      margin-left: -8%;
-    }
-  }
-
-  @media (min-width: 1024px) {
-    .hero-grid {
-      grid-template-columns: 55% 50%;
-    }
-
-    .hero-image-col {
-      margin-left: -10%;
-    }
-  }
-
-  .hero-image-wrapper {
-    aspect-ratio: 4 / 5;
-    overflow: hidden;
-    background-color: #E8E6E0;
-  }
-
-  /* Statement text overlapping image with blend mode */
-  @media (min-width: 768px) {
-    .hero-statement {
-      position: relative;
-      z-index: 3;
-    }
-  }
-
   /* Hero load animation */
   .hero-fade {
     opacity: 0;
@@ -348,10 +276,8 @@ const jsonLd = {
 
 <script>
   const prefersReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-  const isTouch = window.matchMedia('(hover: none)').matches;
 
   if (!prefersReduced) {
-    // Scroll reveal observer
     const observer = new IntersectionObserver(
       (entries) => {
         entries.forEach((entry) => {
@@ -367,49 +293,5 @@ const jsonLd = {
     document.querySelectorAll('[data-animate]').forEach((el) => {
       observer.observe(el);
     });
-
-    // Hero parallax on mouse move (desktop only)
-    if (!isTouch) {
-      const heroSection = document.querySelector<HTMLElement>('[data-hero-parallax]');
-      const parallaxLayers = document.querySelectorAll<HTMLElement>('[data-parallax-layer]');
-
-      if (heroSection && parallaxLayers.length > 0) {
-        let targetX = 0;
-        let targetY = 0;
-        let currentX = 0;
-        let currentY = 0;
-        const maxOffset = 15; // ±15px max movement
-        const lerpFactor = 0.08;
-
-        heroSection.addEventListener('mousemove', (e: MouseEvent) => {
-          const rect = heroSection.getBoundingClientRect();
-          // Normalized -1 to 1
-          const normalizedX = ((e.clientX - rect.left) / rect.width - 0.5) * 2;
-          const normalizedY = ((e.clientY - rect.top) / rect.height - 0.5) * 2;
-          targetX = normalizedX * maxOffset;
-          targetY = normalizedY * maxOffset;
-        });
-
-        heroSection.addEventListener('mouseleave', () => {
-          targetX = 0;
-          targetY = 0;
-        });
-
-        function animateParallax(): void {
-          currentX += (targetX - currentX) * lerpFactor;
-          currentY += (targetY - currentY) * lerpFactor;
-
-          parallaxLayers.forEach((layer) => {
-            const speed = parseFloat(layer.dataset.parallaxLayer || '0.04');
-            const moveX = currentX * (speed / 0.04); // Normalize speed relative to base
-            const moveY = currentY * (speed / 0.04);
-            layer.style.transform = `translate(${moveX}px, ${moveY}px)`;
-          });
-
-          requestAnimationFrame(animateParallax);
-        }
-        requestAnimationFrame(animateParallax);
-      }
-    }
   }
 </script>

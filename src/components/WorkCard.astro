@@ -18,15 +18,14 @@ const href = getLocalizedPath(lang, `/works/${slug}`);
 ---
 
 <a href={href} class="group block" data-work-card>
-  <div class="relative overflow-hidden aspect-[4/5] bg-[#E8E6E0] tilt-container" style="perspective: 600px;">
+  <div class="relative overflow-hidden aspect-[4/5] bg-[#E8E6E0]">
     <img
       src={image.src}
       alt={image.alt}
       width="400"
       height="500"
       loading="lazy"
-      class="w-full h-full object-cover transition-transform duration-base ease-museum group-hover:scale-[1.02] tilt-image"
-      style="transform-style: preserve-3d;"
+      class="w-full h-full object-cover transition-transform duration-base ease-museum group-hover:scale-[1.02]"
     />
   </div>
   <div class="mt-3">
@@ -38,37 +37,3 @@ const href = getLocalizedPath(lang, `/works/${slug}`);
     </p>
   </div>
 </a>
-
-<script>
-  // 3D tilt on image hover — max 5deg rotation
-  const prefersReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-  const isTouch = window.matchMedia('(hover: none)').matches;
-
-  if (!prefersReduced && !isTouch) {
-    document.querySelectorAll<HTMLElement>('.tilt-container').forEach((container) => {
-      const img = container.querySelector<HTMLElement>('.tilt-image');
-      if (!img) return;
-
-      container.addEventListener('mousemove', (e: MouseEvent) => {
-        const rect = container.getBoundingClientRect();
-        const x = (e.clientX - rect.left) / rect.width;
-        const y = (e.clientY - rect.top) / rect.height;
-
-        // Map 0..1 to -5..5 degrees
-        const rotateY = (x - 0.5) * 10; // -5 to +5
-        const rotateX = (0.5 - y) * 10; // -5 to +5
-
-        img.style.transform = `scale(1.02) rotateX(${rotateX}deg) rotateY(${rotateY}deg)`;
-      });
-
-      container.addEventListener('mouseleave', () => {
-        img.style.transition = 'transform 400ms cubic-bezier(0.25, 0.1, 0.25, 1)';
-        img.style.transform = 'scale(1) rotateX(0deg) rotateY(0deg)';
-        // Remove inline transition after reset completes
-        setTimeout(() => {
-          img.style.transition = '';
-        }, 400);
-      });
-    });
-  }
-</script>
