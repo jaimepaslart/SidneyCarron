@@ -1,0 +1,22 @@
+---
+slug: empreinte-dakar-ii
+slug_en: dakar-imprint-ii
+title_fr: "La trace d'une danse"
+title_en: "Trace of a Dance"
+year: 2024
+medium_fr: "Empreinte solaire, lumiere et sable"
+medium_en: "Solar imprint, light and sand"
+dimensions: "180 x 100 cm"
+series: empreintes-de-lumiere
+featured: true
+order: 4
+images:
+  - src: /images/works/empreinte-dakar-3.jpg
+    alt_fr: "Haute silhouette bleue saisie en mouvement, la trace d'une danse inscrite dans la lumiere"
+    alt_en: "Tall blue silhouette captured in motion, the trace of a dance inscribed in light"
+  - src: /images/works/empreinte-dakar-4.jpg
+    alt_fr: "Figure horizontale allongee, corps au repos apres la danse, empreinte solaire douce"
+    alt_en: "Horizontal reclining figure, body at rest after the dance, soft solar imprint"
+description_fr: "Saisie en plein mouvement, cette figure porte la trace d'une danse imprimee par le soleil de Dakar. Le corps en mouvement a laisse sur le papier une trainee de gestes, comme une choregraphie figee dans le bleu profond. Le sable et le vent ont ajoute leur propre ecriture, faisant de cette oeuvre un dialogue entre la danse humaine et la danse des elements."
+description_en: "Captured in full motion, this figure bears the trace of a dance printed by the Dakar sun. The moving body left upon the paper a trail of gestures, like a choreography frozen in deep blue. Sand and wind added their own writing, making this work a dialogue between the human dance and the dance of the elements."
+---

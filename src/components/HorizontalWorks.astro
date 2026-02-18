@@ -1,0 +1,211 @@
+---
+import { getLocalizedPath, type Lang } from '@/i18n';
+
+interface WorkItem {
+  slug: string;
+  title: string;
+  year: number;
+  medium: string;
+  image: {
+    src: string;
+    alt: string;
+  };
+}
+
+interface Props {
+  works: WorkItem[];
+  lang: Lang;
+}
+
+const { works, lang } = Astro.props;
+---
+
+<div class="horizontal-works" data-horizontal-scroll>
+  <!-- Scrollable track -->
+  <div class="horizontal-works__track" data-horizontal-track>
+    {works.map((work, i) => (
+      <a
+        href={getLocalizedPath(lang, `/works/${work.slug}`)}
+        class="horizontal-works__card group"
+        data-work-card
+        draggable="false"
+      >
+        <div class="relative overflow-hidden aspect-[4/5] bg-[#E8E6E0]">
+          <img
+            src={work.image.src}
+            alt={work.image.alt}
+            width="600"
+            height="750"
+            loading="lazy"
+            draggable="false"
+            class="w-full h-full object-cover transition-transform duration-base ease-museum group-hover:scale-[1.02]"
+          />
+        </div>
+        <div class="mt-3">
+          <p class="font-serif text-body text-museum-text">
+            {work.title}
+          </p>
+          <p class="museum-mono text-small text-museum-label mt-1">
+            {work.year} — {work.medium}
+          </p>
+        </div>
+      </a>
+    ))}
+  </div>
+
+  <!-- Counter indicator -->
+  <div class="horizontal-works__indicator museum-mono text-small text-museum-label mt-6">
+    <span data-horizontal-counter>1</span> / {works.length}
+  </div>
+</div>
+
+<style>
+  .horizontal-works {
+    position: relative;
+    width: 100%;
+    overflow: hidden;
+  }
+
+  .horizontal-works__track {
+    display: flex;
+    gap: 1.5rem;
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+    padding: 0 1.25rem;
+    cursor: grab;
+  }
+
+  .horizontal-works__track::-webkit-scrollbar {
+    display: none;
+  }
+
+  .horizontal-works__track.is-dragging {
+    cursor: grabbing;
+    scroll-snap-type: none;
+  }
+
+  .horizontal-works__card {
+    flex-shrink: 0;
+    width: 85vw;
+    scroll-snap-align: center;
+    /* Reset link underline animation for cards */
+    background-image: none !important;
+  }
+
+  .horizontal-works__card:hover {
+    background-image: none !important;
+  }
+
+  .horizontal-works__indicator {
+    text-align: center;
+  }
+
+  @media (min-width: 768px) {
+    .horizontal-works__track {
+      padding: 0 2.5rem;
+      gap: 2rem;
+    }
+
+    .horizontal-works__card {
+      width: 40vw;
+    }
+  }
+
+  @media (min-width: 1024px) {
+    .horizontal-works__track {
+      padding: 0 max(2.5rem, calc((100vw - 1200px) / 2));
+      gap: 2.5rem;
+    }
+
+    .horizontal-works__card {
+      width: 38vw;
+      max-width: 520px;
+    }
+  }
+</style>
+
+<script>
+  // Horizontal drag-to-scroll + wheel capture + counter
+  const containers = document.querySelectorAll<HTMLElement>('[data-horizontal-scroll]');
+  const prefersReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  containers.forEach((container) => {
+    const track = container.querySelector<HTMLElement>('[data-horizontal-track]');
+    const counter = container.querySelector<HTMLElement>('[data-horizontal-counter]');
+    if (!track) return;
+
+    const cards = track.querySelectorAll<HTMLElement>('.horizontal-works__card');
+    const total = cards.length;
+
+    // --- Counter update on scroll ---
+    function updateCounter(): void {
+      if (!counter || !track) return;
+      const scrollLeft = track.scrollLeft;
+      const scrollWidth = track.scrollWidth - track.clientWidth;
+      if (scrollWidth <= 0) { counter.textContent = '1'; return; }
+      const ratio = scrollLeft / scrollWidth;
+      const index = Math.round(ratio * (total - 1)) + 1;
+      counter.textContent = String(Math.min(index, total));
+    }
+
+    track.addEventListener('scroll', updateCounter, { passive: true });
+
+    // --- Drag-to-scroll ---
+    let isDragging = false;
+    let startX = 0;
+    let scrollLeft = 0;
+    let hasDragged = false;
+
+    track.addEventListener('mousedown', (e: MouseEvent) => {
+      isDragging = true;
+      hasDragged = false;
+      startX = e.pageX - track.offsetLeft;
+      scrollLeft = track.scrollLeft;
+      track.classList.add('is-dragging');
+    });
+
+    track.addEventListener('mousemove', (e: MouseEvent) => {
+      if (!isDragging) return;
+      e.preventDefault();
+      const x = e.pageX - track.offsetLeft;
+      const walk = (x - startX) * 1.5;
+      if (Math.abs(walk) > 5) hasDragged = true;
+      track.scrollLeft = scrollLeft - walk;
+    });
+
+    const stopDrag = (): void => {
+      if (!isDragging) return;
+      isDragging = false;
+      track.classList.remove('is-dragging');
+      // Re-enable snap after drag
+      track.style.scrollSnapType = 'x mandatory';
+    };
+
+    track.addEventListener('mouseup', stopDrag);
+    track.addEventListener('mouseleave', stopDrag);
+
+    // Prevent link click during drag
+    track.addEventListener('click', (e: MouseEvent) => {
+      if (hasDragged) {
+        e.preventDefault();
+        e.stopPropagation();
+      }
+    }, true);
+
+    // --- Desktop: wheel → horizontal scroll ---
+    if (!prefersReduced) {
+      track.addEventListener('wheel', (e: WheelEvent) => {
+        if (Math.abs(e.deltaY) < Math.abs(e.deltaX)) return;
+        const maxScroll = track.scrollWidth - track.clientWidth;
+        if (maxScroll <= 0) return;
+        // Don't capture wheel if at edges and scrolling further
+        if (track.scrollLeft <= 0 && e.deltaY < 0) return;
+        if (track.scrollLeft >= maxScroll - 1 && e.deltaY > 0) return;
+        e.preventDefault();
+        track.scrollLeft += e.deltaY;
+      }, { passive: false });
+    }
+  });
+</script>

@@ -1,0 +1,22 @@
+---
+slug: lumiere-du-bresil-2023
+slug_en: light-of-brazil-2023
+title_fr: "À la lumière du Brésil"
+title_en: "In the Light of Brazil"
+venue_fr: Espace Sylvia Rielle
+venue_en: Espace Sylvia Rielle
+city: Paris
+start_date: "2023-03-15"
+end_date: "2023-04-30"
+type: solo
+status: past
+image:
+  src: /images/exhibitions/lumiere-bresil-2023.jpg
+  alt_fr: "Empreinte solaire de la série Existence organique — exposition À la lumière du Brésil"
+  alt_en: "Solar imprint from the Organic Existence series — In the Light of Brazil exhibition"
+description_fr: "Exposition individuelle présentant les œuvres réalisées au Brésil. Les empreintes solaires, créées sur les plages brésiliennes, révèlent la puissance de la lumière tropicale sur le corps humain."
+description_en: "Solo exhibition presenting works created in Brazil. The solar imprints, made on Brazilian beaches, reveal the power of tropical light on the human body."
+works_slugs:
+  - existence-organique-i
+  - existence-organique-ii
+---

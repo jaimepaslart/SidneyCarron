@@ -1,0 +1,22 @@
+---
+slug: traces-insulaires-i
+slug_en: island-traces-i
+title_fr: "Terre de feu et de cuivre"
+title_en: "Land of Fire and Copper"
+year: 2025
+medium_fr: "Empreinte solaire sur papier, elements naturels"
+medium_en: "Solar imprint on paper, natural elements"
+dimensions: "150 x 90 cm"
+series: memoires-du-rivage
+featured: false
+order: 8
+images:
+  - src: /images/works/traces-reunion-1.jpg
+    alt_fr: "Silhouette aux teintes cuivrees et terreuses, empreinte volcanique de la Reunion"
+    alt_en: "Silhouette with copper and earthen tones, volcanic imprint from Reunion"
+  - src: /images/works/traces-reunion-2.jpg
+    alt_fr: "Groupe de petites figures, empreintes multiples evoquant une communaute de corps"
+    alt_en: "Group of small figures, multiple imprints evoking a community of bodies"
+description_fr: "La terre volcanique de La Reunion a offert ses pigments de cuivre et d'ocre a ces empreintes, rompant avec le bleu pour reveler des tonalites chaudes et telluriques. Le sol charge de fer et de basalte a imprime sa propre memoire dans le papier, fusionnant avec la trace du corps humain. Ces figures portent en elles la chaleur souterraine de l'ile, comme si le feu interieur de la terre remontait a travers la peau."
+description_en: "The volcanic earth of Reunion offered its copper and ochre pigments to these imprints, breaking from blue to reveal warm, telluric tonalities. The iron- and basalt-laden soil printed its own memory into the paper, merging with the trace of the human body. These figures carry within them the underground warmth of the island, as if the inner fire of the earth rose through the skin."
+---

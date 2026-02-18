@@ -1,0 +1,22 @@
+---
+slug: traces-insulaires-ii
+slug_en: island-traces-ii
+title_fr: "Herbier de lumiere"
+title_en: "Herbarium of Light"
+year: 2025
+medium_fr: "Empreinte solaire sur papier, elements naturels"
+medium_en: "Solar imprint on paper, natural elements"
+dimensions: "60 x 80 cm"
+series: memoires-du-rivage
+featured: false
+order: 9
+images:
+  - src: /images/works/traces-reunion-3.jpg
+    alt_fr: "Formes de papillons et de plantes tropicales, petit format delicat aux teintes bleues"
+    alt_en: "Butterfly and tropical plant shapes, delicate small format in blue tones"
+  - src: /images/works/traces-reunion-4.jpg
+    alt_fr: "Empreintes de corps melees a des formes vegetales, dialogue entre chair et feuillage"
+    alt_en: "Body imprints blended with plant forms, dialogue between flesh and foliage"
+description_fr: "Les fougeres, les fleurs et les feuilles de La Reunion ont pris la place du corps pour composer cet herbier de lumiere, ou la flore tropicale s'imprime avec la meme grace qu'une silhouette humaine. Le soleil a traverse les nervures des feuilles et les ailes des papillons, dessinant un monde vegetal d'une precision presque scientifique. Ces empreintes botaniques rappellent que le corps et la plante partagent la meme vulnerabilite face a la lumiere."
+description_en: "The ferns, flowers, and leaves of Reunion took the place of the body to compose this herbarium of light, where tropical flora imprints itself with the same grace as a human silhouette. The sun passed through leaf veins and butterfly wings, drawing a plant world with almost scientific precision. These botanical imprints remind us that body and plant share the same vulnerability before light."
+---

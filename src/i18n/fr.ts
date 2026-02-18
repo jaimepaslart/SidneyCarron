@@ -13,10 +13,10 @@ export const fr = {
   'lang.label': 'Changer de langue',
 
   // Home
-  'home.title': 'Sidney Carron — Sculpteur',
-  'home.description': 'Site officiel de Sidney Carron, artiste sculpteur contemporain. Découvrez ses œuvres, séries, expositions et actualités.',
-  'home.hero.statement': 'Explorer la matière,\nrévéler la forme.',
-  'home.hero.subtitle': 'Sculpteur contemporain',
+  'home.title': 'Sidney Carron — Artiste photographe',
+  'home.description': 'Site officiel de Sidney Carron, artiste photographe. Empreintes solaires, corps et lumière. Découvrez ses œuvres, séries, expositions et actualités.',
+  'home.hero.statement': "J'écris avec la lumière",
+  'home.hero.subtitle': 'Artiste photographe',
   'home.featured.title': 'Œuvres sélectionnées',
   'home.featured.label': 'Sélection',
   'home.featured.cta': 'Voir toutes les œuvres',
@@ -32,7 +32,7 @@ export const fr = {
 
   // Works
   'works.title': 'Œuvres',
-  'works.description': 'Découvrez l\'ensemble des œuvres de Sidney Carron : sculptures, dessins, installations.',
+  'works.description': 'Découvrez l\'ensemble des œuvres de Sidney Carron : empreintes solaires, photographies, installations lumineuses.',
   'works.filter.all': 'Tout',
   'works.filter.clear': 'Réinitialiser',
   'works.empty': 'Aucune œuvre trouvée pour ces critères.',
@@ -42,7 +42,7 @@ export const fr = {
   'works.next': 'Œuvre suivante',
   'works.related': 'De la même série',
   'works.year': 'Année',
-  'works.medium': 'Technique',
+  'works.medium': 'Procédé',
   'works.dimensions': 'Dimensions',
   'works.series': 'Série',
 
@@ -75,7 +75,7 @@ export const fr = {
 
   // About
   'about.title': 'À propos',
-  'about.description': 'Biographie et démarche artistique de Sidney Carron.',
+  'about.description': 'Biographie et démarche artistique de Sidney Carron — photographe, empreintes solaires.',
   'about.bio_title': 'Biographie',
   'about.statement_title': 'Démarche artistique',
   'about.cv_title': 'Parcours',
@@ -83,7 +83,7 @@ export const fr = {
 
   // Contact
   'contact.title': 'Contact',
-  'contact.description': 'Contactez Sidney Carron pour toute demande concernant ses œuvres, expositions ou collaborations.',
+  'contact.description': 'Contactez Sidney Carron pour toute demande concernant ses empreintes solaires, expositions ou collaborations.',
   'contact.intro': 'Pour toute demande concernant mes œuvres, une exposition ou une collaboration, n\'hésitez pas à me contacter.',
   'contact.name': 'Nom',
   'contact.name_placeholder': 'Votre nom',
@@ -104,7 +104,7 @@ export const fr = {
   'contact.privacy': 'Vos données sont traitées uniquement pour répondre à votre demande.',
 
   // Footer
-  'footer.artist_title': 'Artiste sculpteur',
+  'footer.artist_title': 'Artiste photographe',
   'footer.navigation': 'Navigation',
   'footer.contact_title': 'Contact',
   'footer.social': 'Réseaux',

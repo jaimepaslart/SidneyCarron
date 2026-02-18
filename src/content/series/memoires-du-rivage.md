@@ -1,0 +1,15 @@
+---
+slug: memoires-du-rivage
+slug_en: shore-memories
+title_fr: Mémoires du rivage
+title_en: Shore Memories
+cover:
+  src: /images/series/memoires-du-rivage-cover.jpg
+  alt_fr: "Empreinte solaire avec tonalités cuivrées — série Mémoires du rivage"
+  alt_en: "Solar imprint with copper tones — Shore Memories series"
+description_fr: "Du Sri Lanka à l'île de la Réunion en passant par le Costa Rica, cette série rassemble les empreintes réalisées sur les rivages les plus reculés. La terre volcanique, la végétation tropicale et les éléments marins enrichissent les œuvres de tonalités uniques."
+description_en: "From Sri Lanka to Réunion Island via Costa Rica, this series brings together imprints made on the most remote shores. Volcanic earth, tropical vegetation and marine elements enrich the works with unique tonalities."
+curatorial_fr: "Mémoires du rivage est le carnet de voyage photosensible de Sidney Carron. Chaque rivage apporte sa signature : les tons cuivrés de la terre volcanique à la Réunion, les empreintes végétales au Costa Rica, la douceur des plages de Sri Lanka. L'artiste intègre les éléments locaux — fougères, sable noir, coraux — directement dans le processus de création, faisant de chaque œuvre un fragment de géographie sensible."
+curatorial_en: "Shore Memories is Sidney Carron's photosensitive travel journal. Each shore brings its signature: the copper tones of volcanic earth in Réunion, the botanical imprints in Costa Rica, the gentleness of Sri Lankan beaches. The artist integrates local elements — ferns, black sand, corals — directly into the creative process, making each work a fragment of sensitive geography."
+order: 3
+---

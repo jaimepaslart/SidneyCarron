@@ -15,10 +15,10 @@ export const en: Record<TranslationKey, string> = {
   'lang.label': 'Switch language',
 
   // Home
-  'home.title': 'Sidney Carron — Sculptor',
-  'home.description': 'Official website of Sidney Carron, contemporary sculptor. Discover her works, series, exhibitions and news.',
-  'home.hero.statement': 'Exploring matter,\nrevealing form.',
-  'home.hero.subtitle': 'Contemporary Sculptor',
+  'home.title': 'Sidney Carron — Visual Artist & Photographer',
+  'home.description': 'Official website of Sidney Carron, visual artist and photographer. Solar imprints, bodies and light. Discover her works, series, exhibitions and news.',
+  'home.hero.statement': 'I write with light',
+  'home.hero.subtitle': 'Visual artist & photographer',
   'home.featured.title': 'Selected Works',
   'home.featured.label': 'Selection',
   'home.featured.cta': 'View all works',
@@ -34,7 +34,7 @@ export const en: Record<TranslationKey, string> = {
 
   // Works
   'works.title': 'Works',
-  'works.description': 'Discover the complete body of work by Sidney Carron: sculptures, drawings, installations.',
+  'works.description': 'Discover the complete body of work by Sidney Carron: solar imprints, photographs, light installations.',
   'works.filter.all': 'All',
   'works.filter.clear': 'Clear filters',
   'works.empty': 'No works found for these criteria.',
@@ -44,7 +44,7 @@ export const en: Record<TranslationKey, string> = {
   'works.next': 'Next work',
   'works.related': 'From the same series',
   'works.year': 'Year',
-  'works.medium': 'Medium',
+  'works.medium': 'Process',
   'works.dimensions': 'Dimensions',
   'works.series': 'Series',
 
@@ -77,7 +77,7 @@ export const en: Record<TranslationKey, string> = {
 
   // About
   'about.title': 'About',
-  'about.description': 'Biography and artistic statement of Sidney Carron.',
+  'about.description': 'Biography and artistic statement of Sidney Carron — photographer, solar imprints.',
   'about.bio_title': 'Biography',
   'about.statement_title': 'Artistic Statement',
   'about.cv_title': 'Background',
@@ -85,7 +85,7 @@ export const en: Record<TranslationKey, string> = {
 
   // Contact
   'contact.title': 'Contact',
-  'contact.description': 'Contact Sidney Carron for inquiries about works, exhibitions or collaborations.',
+  'contact.description': 'Contact Sidney Carron for inquiries about solar imprints, exhibitions or collaborations.',
   'contact.intro': 'For any inquiry regarding my works, an exhibition or a collaboration, please feel free to reach out.',
   'contact.name': 'Name',
   'contact.name_placeholder': 'Your name',
@@ -106,7 +106,7 @@ export const en: Record<TranslationKey, string> = {
   'contact.privacy': 'Your data is only used to respond to your inquiry.',
 
   // Footer
-  'footer.artist_title': 'Sculptor',
+  'footer.artist_title': 'Visual artist & photographer',
   'footer.navigation': 'Navigation',
   'footer.contact_title': 'Contact',
   'footer.social': 'Social',
