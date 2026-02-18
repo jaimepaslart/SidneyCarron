@@ -3,6 +3,7 @@ import BaseLayout from './BaseLayout.astro';
 import Header from '@/components/Header.astro';
 import Footer from '@/components/Footer.astro';
 import CustomCursor from '@/components/CustomCursor.astro';
+import { getLangFromUrl, getLocalizedPath } from '@/i18n';
 
 interface Props {
   title: string;
@@ -12,13 +13,23 @@ interface Props {
   canonicalPath?: string;
   enCanonicalPath?: string;
   jsonLd?: Record<string, unknown>;
+  noindex?: boolean;
 }
 
 const props = Astro.props;
+const lang = getLangFromUrl(Astro.url);
+
+// Compute alternate href for LanguageToggle on detail pages with translated slugs
+let alternateHref: string | undefined;
+if (props.canonicalPath && props.enCanonicalPath) {
+  alternateHref = lang === 'fr'
+    ? getLocalizedPath('en', props.enCanonicalPath)
+    : props.canonicalPath;
+}
 ---
 
 <BaseLayout {...props}>
-  <Header />
+  <Header alternateHref={alternateHref} />
   <main id="main-content" class="flex-1">
     <slot />
   </main>

@@ -8,6 +8,7 @@ medium_fr: "Empreinte solaire sur papier photosensible"
 medium_en: "Solar imprint on photosensitive paper"
 dimensions: "200 x 100 cm"
 series: existence-organique
+location: bresil
 featured: true
 order: 1
 images:

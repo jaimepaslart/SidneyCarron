@@ -8,6 +8,7 @@ medium_fr: "Empreinte solaire sur papier, elements naturels"
 medium_en: "Solar imprint on paper, natural elements"
 dimensions: "220 x 140 cm"
 series: memoires-du-rivage
+location: costa-rica
 featured: false
 order: 10
 images:

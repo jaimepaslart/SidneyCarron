@@ -19,11 +19,25 @@ function getWorksCount(seriesSlug: string): number {
   return allWorks.filter(w => w.data.series === seriesSlug).length;
 }
 
+const siteUrl = 'https://sidneycarron.com';
+
 const jsonLd = {
   '@context': 'https://schema.org',
-  '@type': 'CollectionPage',
-  name: t('series.title'),
-  url: `https://sidneycarron.com${getLocalizedPath(lang, '/series')}`,
+  '@graph': [
+    {
+      '@type': 'CollectionPage',
+      name: t('series.title'),
+      description: t('series.description'),
+      url: `${siteUrl}${getLocalizedPath(lang, '/series')}`,
+    },
+    {
+      '@type': 'BreadcrumbList',
+      itemListElement: [
+        { '@type': 'ListItem', position: 1, name: 'Sidney Carron', item: siteUrl },
+        { '@type': 'ListItem', position: 2, name: lang === 'fr' ? 'Séries' : 'Series' },
+      ],
+    },
+  ],
 };
 ---
 
@@ -69,7 +83,7 @@ const jsonLd = {
                 {seriesDesc}
               </p>
               <p class="museum-mono text-small text-museum-label mt-2">
-                {t('series.works_count', { count })}
+                {count} {count <= 1 ? t('series.works_count_singular') : t('series.works_count_plural')}
               </p>
             </a>
           );
@@ -78,24 +92,6 @@ const jsonLd = {
     </div>
   </section>
 </PageLayout>
-
-<style>
-  .animate-on-scroll {
-    opacity: 0;
-    transform: translateY(20px);
-  }
-  .animate-on-scroll.is-visible {
-    opacity: 1;
-    transform: translateY(0);
-    transition: opacity 500ms ease-out, transform 500ms ease-out;
-  }
-  @media (prefers-reduced-motion: reduce) {
-    .animate-on-scroll {
-      opacity: 1;
-      transform: none;
-    }
-  }
-</style>
 
 <script>
   const items = document.querySelectorAll('.animate-on-scroll');
@@ -106,7 +102,7 @@ const jsonLd = {
         visible.forEach((entry, i) => {
           setTimeout(() => {
             entry.target.classList.add('is-visible');
-          }, i * 80);
+          }, i * 100);
           observer.unobserve(entry.target);
         });
       },

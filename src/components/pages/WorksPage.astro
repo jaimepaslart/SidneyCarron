@@ -15,36 +15,40 @@ const t = getTranslation(lang);
 const allWorks = await getCollection('works');
 const works = allWorks.sort((a, b) => a.data.order - b.data.order);
 
-const allSeries = await getCollection('series');
-const seriesOptions = allSeries
-  .sort((a, b) => a.data.order - b.data.order)
-  .map(s => ({
-    value: s.data.slug,
-    label: lang === 'en' ? s.data.title_en : s.data.title_fr,
-  }));
-
-const mediums = [...new Set(works.map(w => lang === 'en' ? w.data.medium_en : w.data.medium_fr))];
-const mediumOptions = mediums.map(m => ({ value: m, label: m }));
-
-const years = [...new Set(works.map(w => w.data.year))].sort((a, b) => b - a);
-const yearOptions = years.map(y => ({ value: String(y), label: String(y) }));
+const locations = [...new Set(works.map(w => w.data.location))];
+const locationOptions = locations.map(loc => ({
+  value: loc,
+  label: t(`works.location.${loc}` as any),
+}));
 
 const filters = [
-  { name: 'series', label: t('works.series'), options: seriesOptions },
-  { name: 'medium', label: t('works.medium'), options: mediumOptions },
-  { name: 'year', label: t('works.year'), options: yearOptions },
+  { name: 'location', label: t('works.location'), options: locationOptions },
 ];
+
+const siteUrl = 'https://sidneycarron.com';
 
 const jsonLd = {
   '@context': 'https://schema.org',
-  '@type': 'CollectionPage',
-  name: t('works.title'),
-  url: `https://sidneycarron.com${getLocalizedPath(lang, '/works')}`,
-  hasPart: works.map(w => ({
-    '@type': 'VisualArtwork',
-    name: lang === 'en' ? w.data.title_en : w.data.title_fr,
-    url: `https://sidneycarron.com${getLocalizedPath(lang, `/works/${lang === 'en' ? w.data.slug_en : w.data.slug}`)}`,
-  })),
+  '@graph': [
+    {
+      '@type': 'CollectionPage',
+      name: t('works.title'),
+      description: t('works.description'),
+      url: `${siteUrl}${getLocalizedPath(lang, '/works')}`,
+      hasPart: works.map(w => ({
+        '@type': 'VisualArtwork',
+        name: lang === 'en' ? w.data.title_en : w.data.title_fr,
+        url: `${siteUrl}${getLocalizedPath(lang, `/works/${lang === 'en' ? w.data.slug_en : w.data.slug}`)}`,
+      })),
+    },
+    {
+      '@type': 'BreadcrumbList',
+      itemListElement: [
+        { '@type': 'ListItem', position: 1, name: 'Sidney Carron', item: siteUrl },
+        { '@type': 'ListItem', position: 2, name: lang === 'fr' ? 'Œuvres' : 'Works' },
+      ],
+    },
+  ],
 };
 ---
 
@@ -69,9 +73,7 @@ const jsonLd = {
           <div
             class="reveal-card"
             data-work-card
-            data-series={work.data.series}
-            data-medium={lang === 'en' ? work.data.medium_en : work.data.medium_fr}
-            data-year={String(work.data.year)}
+            data-location={work.data.location}
           >
             <WorkCard
               slug={lang === 'en' ? work.data.slug_en : work.data.slug}

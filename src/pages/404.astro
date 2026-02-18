@@ -1,19 +1,17 @@
 ---
-import BaseLayout from '@/layouts/BaseLayout.astro';
-import Header from '@/components/Header.astro';
-import Footer from '@/components/Footer.astro';
+import PageLayout from '@/layouts/PageLayout.astro';
 import { getLangFromUrl, getTranslation, getLocalizedPath } from '@/i18n';
 
 const lang = getLangFromUrl(Astro.url);
 const t = getTranslation(lang);
 ---
 
-<BaseLayout
+<PageLayout
   title={`${t('404.title')} — Sidney Carron`}
   description={t('404.message')}
+  noindex={true}
 >
-  <Header />
-  <main id="main-content" class="flex-1 flex items-center justify-center">
+  <div class="flex-1 flex items-center justify-center">
     <section class="museum-section">
       <div class="museum-container text-center">
         <p class="font-serif text-hero text-museum-border mb-4">404</p>
@@ -29,6 +27,5 @@ const t = getTranslation(lang);
         </a>
       </div>
     </section>
-  </main>
-  <Footer />
-</BaseLayout>
+  </div>
+</PageLayout>

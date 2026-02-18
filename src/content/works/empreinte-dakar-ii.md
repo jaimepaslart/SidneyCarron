@@ -8,6 +8,7 @@ medium_fr: "Empreinte solaire, lumiere et sable"
 medium_en: "Solar imprint, light and sand"
 dimensions: "180 x 100 cm"
 series: empreintes-de-lumiere
+location: dakar
 featured: true
 order: 4
 images:

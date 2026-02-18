@@ -13,6 +13,7 @@ const works = defineCollection({
     medium_en: z.string(),
     dimensions: z.string(),
     series: z.string(),
+    location: z.string(),
     featured: z.boolean().default(false),
     images: z.array(
       z.object({

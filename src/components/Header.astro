@@ -1,7 +1,12 @@
 ---
-import { getLangFromUrl, getTranslation, getLocalizedPath, getAlternateLang } from '@/i18n';
+import { getLangFromUrl, getTranslation, getLocalizedPath } from '@/i18n';
 import LanguageToggle from './LanguageToggle.astro';
 
+interface Props {
+  alternateHref?: string;
+}
+
+const { alternateHref } = Astro.props;
 const lang = getLangFromUrl(Astro.url);
 const t = getTranslation(lang);
 
@@ -30,7 +35,7 @@ const homePath = getLocalizedPath(lang, '/');
       Sidney Carron
     </a>
 
-    <nav class="hidden md:flex items-center gap-5 lg:gap-7" aria-label="Navigation principale">
+    <nav class="hidden md:flex items-center gap-5 lg:gap-7" aria-label={t('a11y.main_nav')}>
       {navItems.map(({ label, href }) => {
         const isActive = currentPath === href || (href !== homePath && currentPath.startsWith(href));
         const isContact = href.includes('/contact');
@@ -59,7 +64,7 @@ const homePath = getLocalizedPath(lang, '/');
           </a>
         );
       })}
-      <LanguageToggle />
+      <LanguageToggle alternateHref={alternateHref} />
     </nav>
 
     <!-- Hamburger / X toggle -->
@@ -69,6 +74,8 @@ const homePath = getLocalizedPath(lang, '/');
       aria-label={t('a11y.menu_open')}
       aria-expanded="false"
       aria-controls="mobile-menu"
+      data-label-open={t('a11y.menu_open')}
+      data-label-close={t('a11y.menu_close')}
     >
       <span class="hamburger-line hamburger-line--top" id="menu-line-1"></span>
       <span class="hamburger-line hamburger-line--bottom" id="menu-line-2"></span>
@@ -100,7 +107,7 @@ const homePath = getLocalizedPath(lang, '/');
     </nav>
 
     <div class="mobile-nav-link" style={`--stagger: ${navItems.length}`}>
-      <LanguageToggle />
+      <LanguageToggle alternateHref={alternateHref} />
     </div>
   </div>
 </header>
@@ -275,7 +282,7 @@ const homePath = getLocalizedPath(lang, '/');
     mobileMenu.classList.add('is-open');
     menuToggle.classList.add('menu-open');
     menuToggle.setAttribute('aria-expanded', 'true');
-    menuToggle.setAttribute('aria-label', 'Fermer le menu');
+    menuToggle.setAttribute('aria-label', menuToggle.dataset.labelClose || '');
     mobileMenu.setAttribute('aria-hidden', 'false');
     document.body.style.overflow = 'hidden';
     // Remove header scroll style during menu
@@ -288,7 +295,7 @@ const homePath = getLocalizedPath(lang, '/');
     mobileMenu.classList.remove('is-open');
     menuToggle.classList.remove('menu-open');
     menuToggle.setAttribute('aria-expanded', 'false');
-    menuToggle.setAttribute('aria-label', 'Ouvrir le menu');
+    menuToggle.setAttribute('aria-label', menuToggle.dataset.labelOpen || '');
     mobileMenu.setAttribute('aria-hidden', 'true');
     document.body.style.overflow = '';
     handleScroll();

@@ -117,7 +117,7 @@ const sortedYears = Object.keys(pastByYear).map(Number).sort((a, b) => b - a);
               >
                 <div class="flex items-baseline gap-3">
                   <span class="museum-label shrink-0">
-                    {t('exhibitions.current_badge') === 'En cours' ? 'PASSÉ' : 'PAST'}
+                    {t('exhibitions.past_badge').toUpperCase()}
                   </span>
                   <span class="font-serif text-body text-museum-text group-hover:text-museum-accent transition-colors duration-base">
                     {ex.title}
@@ -141,24 +141,6 @@ const sortedYears = Object.keys(pastByYear).map(Number).sort((a, b) => b - a);
   </section>
 )}
 
-<style>
-  .animate-on-scroll {
-    opacity: 0;
-    transform: translateY(20px);
-  }
-  .animate-on-scroll.is-visible {
-    opacity: 1;
-    transform: translateY(0);
-    transition: opacity 500ms ease-out, transform 500ms ease-out;
-  }
-  @media (prefers-reduced-motion: reduce) {
-    .animate-on-scroll {
-      opacity: 1;
-      transform: none;
-    }
-  }
-</style>
-
 <script>
   const items = document.querySelectorAll('.animate-on-scroll');
   if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
@@ -168,7 +150,7 @@ const sortedYears = Object.keys(pastByYear).map(Number).sort((a, b) => b - a);
         visible.forEach((entry, i) => {
           setTimeout(() => {
             entry.target.classList.add('is-visible');
-          }, i * 80);
+          }, i * 100);
           observer.unobserve(entry.target);
         });
       },

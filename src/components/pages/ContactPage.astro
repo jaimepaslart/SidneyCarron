@@ -9,11 +9,25 @@ interface Props {
 const { lang } = Astro.props;
 const t = getTranslation(lang);
 
+const siteUrl = 'https://sidneycarron.com';
+
 const jsonLd = {
   '@context': 'https://schema.org',
-  '@type': 'ContactPage',
-  name: t('contact.title'),
-  url: `https://sidneycarron.com/${lang === 'en' ? 'en/' : ''}contact`,
+  '@graph': [
+    {
+      '@type': 'ContactPage',
+      name: t('contact.title'),
+      description: t('contact.description'),
+      url: `${siteUrl}/${lang === 'en' ? 'en/' : ''}contact`,
+    },
+    {
+      '@type': 'BreadcrumbList',
+      itemListElement: [
+        { '@type': 'ListItem', position: 1, name: 'Sidney Carron', item: siteUrl },
+        { '@type': 'ListItem', position: 2, name: t('contact.title') },
+      ],
+    },
+  ],
 };
 ---
 
@@ -145,6 +159,7 @@ const jsonLd = {
             <button
               type="submit"
               id="submit-btn"
+              data-sending={t('contact.sending')}
               class="font-sans text-small uppercase tracking-museum px-8 py-3 border border-museum-text text-museum-text bg-none hover:bg-museum-text hover:text-museum-white transition-colors duration-base ease-museum rounded-full disabled:opacity-50 disabled:cursor-not-allowed"
             >
               {t('contact.submit')}
@@ -197,24 +212,6 @@ const jsonLd = {
   </section>
 </PageLayout>
 
-<style>
-  .animate-on-scroll {
-    opacity: 0;
-    transform: translateY(20px);
-  }
-  .animate-on-scroll.is-visible {
-    opacity: 1;
-    transform: translateY(0);
-    transition: opacity 500ms ease-out, transform 500ms ease-out;
-  }
-  @media (prefers-reduced-motion: reduce) {
-    .animate-on-scroll {
-      opacity: 1;
-      transform: none;
-    }
-  }
-</style>
-
 <script>
   // Show success message if URL has ?success=true
   const urlParams = new URLSearchParams(window.location.search);
@@ -245,7 +242,7 @@ const jsonLd = {
         visible.forEach((entry, i) => {
           setTimeout(() => {
             entry.target.classList.add('is-visible');
-          }, i * 80);
+          }, i * 100);
           observer.unobserve(entry.target);
         });
       },

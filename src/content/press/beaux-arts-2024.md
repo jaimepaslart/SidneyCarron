@@ -1,9 +1,9 @@
 ---
-title_fr: "10 sculpteurs à suivre en 2024"
-title_en: "10 sculptors to watch in 2024"
+title_fr: "Big Bang Blue : quand Sidney Carron embrase le Théâtre Antoine"
+title_en: "Big Bang Blue: when Sidney Carron sets the Théâtre Antoine ablaze"
 publication: Beaux Arts Magazine
-date: "2024-01-15"
-excerpt_fr: "Notre sélection annuelle des sculpteurs émergents qui feront parler d'eux. Sidney Carron y figure pour sa capacité à renouveler la sculpture animalière."
-excerpt_en: "Our annual selection of emerging sculptors who will make a name for themselves. Sidney Carron is featured for her ability to renew animal sculpture."
-url: "https://example.com/beaux-arts-sculpteurs"
+date: "2024-03-08"
+excerpt_fr: "Avec « Big Bang Blue », show-performance présenté au Théâtre Antoine, Sidney Carron fait exploser les codes de la photographie. Ses empreintes solaires, réalisées en direct au bord de l'eau, transforment corps et éléments naturels en traces lumineuses d'une beauté saisissante."
+excerpt_en: "With 'Big Bang Blue,' a show-performance at the Théâtre Antoine, Sidney Carron shatters the conventions of photography. Her solar prints, created live by the water's edge, transform bodies and natural elements into luminous traces of striking beauty."
+url: "https://example.com/beaux-arts-big-bang-blue"
 ---

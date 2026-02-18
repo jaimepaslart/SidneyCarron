@@ -39,6 +39,8 @@ export const en: Record<TranslationKey, string> = {
   'works.filter.clear': 'Clear filters',
   'works.empty': 'No works found for these criteria.',
   'works.count': '{count} work(s)',
+  'works.count_singular': 'work',
+  'works.count_plural': 'works',
   'works.back': 'All works',
   'works.prev': 'Previous work',
   'works.next': 'Next work',
@@ -47,11 +49,20 @@ export const en: Record<TranslationKey, string> = {
   'works.medium': 'Process',
   'works.dimensions': 'Dimensions',
   'works.series': 'Series',
+  'works.location': 'Location',
+  'works.location.bresil': 'Brazil',
+  'works.location.dakar': 'Dakar, Senegal',
+  'works.location.saint-tropez': 'Saint-Tropez',
+  'works.location.reunion': 'Reunion Island',
+  'works.location.sri-lanka': 'Sri Lanka',
+  'works.location.costa-rica': 'Costa Rica',
 
   // Series
   'series.title': 'Series',
   'series.description': 'Explore the thematic series by Sidney Carron.',
   'series.works_count': '{count} work(s)',
+  'series.works_count_singular': 'work',
+  'series.works_count_plural': 'works',
   'series.back': 'Back to series',
   'series.other': 'Other series',
 
@@ -62,6 +73,7 @@ export const en: Record<TranslationKey, string> = {
   'exhibitions.past': 'Archives',
   'exhibitions.current_badge': 'Current',
   'exhibitions.upcoming_badge': 'Upcoming',
+  'exhibitions.past_badge': 'Past',
   'exhibitions.learn_more': 'Learn more',
   'exhibitions.back': 'Back to exhibitions',
   'exhibitions.venue': 'Venue',
@@ -113,6 +125,20 @@ export const en: Record<TranslationKey, string> = {
   'footer.legal': 'Legal notice',
   'footer.copyright': '© {year} Sidney Carron. All rights reserved.',
 
+  // Legal
+  'legal.title': 'Legal Notice',
+  'legal.description': 'Legal notice for the Sidney Carron website — visual artist & photographer.',
+  'legal.editor_title': 'Website Publisher',
+  'legal.editor_text': 'Sidney Carron, visual artist & photographer.\nContact: contact@sidneycarron.com',
+  'legal.hosting_title': 'Hosting',
+  'legal.hosting_text': 'This website is hosted by Netlify, Inc.\n2325 3rd Street, Suite 296, San Francisco, California 94107, United States.\nWebsite: www.netlify.com',
+  'legal.ip_title': 'Intellectual Property',
+  'legal.ip_text': 'All content on this website (texts, photographs, artworks, images, graphics, logo) is the exclusive property of Sidney Carron, unless otherwise stated. Any reproduction, representation, modification, publication or adaptation of any part of this website is prohibited without prior written authorization.',
+  'legal.data_title': 'Personal Data',
+  'legal.data_text': 'Data collected through the contact form (name, email address, message) is used solely to respond to your inquiries. It is neither shared with third parties nor used for commercial purposes. This website does not use tracking or advertising cookies.',
+  'legal.design_title': 'Design',
+  'legal.design_text': 'Website designed and developed for Sidney Carron.',
+
   // Lightbox
   'lightbox.close': 'Close',
   'lightbox.prev': 'Previous image',
@@ -126,5 +152,6 @@ export const en: Record<TranslationKey, string> = {
   // Accessibility
   'a11y.skip': 'Skip to main content',
   'a11y.menu_open': 'Open menu',
+  'a11y.main_nav': 'Main navigation',
   'a11y.menu_close': 'Close menu',
 };

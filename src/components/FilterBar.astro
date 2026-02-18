@@ -19,7 +19,7 @@ const lang = getLangFromUrl(Astro.url);
 const t = getTranslation(lang);
 ---
 
-<div id="filter-bar" class="museum-container mb-12 md:mb-16">
+<div id="filter-bar" class="museum-container mb-12 md:mb-16" data-count-singular={t('works.count_singular')} data-count-plural={t('works.count_plural')}>
   {filters.map(({ name, options }) => (
     <div class="flex flex-wrap items-center gap-1 mb-3 last:mb-0" data-filter-group={name}>
       <button
@@ -110,7 +110,9 @@ const t = getTranslation(lang);
     });
 
     if (worksCount) {
-      worksCount.textContent = `${visibleCount} ${visibleCount <= 1 ? 'œuvre' : 'œuvres'}`;
+      const singular = filterBar?.dataset.countSingular || 'work';
+      const plural = filterBar?.dataset.countPlural || 'works';
+      worksCount.textContent = `${visibleCount} ${visibleCount <= 1 ? singular : plural}`;
     }
   }
 

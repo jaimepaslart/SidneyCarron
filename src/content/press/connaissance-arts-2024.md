@@ -1,11 +1,11 @@
 ---
-title_fr: "Fondation Maeght : l'été de la sculpture"
-title_en: "Maeght Foundation: the summer of sculpture"
+title_fr: "« Passeurs de lumière » : Sidney Carron à la Galerie Rachel Hardouin"
+title_en: "'Passeurs de lumière': Sidney Carron at Galerie Rachel Hardouin"
 publication: Connaissance des Arts
-date: "2024-07-10"
-excerpt_fr: "L'exposition estivale de la Fondation Maeght fait dialoguer sculptures historiques et créations contemporaines. Les pièces de Sidney Carron trouvent naturellement leur place dans le jardin de Sert."
-excerpt_en: "The summer exhibition at the Maeght Foundation brings historical sculptures and contemporary creations into dialogue. Sidney Carron's pieces naturally find their place in Sert's garden."
-url: "https://example.com/connaissance-arts-maeght"
+date: "2024-09-20"
+excerpt_fr: "Dans son exposition personnelle « Passeurs de lumière », Sidney Carron révèle des silhouettes fantomatiques captées sans appareil, par la seule action du soleil sur du papier photosensible. Des œuvres qui brouillent les frontières entre photographie et peinture."
+excerpt_en: "In her solo exhibition 'Passeurs de lumière,' Sidney Carron reveals ghostly silhouettes captured without a camera, through the sole action of sunlight on photosensitive paper. Works that blur the boundaries between photography and painting."
+url: "https://example.com/connaissance-arts-passeurs"
 pdf: /press/connaissance-arts-2024.pdf
 image: /images/press/connaissance-arts-2024.jpg
 ---

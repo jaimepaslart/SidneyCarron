@@ -1,6 +1,5 @@
 ---
 import PageLayout from '@/layouts/PageLayout.astro';
-import WorkCard from '@/components/WorkCard.astro';
 import HorizontalWorks from '@/components/HorizontalWorks.astro';
 import { getCollection } from 'astro:content';
 import { getTranslation, getLocalizedPath, type Lang } from '@/i18n';
@@ -75,6 +74,9 @@ const jsonLd = {
       '@type': 'Person',
       name: 'Sidney Carron',
       jobTitle: lang === 'fr' ? 'Artiste photographe' : 'Visual artist & photographer',
+      description: lang === 'fr'
+        ? 'Artiste contemporaine explorant l\'empreinte solaire, l\'héliographie et le dialogue entre corps, lumière et matière photosensible.'
+        : 'Contemporary artist exploring solar imprints, heliography and the dialogue between body, light and photosensitive material.',
       url: 'https://sidneycarron.com',
       image: 'https://sidneycarron.com/images/portrait-sidney-carron.jpg',
       sameAs: [
@@ -149,16 +151,18 @@ const jsonLd = {
       <div class="museum-container">
         <p class="museum-label mb-12" data-animate>{t('home.exhibitions.label')}</p>
         <div class="grid grid-cols-1 lg:grid-cols-2 gap-gutter-lg items-center" data-animate>
-          <div class="aspect-[4/3] bg-[#E8E6E0] overflow-hidden">
-            <img
-              src={currentExhibition.data.image.src}
-              alt={lang === 'en' ? currentExhibition.data.image.alt_en : currentExhibition.data.image.alt_fr}
-              width="800"
-              height="600"
-              loading="lazy"
-              class="w-full h-full object-cover"
-            />
-          </div>
+          {currentExhibition.data.image && (
+            <div class="aspect-[4/3] bg-[#E8E6E0] overflow-hidden">
+              <img
+                src={currentExhibition.data.image.src}
+                alt={lang === 'en' ? currentExhibition.data.image.alt_en : currentExhibition.data.image.alt_fr}
+                width="800"
+                height="600"
+                loading="lazy"
+                class="w-full h-full object-cover"
+              />
+            </div>
+          )}
           <div>
             <h2 class="font-serif text-h2 text-museum-text">
               {lang === 'en' ? currentExhibition.data.title_en : currentExhibition.data.title_fr}

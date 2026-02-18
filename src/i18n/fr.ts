@@ -37,6 +37,8 @@ export const fr = {
   'works.filter.clear': 'Réinitialiser',
   'works.empty': 'Aucune œuvre trouvée pour ces critères.',
   'works.count': '{count} œuvre(s)',
+  'works.count_singular': 'œuvre',
+  'works.count_plural': 'œuvres',
   'works.back': 'Toutes les œuvres',
   'works.prev': 'Œuvre précédente',
   'works.next': 'Œuvre suivante',
@@ -45,11 +47,20 @@ export const fr = {
   'works.medium': 'Procédé',
   'works.dimensions': 'Dimensions',
   'works.series': 'Série',
+  'works.location': 'Lieu',
+  'works.location.bresil': 'Brésil',
+  'works.location.dakar': 'Dakar, Sénégal',
+  'works.location.saint-tropez': 'Saint-Tropez',
+  'works.location.reunion': 'Île de la Réunion',
+  'works.location.sri-lanka': 'Sri Lanka',
+  'works.location.costa-rica': 'Costa Rica',
 
   // Series
   'series.title': 'Séries',
   'series.description': 'Explorez les séries thématiques de Sidney Carron.',
   'series.works_count': '{count} œuvre(s)',
+  'series.works_count_singular': 'œuvre',
+  'series.works_count_plural': 'œuvres',
   'series.back': 'Retour aux séries',
   'series.other': 'Autres séries',
 
@@ -60,6 +71,7 @@ export const fr = {
   'exhibitions.past': 'Archives',
   'exhibitions.current_badge': 'En cours',
   'exhibitions.upcoming_badge': 'À venir',
+  'exhibitions.past_badge': 'Passé',
   'exhibitions.learn_more': 'En savoir plus',
   'exhibitions.back': 'Retour aux expositions',
   'exhibitions.venue': 'Lieu',
@@ -111,6 +123,20 @@ export const fr = {
   'footer.legal': 'Mentions légales',
   'footer.copyright': '© {year} Sidney Carron. Tous droits réservés.',
 
+  // Legal
+  'legal.title': 'Mentions légales',
+  'legal.description': 'Mentions légales du site Sidney Carron — artiste photographe.',
+  'legal.editor_title': 'Éditeur du site',
+  'legal.editor_text': 'Sidney Carron, artiste photographe.\nContact : contact@sidneycarron.com',
+  'legal.hosting_title': 'Hébergement',
+  'legal.hosting_text': 'Ce site est hébergé par Netlify, Inc.\n2325 3rd Street, Suite 296, San Francisco, California 94107, États-Unis.\nSite web : www.netlify.com',
+  'legal.ip_title': 'Propriété intellectuelle',
+  'legal.ip_text': 'L\'ensemble du contenu de ce site (textes, photographies, œuvres, images, graphismes, logo) est la propriété exclusive de Sidney Carron, sauf mention contraire. Toute reproduction, représentation, modification, publication ou adaptation de tout ou partie des éléments du site est interdite sans autorisation écrite préalable.',
+  'legal.data_title': 'Données personnelles',
+  'legal.data_text': 'Les données collectées via le formulaire de contact (nom, adresse email, message) sont utilisées uniquement pour répondre à vos demandes. Elles ne sont ni transmises à des tiers ni utilisées à des fins commerciales. Ce site n\'utilise pas de cookies de suivi ou de publicité.',
+  'legal.design_title': 'Conception',
+  'legal.design_text': 'Site conçu et développé pour Sidney Carron.',
+
   // Lightbox
   'lightbox.close': 'Fermer',
   'lightbox.prev': 'Image précédente',
@@ -124,6 +150,7 @@ export const fr = {
   // Accessibility
   'a11y.skip': 'Aller au contenu principal',
   'a11y.menu_open': 'Ouvrir le menu',
+  'a11y.main_nav': 'Navigation principale',
   'a11y.menu_close': 'Fermer le menu',
 } as const;
 

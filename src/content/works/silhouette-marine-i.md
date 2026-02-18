@@ -8,6 +8,7 @@ medium_fr: "Empreinte solaire, lumiere et mer"
 medium_en: "Solar imprint, light and sea"
 dimensions: "180 x 140 cm"
 series: empreintes-de-lumiere
+location: saint-tropez
 featured: false
 order: 5
 images:

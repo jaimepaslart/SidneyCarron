@@ -17,15 +17,18 @@ const jsonLd = {
     {
       '@type': 'Person',
       name: 'Sidney Carron',
-      jobTitle: lang === 'fr' ? 'Artiste sculpteur' : 'Sculptor',
+      jobTitle: lang === 'fr' ? 'Artiste — Empreintes solaires' : 'Artist — Solar Imprints',
       description: lang === 'fr'
-        ? 'Artiste sculpteur contemporain, travaillant le bronze, la pierre et l\'acier.'
-        : 'Contemporary sculptor, working with bronze, stone and steel.',
+        ? 'Artiste contemporaine explorant l\'empreinte solaire, l\'héliographie et le dialogue entre corps, lumière et matière photosensible.'
+        : 'Contemporary artist exploring solar imprints, heliography and the dialogue between body, light and photosensitive material.',
       image: `${siteUrl}/images/portrait-sidney-carron.jpg`,
       url: siteUrl,
       email: 'contact@sidneycarron.com',
       birthDate: '1985',
       nationality: lang === 'fr' ? 'Française' : 'French',
+      knowsAbout: lang === 'fr'
+        ? ['empreinte solaire', 'héliographie', 'photographie expérimentale', 'papier photosensible', 'techniques mixtes', 'art contemporain']
+        : ['solar imprint', 'heliography', 'experimental photography', 'photosensitive paper', 'mixed media', 'contemporary art'],
       workLocation: {
         '@type': 'Place',
         name: 'Montreuil, Seine-Saint-Denis',
@@ -50,59 +53,61 @@ const jsonLd = {
 
 const bio = lang === 'fr' ? {
   title: 'À propos de Sidney Carron',
-  intro: 'Née en 1985 en banlieue parisienne, Sidney Carron est une artiste sculpteur dont le travail explore les relations entre matière, mémoire et présence.',
+  intro: 'Née à Vienne, dans l\'Isère, Sidney Carron est une artiste dont le travail explore le dialogue entre le corps, la lumière et les éléments naturels. Photographe, joaillière, voyageuse — elle écrit avec la lumière.',
   bioTitle: 'Biographie',
-  bioText: `Diplômée de l'École Nationale Supérieure des Beaux-Arts de Paris en 2010, Sidney Carron a développé une pratique sculpturale qui embrasse plusieurs matériaux — bronze, pierre calcaire, acier corten, béton — pour questionner notre rapport au vivant et à l'espace construit.
+  bioText: `Passionnée de peinture dès l'âge de cinq ans, Sidney Carron suit des études de joaillerie à l'École du Louvre, dont elle sort deuxième de sa promotion. Elle commence à fabriquer des bijoux place Vendôme, avant de tout quitter pour se consacrer à la photographie.
 
-Ses premières expositions, à partir de 2012, révèlent déjà une sensibilité particulière pour la sculpture animalière, qu'elle aborde avec une liberté formelle qui la distingue de la tradition académique. Parallèlement, son intérêt pour l'architecture et l'urbanisme la conduit à développer la série Fragments urbains, où elle travaille à grande échelle avec des matériaux industriels.
+Habitée par une soif de liberté inextinguible, refusant tout ancrage, elle s'envole en Afrique, en Amérique et en Israël pour des reportages photographiques. Autodidacte, elle dit avoir été « éduquée par les voyages et les rencontres ». Depuis l'enfance, elle découpe des mini-Polaroids pour fabriquer des romans-photos — première manifestation d'un instinct narratif par l'image.
 
-En 2018, elle entame la série Figures, une exploration de l'archétype humain à travers des formes totémiques qui puisent aux sources les plus anciennes de la sculpture. Ce travail a été remarqué lors du Salon de Montrouge 2023 et à la Fondation Maeght en 2024.
+À son retour, elle réalise des projets remarqués : la couverture de Playboy avec Joey Starr, le clip « Dangereuse » du chanteur Christophe, l'affiche du DJ set littéraire de Frédéric Beigbeder. Mais c'est dans le retour aux origines de la photographie qu'elle trouve sa voie la plus profonde.
 
-Sidney Carron vit et travaille à Montreuil, en Seine-Saint-Denis.`,
+Aujourd'hui, Sidney Carron aborde la photographie à partir de sa matrice originelle : le travail de la lumière. Elle travaille dehors, au bord de l'eau, en disposant corps, fragments végétaux, branches et pierres directement sur la surface photosensible, laissant le soleil, le vent, le sable et la mer intervenir dans l'image. Ses œuvres sont faites de silhouettes flottantes, de peaux devenues lumière, de traces presque fantomatiques — à mi-chemin entre photographie et peinture, comme des fragments de mémoire laissés sur le rivage.
+
+Elle est représentée par la Sakanagallery à Donostia / San Sebastián.`,
   statementTitle: 'Démarche artistique',
-  statementText: `« Mon travail naît de la rencontre entre la main et la matière. Chaque matériau possède sa propre mémoire, sa propre résistance, ses propres histoires à raconter. Le bronze garde la trace du feu, la pierre celle des millions d'années de sédimentation, l'acier celle de l'industrie humaine. »
+  statementText: `« J'écris avec la lumière. Pour être en osmose, en accord total avec la nature, j'ai remplacé l'appareil photo par le soleil. »
 
-« Je ne cherche pas à imposer une forme à la matière, mais à révéler celle qui s'y cache déjà. C'est un dialogue, parfois un combat, toujours une découverte. La sculpture est pour moi un acte de présence : rendre visible ce qui ne l'est pas encore, donner corps à une intuition, ancrer dans l'espace une émotion. »
+« Tu es là, avec la personne que tu photographies, avec la lumière, avec la mer qui fout le bordel… Les éléments se mettent en mouvement. La lumière, c'est le feu. L'air active le pH, transforme la matière. La mer arrête l'image qui se transforme. Et puis la terre, sur laquelle reposent les corps, laisse une réaction chimique, là où tu es. »
 
-« Mes trois séries — Animaux, Fragments urbains, Figures — sont trois façons de poser la même question : comment la forme peut-elle porter du sens ? Comment une masse de métal ou de pierre peut-elle évoquer le mouvement, la mémoire, la présence ? »`,
+« J'ai trouvé un procédé alchimique qui est un témoignage. Emprunter la lumière, les embruns et la mer, pour empreinter les corps sur cette Terre. »`,
   cvTitle: 'Parcours',
   cvItems: [
-    { year: '2010', text: 'DNSAP, École Nationale Supérieure des Beaux-Arts de Paris' },
-    { year: '2012-2014', text: 'Résidence à la Cité internationale des arts, Paris' },
-    { year: '2016', text: 'Résidence de création, Fondation de Coubertin, Saint-Rémy-lès-Chevreuse' },
-    { year: '2018', text: 'Début de la série Animaux' },
-    { year: '2020', text: 'Installation permanente, Parc de sculptures de Chaumont-sur-Loire' },
-    { year: '2023', text: 'Sélection au Salon de Montrouge (67e édition)' },
-    { year: '2024', text: 'Exposition collective, Fondation Maeght' },
-    { year: '2025', text: 'Biennale de Lyon, section Matérialités' },
+    { year: 'Enfance', text: 'Née à Vienne (Isère) — passionnée de peinture dès l\'âge de cinq ans' },
+    { year: 'Formation', text: 'Études de joaillerie à l\'École du Louvre (2e de sa promotion)' },
+    { year: 'Joaillerie', text: 'Création de bijoux place Vendôme, puis rupture pour la photographie' },
+    { year: 'Reportages', text: 'Voyages en Afrique, Amérique et Israël — « éduquée par les voyages et les rencontres »' },
+    { year: 'Photographie', text: 'Couverture Playboy (Joey Starr), clip « Dangereuse » (Christophe), affiche DJ set littéraire (Beigbeder)' },
+    { year: 'Aujourd\'hui', text: 'Empreintes solaires — technique sur papier photosensible en plein air' },
+    { year: 'Galerie', text: 'Représentée par Sakanagallery, Donostia / San Sebastián' },
   ],
 } : {
   title: 'About Sidney Carron',
-  intro: 'Born in 1985 in the suburbs of Paris, Sidney Carron is a sculptor whose work explores the relationships between material, memory and presence.',
+  intro: 'Born in Vienne, in the Isère region of France, Sidney Carron is an artist whose work explores the dialogue between body, light and the natural elements. Photographer, jeweller, traveller — she writes with light.',
   bioTitle: 'Biography',
-  bioText: `A graduate of the École Nationale Supérieure des Beaux-Arts de Paris in 2010, Sidney Carron has developed a sculptural practice that embraces multiple materials — bronze, limestone, corten steel, concrete — to question our relationship with the living world and built space.
+  bioText: `Passionate about painting from the age of five, Sidney Carron studied jewellery at the École du Louvre, graduating second in her class. She began crafting jewellery on Place Vendôme before leaving everything behind to devote herself to photography.
 
-Her first exhibitions, from 2012 onwards, already reveal a particular sensitivity for animal sculpture, which she approaches with a formal freedom that sets her apart from academic tradition. In parallel, her interest in architecture and urbanism led her to develop the Urban Fragments series, where she works on a large scale with industrial materials.
+Driven by an insatiable thirst for freedom, refusing any permanent home, she travelled to Africa, the Americas and Israel for photographic reportage. Self-taught, she says she was "educated by travel and encounters." Since childhood, she had been cutting mini-Polaroids to create photo-novels — the first sign of a narrative instinct through images.
 
-In 2018, she began the Figures series, an exploration of the human archetype through totemic forms that draw from the oldest sources of sculpture. This work was noted at the Salon de Montrouge 2023 and at the Maeght Foundation in 2024.
+On her return, she completed notable projects: the Playboy cover featuring Joey Starr, the music video for "Dangereuse" by the singer Christophe, and the poster for Frédéric Beigbeder's literary DJ set. But it is in returning to the origins of photography that she found her deepest calling.
 
-Sidney Carron lives and works in Montreuil, Seine-Saint-Denis.`,
+Today, Sidney Carron approaches photography from its original matrix: the work of light. She works outdoors, by the water, placing bodies, plant fragments, branches and stones directly onto photosensitive paper, letting the sun, wind, sand and sea intervene in the image. Her works are made of floating silhouettes, skin turned to light, and nearly phantomatic traces — halfway between photography and painting, like fragments of memory left on the shore.
+
+She is represented by Sakanagallery in Donostia / San Sebastián.`,
   statementTitle: 'Artistic Statement',
-  statementText: `« My work is born from the encounter between hand and material. Each material possesses its own memory, its own resistance, its own stories to tell. Bronze retains the trace of fire, stone that of millions of years of sedimentation, steel that of human industry. »
+  statementText: `« I write with light. To be in osmosis, in total harmony with nature, I replaced the camera with the sun. »
 
-« I do not seek to impose a form on the material, but to reveal the one that is already hidden within it. It is a dialogue, sometimes a struggle, always a discovery. Sculpture is for me an act of presence: making visible what is not yet seen, giving body to an intuition, anchoring an emotion in space. »
+« You are there, with the person you photograph, with the light, with the sea making a mess of things… The elements begin to move. Light is fire. The air activates the pH, transforms the matter. The sea stops the image as it transforms. And then the earth, on which the bodies rest, leaves a chemical reaction, right where you are. »
 
-« My three series — Animals, Urban Fragments, Figures — are three ways of asking the same question: how can form carry meaning? How can a mass of metal or stone evoke movement, memory, presence? »`,
+« I found an alchemical process that is a testimony. Borrowing the light, the sea spray and the sea, to imprint bodies on this Earth. »`,
   cvTitle: 'Background',
   cvItems: [
-    { year: '2010', text: 'DNSAP, École Nationale Supérieure des Beaux-Arts de Paris' },
-    { year: '2012-2014', text: 'Residency at the Cité internationale des arts, Paris' },
-    { year: '2016', text: 'Creative residency, Coubertin Foundation, Saint-Rémy-lès-Chevreuse' },
-    { year: '2018', text: 'Beginning of the Animals series' },
-    { year: '2020', text: 'Permanent installation, Chaumont-sur-Loire Sculpture Park' },
-    { year: '2023', text: 'Selected for the Salon de Montrouge (67th edition)' },
-    { year: '2024', text: 'Group exhibition, Maeght Foundation' },
-    { year: '2025', text: 'Lyon Biennial, Materialities section' },
+    { year: 'Childhood', text: 'Born in Vienne (Isère, France) — passionate about painting from the age of five' },
+    { year: 'Education', text: 'Jewellery studies at the École du Louvre (2nd in class)' },
+    { year: 'Jewellery', text: 'Crafting jewellery on Place Vendôme, then a break for photography' },
+    { year: 'Reportage', text: 'Travels in Africa, the Americas and Israel — "educated by travel and encounters"' },
+    { year: 'Photography', text: 'Playboy cover (Joey Starr), "Dangereuse" music video (Christophe), literary DJ set poster (Beigbeder)' },
+    { year: 'Today', text: 'Solar imprints — photosensitive paper technique in the open air' },
+    { year: 'Gallery', text: 'Represented by Sakanagallery, Donostia / San Sebastián' },
   ],
 };
 ---
@@ -192,24 +197,6 @@ Sidney Carron lives and works in Montreuil, Seine-Saint-Denis.`,
     </div>
   </section>
 </PageLayout>
-
-<style>
-  .animate-on-scroll {
-    opacity: 0;
-    transform: translateY(20px);
-  }
-  .animate-on-scroll.is-visible {
-    opacity: 1;
-    transform: translateY(0);
-    transition: opacity 500ms ease-out, transform 500ms ease-out;
-  }
-  @media (prefers-reduced-motion: reduce) {
-    .animate-on-scroll {
-      opacity: 1;
-      transform: none;
-    }
-  }
-</style>
 
 <script>
   const items = document.querySelectorAll('.animate-on-scroll');

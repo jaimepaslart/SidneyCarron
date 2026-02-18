@@ -8,6 +8,7 @@ medium_fr: "Empreinte solaire sur papier, elements naturels"
 medium_en: "Solar imprint on paper, natural elements"
 dimensions: "160 x 200 cm"
 series: memoires-du-rivage
+location: sri-lanka
 featured: false
 order: 7
 images:

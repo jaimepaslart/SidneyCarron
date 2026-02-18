@@ -1,12 +1,19 @@
 ---
 import { getLangFromUrl, getLocalizedPath, getAlternateLang } from '@/i18n';
 
+interface Props {
+  alternateHref?: string;
+}
+
+const { alternateHref } = Astro.props;
 const lang = getLangFromUrl(Astro.url);
 const altLang = getAlternateLang(lang);
 
-const currentPath = Astro.url.pathname;
-const cleanPath = currentPath.replace(/^\/en/, '') || '/';
-const altHref = getLocalizedPath(altLang, cleanPath);
+const altHref = alternateHref || (() => {
+  const currentPath = Astro.url.pathname;
+  const cleanPath = currentPath.replace(/^\/en/, '') || '/';
+  return getLocalizedPath(altLang, cleanPath);
+})();
 ---
 
 <a

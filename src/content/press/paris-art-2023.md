@@ -1,9 +1,9 @@
 ---
-title_fr: "Salon de Montrouge : les coups de cœur de la rédaction"
-title_en: "Salon de Montrouge: our editorial picks"
+title_fr: "« À la lumière du Brésil » : les empreintes solaires de Sidney Carron"
+title_en: "'À la lumière du Brésil': Sidney Carron's solar prints"
 publication: Paris Art
-date: "2023-05-05"
-excerpt_fr: "Le Salon de Montrouge continue de révéler les talents de demain. Cette année, les Figures de Sidney Carron se distinguent par leur force silencieuse et leur maîtrise technique."
-excerpt_en: "The Salon de Montrouge continues to reveal tomorrow's talents. This year, Sidney Carron's Figures stand out for their silent strength and technical mastery."
-url: "https://example.com/paris-art-montrouge"
+date: "2023-06-15"
+excerpt_fr: "À l'Espace Sylvia Rielle, Sidney Carron expose les empreintes solaires réalisées lors de ses séjours brésiliens. Ancienne joaillière passée à la photographie, elle a remplacé l'appareil par le soleil, disposant corps et végétaux sur du papier photosensible au bord de l'océan. Des images entre mémoire et disparition."
+excerpt_en: "At Espace Sylvia Rielle, Sidney Carron exhibits solar prints created during her stays in Brazil. A former jeweler turned photographer, she replaced the camera with the sun, placing bodies and plants on photosensitive paper at the ocean's edge. Images between memory and disappearance."
+url: "https://example.com/paris-art-lumiere-bresil"
 ---

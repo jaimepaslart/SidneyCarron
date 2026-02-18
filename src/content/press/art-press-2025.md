@@ -1,9 +1,9 @@
 ---
-title_fr: "Biennale de Lyon : les révélations de l'édition 2025"
-title_en: "Lyon Biennial: revelations of the 2025 edition"
+title_fr: "Cyanotypes et empreintes solaires : Sidney Carron à Grimaud"
+title_en: "Cyanotypes and solar prints: Sidney Carron in Grimaud"
 publication: Art Press
-date: "2025-09-28"
-excerpt_fr: "Parmi les découvertes de cette Biennale, les installations monumentales de Sidney Carron s'imposent par leur présence et leur dialogue avec l'espace muséal."
-excerpt_en: "Among the discoveries of this Biennial, Sidney Carron's monumental installations stand out for their presence and dialogue with the museum space."
-url: "https://example.com/art-press-biennale"
+date: "2025-07-12"
+excerpt_fr: "Invitée de l'événement Art Sunset à la Galerie A de Grimaud, Sidney Carron déploie ses cyanotypes monumentaux. Corps allongés sur le papier photosensible, végétaux, embruns : l'artiste confie les clés de l'image au soleil et à la mer."
+excerpt_en: "Guest of the Art Sunset event at Galerie A in Grimaud, Sidney Carron unfolds her monumental cyanotypes. Bodies laid on photosensitive paper, plants, sea spray: the artist hands the keys of the image to the sun and the sea."
+url: "https://example.com/art-press-grimaud"
 ---

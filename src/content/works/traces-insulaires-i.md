@@ -8,6 +8,7 @@ medium_fr: "Empreinte solaire sur papier, elements naturels"
 medium_en: "Solar imprint on paper, natural elements"
 dimensions: "150 x 90 cm"
 series: memoires-du-rivage
+location: reunion
 featured: false
 order: 8
 images:

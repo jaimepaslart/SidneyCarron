@@ -4,7 +4,7 @@
    ============================================ */
 
 /* --- @font-face : Elizeth (titres) --- */
-/* TODO: Ajouter les fichiers .woff2 dans src/assets/fonts/ */
+/* Font files not yet available — using system fallbacks (font-display: swap) */
 @font-face {
   font-family: 'Elizeth';
   src: url('../assets/fonts/elizeth-light.woff2') format('woff2');
@@ -225,6 +225,29 @@
     .reveal-image.is-visible,
     .reveal-card.is-visible,
     .reveal-horizontal.is-visible {
+      transition: none;
+    }
+  }
+
+  /* Scroll-triggered fade-in animation */
+  .animate-on-scroll {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+
+  .animate-on-scroll.is-visible {
+    opacity: 1;
+    transform: translateY(0);
+    transition: opacity 500ms ease-out, transform 500ms ease-out;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .animate-on-scroll {
+      opacity: 1;
+      transform: none;
+    }
+
+    .animate-on-scroll.is-visible {
       transition: none;
     }
   }

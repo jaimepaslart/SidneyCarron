@@ -83,46 +83,47 @@
 
 <script>
   const cursor = document.getElementById('custom-cursor') as HTMLElement | null;
-  if (!cursor) throw new Error('Custom cursor element not found');
 
-  const prefersReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-  const isTouch = window.matchMedia('(hover: none)').matches;
+  if (cursor) {
+    const prefersReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    const isTouch = window.matchMedia('(hover: none)').matches;
 
-  if (!prefersReduced && !isTouch) {
-    let mouseX = 0;
-    let mouseY = 0;
-    let cursorX = 0;
-    let cursorY = 0;
-    const lerp = 0.15;
+    if (!prefersReduced && !isTouch) {
+      let mouseX = 0;
+      let mouseY = 0;
+      let cursorX = 0;
+      let cursorY = 0;
+      const lerp = 0.15;
 
-    document.addEventListener('mousemove', (e: MouseEvent) => {
-      mouseX = e.clientX;
-      mouseY = e.clientY;
-      if (!cursor.classList.contains('is-active')) {
-        cursor.classList.add('is-active');
+      document.addEventListener('mousemove', (e: MouseEvent) => {
+        mouseX = e.clientX;
+        mouseY = e.clientY;
+        if (!cursor.classList.contains('is-active')) {
+          cursor.classList.add('is-active');
+        }
+      });
+
+      document.addEventListener('mouseleave', () => {
+        cursor.classList.remove('is-active');
+      });
+
+      function animate(): void {
+        cursorX += (mouseX - cursorX) * lerp;
+        cursorY += (mouseY - cursorY) * lerp;
+        cursor!.style.transform = `translate(${cursorX - 6}px, ${cursorY - 6}px)`;
+        requestAnimationFrame(animate);
       }
-    });
-
-    document.addEventListener('mouseleave', () => {
-      cursor.classList.remove('is-active');
-    });
-
-    function animate(): void {
-      cursorX += (mouseX - cursorX) * lerp;
-      cursorY += (mouseY - cursorY) * lerp;
-      cursor!.style.transform = `translate(${cursorX - 6}px, ${cursorY - 6}px)`;
       requestAnimationFrame(animate);
+
+      document.querySelectorAll('[data-work-card]').forEach((card) => {
+        card.addEventListener('mouseenter', () => cursor.classList.add('is-hovering-card'));
+        card.addEventListener('mouseleave', () => cursor.classList.remove('is-hovering-card'));
+      });
+
+      document.querySelectorAll('a:not([data-work-card])').forEach((link) => {
+        link.addEventListener('mouseenter', () => cursor.classList.add('is-hovering-link'));
+        link.addEventListener('mouseleave', () => cursor.classList.remove('is-hovering-link'));
+      });
     }
-    requestAnimationFrame(animate);
-
-    document.querySelectorAll('[data-work-card]').forEach((card) => {
-      card.addEventListener('mouseenter', () => cursor.classList.add('is-hovering-card'));
-      card.addEventListener('mouseleave', () => cursor.classList.remove('is-hovering-card'));
-    });
-
-    document.querySelectorAll('a:not([data-work-card])').forEach((link) => {
-      link.addEventListener('mouseenter', () => cursor.classList.add('is-hovering-link'));
-      link.addEventListener('mouseleave', () => cursor.classList.remove('is-hovering-link'));
-    });
   }
 </script>
