@@ -11,11 +11,7 @@ export default defineConfig({
   output: 'static',
   adapter: netlify(),
   vite: {
-    define: {
-      'import.meta.env.KEYSTATIC_GITHUB_CLIENT_ID': JSON.stringify(process.env.KEYSTATIC_GITHUB_CLIENT_ID),
-      'import.meta.env.KEYSTATIC_GITHUB_CLIENT_SECRET': JSON.stringify(process.env.KEYSTATIC_GITHUB_CLIENT_SECRET),
-      'import.meta.env.KEYSTATIC_SECRET': JSON.stringify(process.env.KEYSTATIC_SECRET),
-    },
+    envPrefix: ['PUBLIC_', 'KEYSTATIC_'],
   },
   integrations: [
     tailwind({
