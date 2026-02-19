@@ -1,6 +1,6 @@
 ---
 import PageLayout from '@/layouts/PageLayout.astro';
-import HorizontalWorks from '@/components/HorizontalWorks.astro';
+import WorkCard from '@/components/WorkCard.astro';
 import { getCollection } from 'astro:content';
 import { getTranslation, getLocalizedPath, type Lang } from '@/i18n';
 
@@ -16,17 +16,6 @@ const featuredWorks = allWorks
   .filter(w => w.data.featured)
   .sort((a, b) => a.data.order - b.data.order)
   .slice(0, 3);
-
-const featuredItems = featuredWorks.map(work => ({
-  slug: lang === 'en' ? work.data.slug_en : work.data.slug,
-  title: lang === 'en' ? work.data.title_en : work.data.title_fr,
-  year: work.data.year,
-  medium: lang === 'en' ? work.data.medium_en : work.data.medium_fr,
-  image: {
-    src: work.data.images[0].src,
-    alt: lang === 'en' ? work.data.images[0].alt_en : work.data.images[0].alt_fr,
-  },
-}));
 
 const allExhibitions = await getCollection('exhibitions');
 const currentExhibition = allExhibitions
@@ -92,56 +81,54 @@ const jsonLd = {
   description={t('home.description')}
   jsonLd={jsonLd}
 >
-  <!-- Hero: text overlapping image -->
-  <section class="hero-section" data-hero-parallax>
-    <div class="museum-container">
-      <div class="hero-grid">
-        <!-- Text column (z-index 2, overlaps image) -->
-        <div class="hero-text" data-parallax-layer="0.02">
-          <p class="museum-label mb-8 hero-fade" style="animation-delay: 100ms;">
-            {t('home.hero.subtitle')}
-          </p>
-          <h1 class="font-serif text-hero text-museum-text whitespace-pre-line hero-fade" style="animation-delay: 280ms;">
-            {t('home.hero.statement')}
-          </h1>
-          <div class="mt-12 hero-fade" style="animation-delay: 480ms;">
-            <a
-              href={getLocalizedPath(lang, '/works')}
-              class="inline-block font-sans text-small uppercase tracking-museum px-8 py-3 border border-museum-text text-museum-text bg-none hover:bg-museum-text hover:text-museum-white transition-colors duration-base ease-museum"
-            >
-              {t('home.featured.cta')}
-            </a>
-          </div>
-        </div>
-
-        <!-- Image column (z-index 1, behind text) -->
-        <div class="hero-image hero-fade" style="animation-delay: 200ms;" data-parallax-layer="0.04">
-          <img
-            src="/images/hero-sidney-carron.jpg"
-            alt={lang === 'fr' ? 'Sidney Carron — empreinte solaire' : 'Sidney Carron — solar imprint'}
-            width="800"
-            height="1000"
-            loading="eager"
-            class="w-full h-full object-cover"
-          />
-        </div>
+  <!-- Hero -->
+  <section class="min-h-[90vh] flex items-center justify-center bg-museum-surface">
+    <div class="museum-container text-center max-w-3xl mx-auto">
+      <p class="museum-label mb-8 hero-fade" style="animation-delay: 100ms;">
+        {t('home.hero.subtitle')}
+      </p>
+      <h1 class="font-serif text-hero text-museum-text whitespace-pre-line hero-fade" style="animation-delay: 280ms;">
+        {t('home.hero.statement')}
+      </h1>
+      <div class="mt-12 hero-fade" style="animation-delay: 480ms;">
+        <a
+          href={getLocalizedPath(lang, '/works')}
+          class="inline-block font-sans text-small uppercase tracking-museum px-8 py-3 border border-museum-text text-museum-text bg-none hover:bg-museum-text hover:text-museum-white transition-colors duration-base ease-museum"
+        >
+          {t('home.featured.cta')}
+        </a>
       </div>
     </div>
   </section>
 
-  <!-- Featured Works: horizontal scroll -->
+  <!-- Featured Works -->
   <section class="museum-section">
     <div class="museum-container">
       <p class="museum-label mb-12" data-animate>{t('home.featured.label')}</p>
-    </div>
-    <HorizontalWorks works={featuredItems} lang={lang} />
-    <div class="text-center mt-12" data-animate>
-      <a
-        href={getLocalizedPath(lang, '/works')}
-        class="font-sans text-small text-museum-caption hover:text-museum-text bg-none transition-colors duration-base ease-museum"
-      >
-        {t('home.featured.cta')} &rarr;
-      </a>
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-gutter-md lg:gap-gutter-lg">
+        {featuredWorks.map((work, i) => (
+          <div data-animate style={`transition-delay: ${i * 120}ms;`}>
+            <WorkCard
+              slug={lang === 'en' ? work.data.slug_en : work.data.slug}
+              title={lang === 'en' ? work.data.title_en : work.data.title_fr}
+              year={work.data.year}
+              medium={lang === 'en' ? work.data.medium_en : work.data.medium_fr}
+              image={{
+                src: work.data.images[0].src,
+                alt: lang === 'en' ? work.data.images[0].alt_en : work.data.images[0].alt_fr,
+              }}
+            />
+          </div>
+        ))}
+      </div>
+      <div class="text-center mt-12" data-animate>
+        <a
+          href={getLocalizedPath(lang, '/works')}
+          class="font-sans text-small text-museum-caption hover:text-museum-text bg-none transition-colors duration-base ease-museum"
+        >
+          {t('home.featured.cta')} &rarr;
+        </a>
+      </div>
     </div>
   </section>
 
@@ -244,55 +231,6 @@ const jsonLd = {
 </PageLayout>
 
 <style>
-  /* Hero section */
-  .hero-section {
-    min-height: 90vh;
-    display: flex;
-    align-items: center;
-    padding-top: 6rem;
-    padding-bottom: 4rem;
-    background-color: var(--museum-surface, #F5F4F0);
-    overflow: hidden;
-  }
-
-  /* Hero grid: mobile stacked, desktop overlapping */
-  .hero-grid {
-    display: grid;
-    grid-template-columns: 1fr;
-    gap: 2rem;
-    align-items: center;
-  }
-
-  .hero-text {
-    position: relative;
-    z-index: 2;
-  }
-
-  .hero-image {
-    position: relative;
-    z-index: 1;
-    aspect-ratio: 4 / 5;
-    overflow: hidden;
-    background-color: #E8E6E0;
-  }
-
-  /* Desktop: overlapping columns */
-  @media (min-width: 1024px) {
-    .hero-grid {
-      grid-template-columns: 55% 50%;
-      gap: 0;
-    }
-
-    .hero-text {
-      padding-right: 2rem;
-    }
-
-    .hero-image {
-      margin-left: -10%;
-      max-height: 75vh;
-    }
-  }
-
   /* Hero load animation */
   .hero-fade {
     opacity: 0;
@@ -343,9 +281,7 @@ const jsonLd = {
 
 <script>
   const prefersReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-  const isTouch = window.matchMedia('(hover: none)').matches;
 
-  // --- Scroll reveal observer ---
   if (!prefersReduced) {
     const observer = new IntersectionObserver(
       (entries) => {
@@ -362,46 +298,5 @@ const jsonLd = {
     document.querySelectorAll('[data-animate]').forEach((el) => {
       observer.observe(el);
     });
-  }
-
-  // --- Hero mouse parallax ---
-  if (!prefersReduced && !isTouch) {
-    const heroSection = document.querySelector<HTMLElement>('[data-hero-parallax]');
-    if (heroSection) {
-      const layers = heroSection.querySelectorAll<HTMLElement>('[data-parallax-layer]');
-      let mouseX = 0;
-      let mouseY = 0;
-      let currentX = 0;
-      let currentY = 0;
-      const lerp = 0.08;
-      const maxMove = 15;
-
-      heroSection.addEventListener('mousemove', (e: MouseEvent) => {
-        const rect = heroSection.getBoundingClientRect();
-        mouseX = ((e.clientX - rect.left) / rect.width - 0.5) * 2;
-        mouseY = ((e.clientY - rect.top) / rect.height - 0.5) * 2;
-      });
-
-      heroSection.addEventListener('mouseleave', () => {
-        mouseX = 0;
-        mouseY = 0;
-      });
-
-      function animateParallax(): void {
-        currentX += (mouseX - currentX) * lerp;
-        currentY += (mouseY - currentY) * lerp;
-
-        layers.forEach((layer) => {
-          const speed = parseFloat(layer.dataset.parallaxLayer || '0');
-          const moveX = currentX * maxMove * (speed / 0.04);
-          const moveY = currentY * maxMove * (speed / 0.04);
-          layer.style.transform = `translate(${moveX}px, ${moveY}px)`;
-        });
-
-        requestAnimationFrame(animateParallax);
-      }
-
-      requestAnimationFrame(animateParallax);
-    }
   }
 </script>

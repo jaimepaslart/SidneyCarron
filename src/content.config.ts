@@ -2,7 +2,7 @@ import { defineCollection, z } from 'astro:content';
 import { glob } from 'astro/loaders';
 
 const works = defineCollection({
-  loader: glob({ pattern: '**/*.md', base: './src/content/works' }),
+  loader: glob({ pattern: '**/*.yaml', base: './src/content/works' }),
   schema: z.object({
     slug: z.string(),
     slug_en: z.string(),
@@ -29,7 +29,7 @@ const works = defineCollection({
 });
 
 const series = defineCollection({
-  loader: glob({ pattern: '**/*.md', base: './src/content/series' }),
+  loader: glob({ pattern: '**/*.yaml', base: './src/content/series' }),
   schema: z.object({
     slug: z.string(),
     slug_en: z.string(),
@@ -49,7 +49,7 @@ const series = defineCollection({
 });
 
 const exhibitions = defineCollection({
-  loader: glob({ pattern: '**/*.md', base: './src/content/exhibitions' }),
+  loader: glob({ pattern: '**/*.yaml', base: './src/content/exhibitions' }),
   schema: z.object({
     slug: z.string(),
     slug_en: z.string(),
@@ -77,7 +77,7 @@ const exhibitions = defineCollection({
 });
 
 const press = defineCollection({
-  loader: glob({ pattern: '**/*.md', base: './src/content/press' }),
+  loader: glob({ pattern: '**/*.yaml', base: './src/content/press' }),
   schema: z.object({
     title_fr: z.string(),
     title_en: z.string(),

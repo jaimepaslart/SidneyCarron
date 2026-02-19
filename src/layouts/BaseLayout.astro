@@ -13,7 +13,7 @@ interface Props {
   noindex?: boolean;
 }
 
-const { title, description, ogImage, ogType = 'website', canonicalPath, enCanonicalPath, jsonLd, noindex = false } = Astro.props;
+const { title, description, ogImage, ogType = 'website', canonicalPath, enCanonicalPath, jsonLd, noindex = true } = Astro.props;
 
 const lang = getLangFromUrl(Astro.url);
 const t = getTranslation(lang);
@@ -64,8 +64,6 @@ const ogImageUrl = ogImage ? `${siteUrl}${ogImage}` : `${siteUrl}/images/og-defa
     <meta name="twitter:image" content={ogImageUrl} />
 
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-    <link rel="preconnect" href="https://identity.netlify.com" crossorigin />
-
     <!-- Font preloads: uncomment when .woff2 files are added to public/fonts/
     <link rel="preload" href="/fonts/elizeth-light.woff2" as="font" type="font/woff2" crossorigin />
     <link rel="preload" href="/fonts/relative-regular.woff2" as="font" type="font/woff2" crossorigin />
@@ -84,17 +82,5 @@ const ogImageUrl = ogImage ? `${siteUrl}${ogImage}` : `${siteUrl}/images/og-defa
       {t('a11y.skip')}
     </a>
     <slot />
-    <script defer src="https://identity.netlify.com/v1/netlify-identity-widget.js"></script>
-    <script is:inline>
-      if (window.netlifyIdentity) {
-        window.netlifyIdentity.on('init', function (user) {
-          if (!user) {
-            window.netlifyIdentity.on('login', function () {
-              document.location.href = '/admin/';
-            });
-          }
-        });
-      }
-    </script>
   </body>
 </html>

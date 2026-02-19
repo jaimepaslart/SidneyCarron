@@ -1,4 +1,7 @@
 User-agent: *
-Allow: /
+Disallow: /
 
-Sitemap: https://sidneycarron.com/sitemap-index.xml
+# TODO: réactiver l'indexation quand le site sera prêt
+# User-agent: *
+# Allow: /
+# Sitemap: https://sidneycarron.com/sitemap-index.xml
