@@ -3,18 +3,17 @@ import PageLayout from '@/layouts/PageLayout.astro';
 import WorkCard from '@/components/WorkCard.astro';
 import MasonryGallery from '@/components/MasonryGallery.astro';
 import ScrollReveal from '@/components/ScrollReveal.astro';
-import { getCollection } from 'astro:content';
 import { getTranslation, getLocalizedPath, type Lang } from '@/i18n';
 
 interface Props {
+  location: string;
+  locationName: string;
+  works: any[];
   lang: Lang;
 }
 
-const { lang } = Astro.props;
+const { location, locationName, works, lang } = Astro.props;
 const t = getTranslation(lang);
-
-const allWorks = await getCollection('works');
-const works = allWorks.sort((a, b) => a.data.order - b.data.order);
 
 const siteUrl = 'https://sidneycarron.com';
 
@@ -23,20 +22,16 @@ const jsonLd = {
   '@graph': [
     {
       '@type': 'CollectionPage',
-      name: t('works.title'),
-      description: t('works.description'),
-      url: `${siteUrl}${getLocalizedPath(lang, '/works')}`,
-      hasPart: works.map(w => ({
-        '@type': 'VisualArtwork',
-        name: lang === 'en' ? w.data.title_en : w.data.title_fr,
-        url: `${siteUrl}${getLocalizedPath(lang, `/works/${lang === 'en' ? w.data.slug_en : w.data.slug}`)}`,
-      })),
+      name: `${t('works.title')} — ${locationName}`,
+      description: `${t('works.title')} ${lang === 'fr' ? 'réalisées à' : 'created in'} ${locationName}`,
+      url: `${siteUrl}${getLocalizedPath(lang, `/works/${location}`)}`,
     },
     {
       '@type': 'BreadcrumbList',
       itemListElement: [
         { '@type': 'ListItem', position: 1, name: 'Sidney Carron', item: siteUrl },
-        { '@type': 'ListItem', position: 2, name: lang === 'fr' ? 'Œuvres' : 'Works' },
+        { '@type': 'ListItem', position: 2, name: t('works.title'), item: `${siteUrl}${getLocalizedPath(lang, '/works')}` },
+        { '@type': 'ListItem', position: 3, name: locationName },
       ],
     },
   ],
@@ -44,15 +39,20 @@ const jsonLd = {
 ---
 
 <PageLayout
-  title={`${t('works.title')} — Sidney Carron`}
-  description={t('works.description')}
-  canonicalPath="/works"
+  title={`${t('works.title')} — ${locationName} — Sidney Carron`}
+  description={`${t('works.title')} ${lang === 'fr' ? 'réalisées à' : 'created in'} ${locationName}`}
   jsonLd={jsonLd}
 >
   <section class="museum-section">
     <div class="museum-container">
       <ScrollReveal>
-        <h1 class="font-serif font-light text-4xl text-text">{t('works.title')}</h1>
+        <a
+          href={getLocalizedPath(lang, '/works')}
+          class="inline-block font-sans text-sm text-secondary hover:text-text transition-colors duration-hover ease mb-8"
+        >
+          &larr; {t('works.back')}
+        </a>
+        <h1 class="font-serif font-light text-4xl text-text">{locationName}</h1>
         <p class="text-sm text-secondary uppercase tracking-widest mt-2">
           {works.length} {works.length <= 1 ? t('works.count_singular') : t('works.count_plural')}
         </p>

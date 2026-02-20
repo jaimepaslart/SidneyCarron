@@ -1,0 +1,88 @@
+---
+interface Props {
+  text: string;
+  tag?: string;
+  class?: string;
+  delay?: number;
+}
+
+const {
+  text,
+  tag: Tag = 'h1',
+  class: className = '',
+  delay = 0,
+} = Astro.props;
+---
+
+<Tag
+  class={`text-reveal ${className}`}
+  data-splitting
+  data-delay={delay}
+>
+  {text}
+</Tag>
+
+<script>
+  import Splitting from 'splitting';
+
+  function initTextReveal() {
+    // Clean up stale animations from HMR reloads
+    document.querySelectorAll('.text-reveal[data-split-done]').forEach((el) => {
+      el.querySelectorAll('.char').forEach((c) => c.getAnimations().forEach((a) => a.cancel()));
+      el.removeAttribute('data-split-done');
+    });
+
+    const elements = document.querySelectorAll('.text-reveal:not([data-split-done])');
+    if (!elements.length) return;
+
+    Splitting({ target: '.text-reveal:not([data-split-done])', by: 'chars' });
+    elements.forEach((el) => el.setAttribute('data-split-done', ''));
+
+    const prefersReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+    elements.forEach((el) => {
+      const chars = el.querySelectorAll('.char') as NodeListOf<HTMLElement>;
+
+      // Set initial state: hidden (no transition yet)
+      chars.forEach((char) => {
+        char.style.display = 'inline-block';
+        if (prefersReduced) {
+          char.style.opacity = '1';
+          char.style.transform = 'none';
+        } else {
+          char.style.opacity = '0';
+          char.style.transform = 'translateY(10px)';
+        }
+      });
+
+      if (prefersReduced) return;
+
+      const baseDelay = parseInt(el.getAttribute('data-delay') || '0', 10);
+
+      const observer = new IntersectionObserver(
+        (entries) => {
+          entries.forEach((entry) => {
+            if (entry.isIntersecting) {
+              chars.forEach((char, i) => {
+                const charDelay = baseDelay + i * 30;
+                setTimeout(() => {
+                  char.style.transition = 'none';
+                  void char.offsetHeight;
+                  char.style.transition = 'opacity 0.4s ease, transform 0.4s ease';
+                  char.style.opacity = '1';
+                  char.style.transform = 'translateY(0)';
+                }, charDelay);
+              });
+              observer.unobserve(entry.target);
+            }
+          });
+        },
+        { rootMargin: '0px', threshold: 0.1 }
+      );
+
+      observer.observe(el);
+    });
+  }
+
+  document.addEventListener('astro:page-load', initTextReveal);
+</script>

@@ -1,5 +1,6 @@
 ---
 import PageLayout from '@/layouts/PageLayout.astro';
+import ScrollReveal from '@/components/ScrollReveal.astro';
 import { getTranslation, getLocalizedPath, type Lang } from '@/i18n';
 
 interface Props {
@@ -24,19 +25,6 @@ const jsonLd = {
       image: `${siteUrl}/images/portrait-sidney-carron.jpg`,
       url: siteUrl,
       email: 'contact@sidneycarron.com',
-      birthDate: '1985',
-      nationality: lang === 'fr' ? 'Française' : 'French',
-      knowsAbout: lang === 'fr'
-        ? ['empreinte solaire', 'héliographie', 'photographie expérimentale', 'papier photosensible', 'techniques mixtes', 'art contemporain']
-        : ['solar imprint', 'heliography', 'experimental photography', 'photosensitive paper', 'mixed media', 'contemporary art'],
-      workLocation: {
-        '@type': 'Place',
-        name: 'Montreuil, Seine-Saint-Denis',
-      },
-      alumniOf: {
-        '@type': 'EducationalOrganization',
-        name: 'École Nationale Supérieure des Beaux-Arts de Paris',
-      },
       sameAs: [
         'https://instagram.com/sidneycarron',
       ],
@@ -61,15 +49,10 @@ Habitée par une soif de liberté inextinguible, refusant tout ancrage, elle s'e
 
 À son retour, elle réalise des projets remarqués : la couverture de Playboy avec Joey Starr, le clip « Dangereuse » du chanteur Christophe, l'affiche du DJ set littéraire de Frédéric Beigbeder. Mais c'est dans le retour aux origines de la photographie qu'elle trouve sa voie la plus profonde.
 
-Aujourd'hui, Sidney Carron aborde la photographie à partir de sa matrice originelle : le travail de la lumière. Elle travaille dehors, au bord de l'eau, en disposant corps, fragments végétaux, branches et pierres directement sur la surface photosensible, laissant le soleil, le vent, le sable et la mer intervenir dans l'image. Ses œuvres sont faites de silhouettes flottantes, de peaux devenues lumière, de traces presque fantomatiques — à mi-chemin entre photographie et peinture, comme des fragments de mémoire laissés sur le rivage.
+Aujourd'hui, Sidney Carron aborde la photographie à partir de sa matrice originelle : le travail de la lumière. Elle travaille dehors, au bord de l'eau, en disposant corps, fragments végétaux, branches et pierres directement sur la surface photosensible, laissant le soleil, le vent, le sable et la mer intervenir dans l'image.
 
 Elle est représentée par la Sakanagallery à Donostia / San Sebastián.`,
-  statementTitle: 'Démarche artistique',
-  statementText: `« J'écris avec la lumière. Pour être en osmose, en accord total avec la nature, j'ai remplacé l'appareil photo par le soleil. »
-
-« Tu es là, avec la personne que tu photographies, avec la lumière, avec la mer qui fout le bordel… Les éléments se mettent en mouvement. La lumière, c'est le feu. L'air active le pH, transforme la matière. La mer arrête l'image qui se transforme. Et puis la terre, sur laquelle reposent les corps, laisse une réaction chimique, là où tu es. »
-
-« J'ai trouvé un procédé alchimique qui est un témoignage. Emprunter la lumière, les embruns et la mer, pour empreinter les corps sur cette Terre. »`,
+  statement: `« J'écris avec la lumière. Pour être en osmose, en accord total avec la nature, j'ai remplacé l'appareil photo par le soleil. »`,
   cvTitle: 'Parcours',
   cvItems: [
     { year: 'Enfance', text: 'Née à Vienne (Isère) — passionnée de peinture dès l\'âge de cinq ans' },
@@ -90,15 +73,10 @@ Driven by an insatiable thirst for freedom, refusing any permanent home, she tra
 
 On her return, she completed notable projects: the Playboy cover featuring Joey Starr, the music video for "Dangereuse" by the singer Christophe, and the poster for Frédéric Beigbeder's literary DJ set. But it is in returning to the origins of photography that she found her deepest calling.
 
-Today, Sidney Carron approaches photography from its original matrix: the work of light. She works outdoors, by the water, placing bodies, plant fragments, branches and stones directly onto photosensitive paper, letting the sun, wind, sand and sea intervene in the image. Her works are made of floating silhouettes, skin turned to light, and nearly phantomatic traces — halfway between photography and painting, like fragments of memory left on the shore.
+Today, Sidney Carron approaches photography from its original matrix: the work of light. She works outdoors, by the water, placing bodies, plant fragments, branches and stones directly onto photosensitive paper, letting the sun, wind, sand and sea intervene in the image.
 
 She is represented by Sakanagallery in Donostia / San Sebastián.`,
-  statementTitle: 'Artistic Statement',
-  statementText: `« I write with light. To be in osmosis, in total harmony with nature, I replaced the camera with the sun. »
-
-« You are there, with the person you photograph, with the light, with the sea making a mess of things… The elements begin to move. Light is fire. The air activates the pH, transforms the matter. The sea stops the image as it transforms. And then the earth, on which the bodies rest, leaves a chemical reaction, right where you are. »
-
-« I found an alchemical process that is a testimony. Borrowing the light, the sea spray and the sea, to imprint bodies on this Earth. »`,
+  statement: `"I write with light. To be in osmosis, in total harmony with nature, I replaced the camera with the sun."`,
   cvTitle: 'Background',
   cvItems: [
     { year: 'Childhood', text: 'Born in Vienne (Isère, France) — passionate about painting from the age of five' },
@@ -119,100 +97,81 @@ She is represented by Sakanagallery in Donostia / San Sebastián.`,
   canonicalPath="/about"
   jsonLd={jsonLd}
 >
-  <!-- Hero: Portrait + Intro -->
-  <section class="museum-section animate-on-scroll">
+  <!-- 1. Split portrait/intro -->
+  <section class="museum-section">
     <div class="museum-container">
-      <div class="grid grid-cols-1 lg:grid-cols-2 gap-gutter-lg">
-        <!-- Portrait -->
-        <div>
-          <div class="aspect-[3/4] bg-[#E8E6E0] overflow-hidden">
-            <img
-              src="/images/portrait-sidney-carron.jpg"
-              alt={lang === 'fr' ? 'Portrait de Sidney Carron dans son atelier' : 'Portrait of Sidney Carron in her studio'}
-              width="600"
-              height="800"
-              loading="eager"
-              class="w-full h-full object-cover"
-            />
-          </div>
+      <div class="grid grid-cols-1 lg:grid-cols-5 gap-8 lg:gap-16">
+        <!-- Portrait (40%) -->
+        <div class="lg:col-span-2">
+          <ScrollReveal>
+            <div class="overflow-hidden bg-[#F5F5F5]">
+              <img
+                src="/images/portrait-sidney-carron.jpg"
+                alt={lang === 'fr' ? 'Portrait de Sidney Carron' : 'Portrait of Sidney Carron'}
+                width="600"
+                height="800"
+                loading="eager"
+                class="w-full h-auto object-cover"
+              />
+            </div>
+          </ScrollReveal>
         </div>
 
-        <!-- Intro -->
-        <div class="flex flex-col justify-center">
-          <h1 class="text-h1 font-serif font-light text-museum-text">{bio.title}</h1>
-          <p class="font-sans text-body text-museum-text mt-6 text-lg" style="line-height: 1.7;">
-            {bio.intro}
-          </p>
-          <div class="mt-8">
-            <a
-              href={getLocalizedPath(lang, '/contact')}
-              class="inline-block font-sans text-small uppercase tracking-museum px-6 py-2.5 border border-current rounded-full text-museum-text bg-none hover:bg-museum-text hover:text-museum-white transition-colors duration-base ease-museum"
-            >
-              {t('about.contact_cta')}
-            </a>
-          </div>
+        <!-- Intro (60%) -->
+        <div class="lg:col-span-3 flex flex-col justify-center">
+          <ScrollReveal delay={100}>
+            <h1 class="font-serif font-light text-4xl text-text">{bio.title}</h1>
+            <p class="font-sans text-lg text-text mt-6 leading-relaxed">{bio.intro}</p>
+          </ScrollReveal>
         </div>
       </div>
     </div>
   </section>
 
-  <!-- Biography -->
-  <section class="museum-section bg-museum-surface animate-on-scroll">
+  <!-- 2. Biography -->
+  <section class="museum-section border-t border-border">
     <div class="museum-container max-w-3xl">
-      <h2 class="text-h2 font-serif font-light text-museum-text mb-8">{bio.bioTitle}</h2>
-      <div class="font-sans text-body text-museum-text space-y-4" style="line-height: 1.7;">
-        {bio.bioText.split('\n\n').map(paragraph => (
-          <p>{paragraph}</p>
-        ))}
-      </div>
+      <ScrollReveal>
+        <h2 class="font-serif font-light text-2xl text-text mb-6">{bio.bioTitle}</h2>
+      </ScrollReveal>
+      <ScrollReveal delay={100}>
+        <div class="font-sans text-base text-text leading-relaxed space-y-4">
+          {bio.bioText.split('\n\n').map(paragraph => (
+            <p>{paragraph}</p>
+          ))}
+        </div>
+      </ScrollReveal>
     </div>
   </section>
 
-  <!-- Statement: Elizeth italic, larger size, with guillemets « » -->
-  <section class="museum-section animate-on-scroll">
-    <div class="museum-container max-w-3xl">
-      <h2 class="text-h2 font-serif font-light text-museum-text mb-8">{bio.statementTitle}</h2>
-      <div class="space-y-6">
-        {bio.statementText.split('\n\n').map(paragraph => (
-          <p class="font-serif text-h3 text-museum-text italic" style="line-height: 1.5;">
-            {paragraph}
-          </p>
-        ))}
-      </div>
+  <!-- 3. Artistic statement -->
+  <section class="museum-section border-t border-border">
+    <div class="museum-container">
+      <ScrollReveal>
+        <blockquote class="font-serif italic text-2xl md:text-3xl text-center max-w-3xl mx-auto text-text leading-relaxed">
+          {bio.statement}
+        </blockquote>
+      </ScrollReveal>
     </div>
   </section>
 
-  <!-- CV / Parcours -->
-  <section class="museum-section bg-museum-surface animate-on-scroll">
+  <!-- 4. CV / Timeline -->
+  <section class="museum-section border-t border-border">
     <div class="museum-container max-w-3xl">
-      <h2 class="text-h2 font-serif font-light text-museum-text mb-8">{bio.cvTitle}</h2>
-      <div class="space-y-0">
-        {bio.cvItems.map(({ year, text }) => (
-          <div class="flex gap-6 items-baseline border-b border-museum-border py-4 animate-on-scroll">
-            <span class="museum-mono text-body text-museum-label w-28 shrink-0">{year}</span>
-            <span class="font-sans text-body text-museum-text">{text}</span>
-          </div>
+      <ScrollReveal>
+        <h2 class="font-serif font-light text-2xl text-text mb-8">{bio.cvTitle}</h2>
+      </ScrollReveal>
+      <div class="relative border-l-2 border-border pl-8 ml-1.5 space-y-0">
+        {bio.cvItems.map(({ year, text }, i) => (
+          <ScrollReveal delay={i * 80}>
+            <div class="relative py-4 border-b border-border last:border-0">
+              <div class="absolute -left-[calc(2rem+7px)] top-5 w-3 h-3 rounded-full bg-text" />
+              <span class="font-sans text-sm text-secondary block">{year}</span>
+              <span class="font-sans text-base text-text block mt-1">{text}</span>
+            </div>
+          </ScrollReveal>
         ))}
       </div>
     </div>
   </section>
 </PageLayout>
-
-<script>
-  const items = document.querySelectorAll('.animate-on-scroll');
-  if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
-    const observer = new IntersectionObserver(
-      (entries) => {
-        const visible = entries.filter(e => e.isIntersecting);
-        visible.forEach((entry, i) => {
-          setTimeout(() => {
-            entry.target.classList.add('is-visible');
-          }, i * 100);
-          observer.unobserve(entry.target);
-        });
-      },
-      { threshold: 0.1, rootMargin: '0px 0px -40px 0px' }
-    );
-    items.forEach(item => observer.observe(item));
-  }
-</script>

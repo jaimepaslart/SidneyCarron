@@ -7,35 +7,26 @@ export const fr = {
   'nav.about': 'À propos',
   'nav.contact': 'Contact',
 
-  // Language toggle
-  'lang.current': 'FR',
-  'lang.switch': 'EN',
-  'lang.label': 'Changer de langue',
+  // Navigation — locations (short labels for header/menu)
+  'nav.location.bresil': 'Brésil',
+  'nav.location.dakar': 'Dakar',
+  'nav.location.saint-tropez': 'Saint-Tropez',
+  'nav.location.reunion': 'La Réunion',
+  'nav.location.sri-lanka': 'Sri Lanka',
+  'nav.location.costa-rica': 'Costa Rica',
 
   // Home
   'home.title': 'Sidney Carron — Artiste photographe',
   'home.description': 'Site officiel de Sidney Carron, artiste photographe. Empreintes solaires, corps et lumière. Découvrez ses œuvres, séries, expositions et actualités.',
   'home.hero.statement': "J'écris avec la lumière",
   'home.hero.subtitle': 'Artiste photographe',
-  'home.featured.title': 'Œuvres sélectionnées',
   'home.featured.label': 'Sélection',
   'home.featured.cta': 'Voir toutes les œuvres',
-  'home.exhibitions.title': 'Expositions',
-  'home.exhibitions.label': 'Exposition en cours',
-  'home.exhibitions.current': 'En cours & à venir',
   'home.exhibitions.cta': 'Voir les expositions',
-  'home.press.title': 'Presse',
-  'home.press.label': 'Dans la presse',
-  'home.press.cta': 'Toute la presse',
-  'home.contact.intro': 'Pour toute demande',
-  'home.contact.cta': 'Contactez-moi',
 
   // Works
   'works.title': 'Œuvres',
   'works.description': 'Découvrez l\'ensemble des œuvres de Sidney Carron : empreintes solaires, photographies, installations lumineuses.',
-  'works.filter.all': 'Tout',
-  'works.filter.clear': 'Réinitialiser',
-  'works.empty': 'Aucune œuvre trouvée pour ces critères.',
   'works.count': '{count} œuvre(s)',
   'works.count_singular': 'œuvre',
   'works.count_plural': 'œuvres',
@@ -88,38 +79,13 @@ export const fr = {
   // About
   'about.title': 'À propos',
   'about.description': 'Biographie et démarche artistique de Sidney Carron — photographe, empreintes solaires.',
-  'about.bio_title': 'Biographie',
-  'about.statement_title': 'Démarche artistique',
-  'about.cv_title': 'Parcours',
-  'about.contact_cta': 'Contactez-moi',
 
   // Contact
   'contact.title': 'Contact',
   'contact.description': 'Contactez Sidney Carron pour toute demande concernant ses empreintes solaires, expositions ou collaborations.',
   'contact.intro': 'Pour toute demande concernant mes œuvres, une exposition ou une collaboration, n\'hésitez pas à me contacter.',
-  'contact.name': 'Nom',
-  'contact.name_placeholder': 'Votre nom',
-  'contact.email': 'Email',
-  'contact.email_placeholder': 'votre@email.com',
-  'contact.subject': 'Sujet',
-  'contact.subject_placeholder': 'Choisissez un sujet',
-  'contact.subject_gallery': 'Galerie',
-  'contact.subject_collector': 'Collectionneur',
-  'contact.subject_press': 'Presse',
-  'contact.subject_other': 'Autre',
-  'contact.message': 'Message',
-  'contact.message_placeholder': 'Votre message...',
-  'contact.submit': 'Envoyer',
-  'contact.sending': 'Envoi en cours...',
-  'contact.success': 'Votre message a bien été envoyé. Je vous répondrai dans les meilleurs délais.',
-  'contact.error': 'Une erreur est survenue. Veuillez réessayer ou m\'écrire directement.',
-  'contact.privacy': 'Vos données sont traitées uniquement pour répondre à votre demande.',
 
   // Footer
-  'footer.artist_title': 'Artiste photographe',
-  'footer.navigation': 'Navigation',
-  'footer.contact_title': 'Contact',
-  'footer.social': 'Réseaux',
   'footer.legal': 'Mentions légales',
   'footer.copyright': '© {year} Sidney Carron. Tous droits réservés.',
 
@@ -136,11 +102,6 @@ export const fr = {
   'legal.data_text': 'Les données collectées via le formulaire de contact (nom, adresse email, message) sont utilisées uniquement pour répondre à vos demandes. Elles ne sont ni transmises à des tiers ni utilisées à des fins commerciales. Ce site n\'utilise pas de cookies de suivi ou de publicité.',
   'legal.design_title': 'Conception',
   'legal.design_text': 'Site conçu et développé pour Sidney Carron.',
-
-  // Lightbox
-  'lightbox.close': 'Fermer',
-  'lightbox.prev': 'Image précédente',
-  'lightbox.next': 'Image suivante',
 
   // 404
   '404.title': 'Page non trouvée',

@@ -1,6 +1,8 @@
 ---
 import PageLayout from '@/layouts/PageLayout.astro';
 import WorkCard from '@/components/WorkCard.astro';
+import MasonryGallery from '@/components/MasonryGallery.astro';
+import ScrollReveal from '@/components/ScrollReveal.astro';
 import { getCollection } from 'astro:content';
 import { getTranslation, getLocalizedPath, type Lang } from '@/i18n';
 
@@ -28,9 +30,9 @@ const seriesWorks = allWorks
   .filter(w => w.data.series === series.data.slug)
   .sort((a, b) => a.data.order - b.data.order);
 
-const otherSeries = allSeries
-  .filter(s => s.data.slug !== series.data.slug)
-  .sort((a, b) => a.data.order - b.data.order);
+const countLabel = lang === 'en'
+  ? `${seriesWorks.length} ${seriesWorks.length <= 1 ? 'work' : 'works'}`
+  : `${seriesWorks.length} ${seriesWorks.length <= 1 ? 'œuvre' : 'œuvres'}`;
 
 const siteUrl = 'https://sidneycarron.com';
 
@@ -65,7 +67,7 @@ const jsonLd = {
 >
   <!-- Hero: full-width cover -->
   <section class="relative">
-    <div class="aspect-[21/9] overflow-hidden bg-[#E8E6E0]">
+    <div class="w-full max-h-[60vh] overflow-hidden bg-[#F5F5F5]">
       <img
         src={series.data.cover.src}
         alt={lang === 'en' ? series.data.cover.alt_en : series.data.cover.alt_fr}
@@ -75,123 +77,63 @@ const jsonLd = {
         class="w-full h-full object-cover"
       />
     </div>
-    <div class="absolute inset-0 flex items-end">
+    <div class="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent flex items-end">
       <div class="museum-container pb-8 md:pb-12">
-        <h1 class="text-hero font-serif font-light text-museum-white drop-shadow-lg">
+        <h1 class="font-serif font-light text-4xl md:text-5xl lg:text-6xl text-white drop-shadow-lg">
           {title}
         </h1>
       </div>
     </div>
   </section>
 
-  <!-- Content -->
-  <section class="museum-section animate-on-scroll">
+  <!-- Info section -->
+  <section class="museum-section">
     <div class="museum-container">
-      <a
-        href={getLocalizedPath(lang, '/series')}
-        class="inline-block font-sans text-small text-museum-label hover:text-museum-text transition-colors duration-base ease-museum mb-8"
-      >
-        ← {t('series.back')}
-      </a>
+      <ScrollReveal>
+        <a
+          href={getLocalizedPath(lang, '/series')}
+          class="inline-block font-sans text-sm text-secondary hover:text-text transition-colors duration-hover ease mb-6"
+        >
+          &larr; {t('series.back')}
+        </a>
+        <p class="text-sm text-secondary uppercase tracking-widest">{countLabel}</p>
+      </ScrollReveal>
 
-      <p class="museum-mono text-small text-museum-label mt-2">
-        {seriesWorks.length} {seriesWorks.length <= 1 ? t('series.works_count_singular') : t('series.works_count_plural')}
-      </p>
+      {description && (
+        <ScrollReveal delay={100}>
+          <p class="font-serif text-lg text-text max-w-3xl mt-6 leading-relaxed">{description}</p>
+        </ScrollReveal>
+      )}
 
       {curatorial && (
-        <div class="mt-8 grid grid-cols-1 lg:grid-cols-2 gap-gutter-md lg:gap-gutter-lg">
-          {curatorial.split('\n\n').length > 1 ? (
-            curatorial.split('\n\n').map(paragraph => (
-              <p class="font-sans text-body text-museum-text" style="line-height: 1.7;">
-                {paragraph}
-              </p>
-            ))
-          ) : (
-            <p class="font-sans text-body text-museum-text lg:col-span-2 max-w-3xl" style="line-height: 1.7;">
-              {curatorial}
-            </p>
-          )}
-        </div>
+        <ScrollReveal delay={200}>
+          <p class="font-sans text-base text-secondary max-w-3xl mt-4 leading-relaxed">{curatorial}</p>
+        </ScrollReveal>
       )}
     </div>
   </section>
 
   <!-- Works in this series -->
-  <section class="museum-section bg-museum-surface">
+  <section class="museum-section border-t border-border">
     <div class="museum-container">
-      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-gutter-md lg:gap-gutter-lg">
-        {seriesWorks.map((work) => (
-          <div class="animate-on-scroll">
-            <WorkCard
-              slug={lang === 'en' ? work.data.slug_en : work.data.slug}
-              title={lang === 'en' ? work.data.title_en : work.data.title_fr}
-              year={work.data.year}
-              medium={lang === 'en' ? work.data.medium_en : work.data.medium_fr}
-              image={{
-                src: work.data.images[0].src,
-                alt: lang === 'en' ? work.data.images[0].alt_en : work.data.images[0].alt_fr,
-              }}
-            />
+      <MasonryGallery>
+        {seriesWorks.map((work, i) => (
+          <div class="break-inside-avoid mb-4 md:mb-6">
+            <ScrollReveal delay={i * 100}>
+              <WorkCard
+                slug={lang === 'en' ? work.data.slug_en : work.data.slug}
+                title={lang === 'en' ? work.data.title_en : work.data.title_fr}
+                year={work.data.year}
+                medium={lang === 'en' ? work.data.medium_en : work.data.medium_fr}
+                image={{
+                  src: work.data.images[0].src,
+                  alt: lang === 'en' ? work.data.images[0].alt_en : work.data.images[0].alt_fr,
+                }}
+              />
+            </ScrollReveal>
           </div>
         ))}
-      </div>
+      </MasonryGallery>
     </div>
   </section>
-
-  <!-- Other series -->
-  {otherSeries.length > 0 && (
-    <section class="museum-section animate-on-scroll">
-      <div class="museum-container">
-        <h2 class="text-h2 font-serif font-light text-museum-text mb-8 md:mb-12">
-          {t('series.other')}
-        </h2>
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-gutter-md lg:gap-gutter-lg">
-          {otherSeries.map((s) => (
-            <a
-              href={getLocalizedPath(lang, `/series/${lang === 'en' ? s.data.slug_en : s.data.slug}`)}
-              class="group flex gap-6 items-start animate-on-scroll"
-            >
-              <div class="w-24 h-24 shrink-0 overflow-hidden bg-[#E8E6E0]">
-                <img
-                  src={s.data.cover.src}
-                  alt={lang === 'en' ? s.data.cover.alt_en : s.data.cover.alt_fr}
-                  width="96"
-                  height="96"
-                  loading="lazy"
-                  class="w-full h-full object-cover"
-                />
-              </div>
-              <div>
-                <h3 class="font-serif text-h3 text-museum-text group-hover:text-museum-accent transition-colors duration-base ease-museum">
-                  {lang === 'en' ? s.data.title_en : s.data.title_fr}
-                </h3>
-                <p class="font-sans text-caption text-museum-caption mt-1 line-clamp-2">
-                  {lang === 'en' ? s.data.description_en : s.data.description_fr}
-                </p>
-              </div>
-            </a>
-          ))}
-        </div>
-      </div>
-    </section>
-  )}
 </PageLayout>
-
-<script>
-  const items = document.querySelectorAll('.animate-on-scroll');
-  if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
-    const observer = new IntersectionObserver(
-      (entries) => {
-        const visible = entries.filter(e => e.isIntersecting);
-        visible.forEach((entry, i) => {
-          setTimeout(() => {
-            entry.target.classList.add('is-visible');
-          }, i * 100);
-          observer.unobserve(entry.target);
-        });
-      },
-      { threshold: 0.1, rootMargin: '0px 0px -40px 0px' }
-    );
-    items.forEach(item => observer.observe(item));
-  }
-</script>

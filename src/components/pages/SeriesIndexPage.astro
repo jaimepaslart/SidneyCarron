@@ -1,5 +1,7 @@
 ---
 import PageLayout from '@/layouts/PageLayout.astro';
+import SeriesCard from '@/components/SeriesCard.astro';
+import ScrollReveal from '@/components/ScrollReveal.astro';
 import { getCollection } from 'astro:content';
 import { getTranslation, getLocalizedPath, type Lang } from '@/i18n';
 
@@ -49,65 +51,29 @@ const jsonLd = {
 >
   <section class="museum-section">
     <div class="museum-container">
-      <h1 class="text-h1 font-serif font-light text-museum-text mb-8 md:mb-12">
-        {t('series.title')}
-      </h1>
+      <ScrollReveal>
+        <h1 class="font-serif font-light text-4xl text-text mb-8 md:mb-12">{t('series.title')}</h1>
+      </ScrollReveal>
 
-      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-gutter-md lg:gap-gutter-lg">
-        {series.map((s) => {
-          const seriesTitle = lang === 'en' ? s.data.title_en : s.data.title_fr;
-          const seriesDesc = lang === 'en' ? s.data.description_en : s.data.description_fr;
-          const seriesSlug = lang === 'en' ? s.data.slug_en : s.data.slug;
-          const count = getWorksCount(s.data.slug);
-
-          return (
-            <a
-              href={getLocalizedPath(lang, `/series/${seriesSlug}`)}
-              class="group block animate-on-scroll"
-            >
-              <div class="relative overflow-hidden aspect-video bg-[#E8E6E0]">
-                <img
-                  src={s.data.cover.src}
-                  alt={lang === 'en' ? s.data.cover.alt_en : s.data.cover.alt_fr}
-                  width="600"
-                  height="338"
-                  loading="lazy"
-                  class="w-full h-full object-cover transition-transform duration-slow ease-museum group-hover:scale-[1.02]"
-                />
-                <div class="absolute inset-0 bg-museum-text/0 group-hover:bg-museum-text/10 transition-colors duration-base ease-museum" />
-              </div>
-              <h2 class="font-serif text-h3 text-museum-text mt-4 group-hover:text-museum-accent transition-colors duration-base ease-museum">
-                {seriesTitle}
-              </h2>
-              <p class="font-sans text-body text-museum-caption mt-1 line-clamp-2">
-                {seriesDesc}
-              </p>
-              <p class="museum-mono text-small text-museum-label mt-2">
-                {count} {count <= 1 ? t('series.works_count_singular') : t('series.works_count_plural')}
-              </p>
-            </a>
-          );
-        })}
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+        {series.map((s, i) => (
+          <ScrollReveal delay={i * 100}>
+            <SeriesCard
+              series={{
+                title: lang === 'en' ? s.data.title_en : s.data.title_fr,
+                slug: lang === 'en' ? s.data.slug_en : s.data.slug,
+                cover: {
+                  src: s.data.cover.src,
+                  alt: lang === 'en' ? s.data.cover.alt_en : s.data.cover.alt_fr,
+                },
+                description: lang === 'en' ? s.data.description_en : s.data.description_fr,
+              }}
+              workCount={getWorksCount(s.data.slug)}
+              lang={lang}
+            />
+          </ScrollReveal>
+        ))}
       </div>
     </div>
   </section>
 </PageLayout>
-
-<script>
-  const items = document.querySelectorAll('.animate-on-scroll');
-  if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
-    const observer = new IntersectionObserver(
-      (entries) => {
-        const visible = entries.filter(e => e.isIntersecting);
-        visible.forEach((entry, i) => {
-          setTimeout(() => {
-            entry.target.classList.add('is-visible');
-          }, i * 100);
-          observer.unobserve(entry.target);
-        });
-      },
-      { threshold: 0.1, rootMargin: '0px 0px -40px 0px' }
-    );
-    items.forEach(item => observer.observe(item));
-  }
-</script>

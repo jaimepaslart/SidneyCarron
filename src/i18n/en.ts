@@ -9,35 +9,26 @@ export const en: Record<TranslationKey, string> = {
   'nav.about': 'About',
   'nav.contact': 'Contact',
 
-  // Language toggle
-  'lang.current': 'EN',
-  'lang.switch': 'FR',
-  'lang.label': 'Switch language',
+  // Navigation — locations (short labels for header/menu)
+  'nav.location.bresil': 'Brazil',
+  'nav.location.dakar': 'Dakar',
+  'nav.location.saint-tropez': 'Saint-Tropez',
+  'nav.location.reunion': 'Reunion',
+  'nav.location.sri-lanka': 'Sri Lanka',
+  'nav.location.costa-rica': 'Costa Rica',
 
   // Home
   'home.title': 'Sidney Carron — Visual Artist & Photographer',
   'home.description': 'Official website of Sidney Carron, visual artist and photographer. Solar imprints, bodies and light. Discover her works, series, exhibitions and news.',
   'home.hero.statement': 'I write with light',
   'home.hero.subtitle': 'Visual artist & photographer',
-  'home.featured.title': 'Selected Works',
   'home.featured.label': 'Selection',
   'home.featured.cta': 'View all works',
-  'home.exhibitions.title': 'Exhibitions',
-  'home.exhibitions.label': 'Current Exhibition',
-  'home.exhibitions.current': 'Current & Upcoming',
   'home.exhibitions.cta': 'View exhibitions',
-  'home.press.title': 'Press',
-  'home.press.label': 'In the Press',
-  'home.press.cta': 'All press',
-  'home.contact.intro': 'For any inquiry',
-  'home.contact.cta': 'Get in touch',
 
   // Works
   'works.title': 'Works',
   'works.description': 'Discover the complete body of work by Sidney Carron: solar imprints, photographs, light installations.',
-  'works.filter.all': 'All',
-  'works.filter.clear': 'Clear filters',
-  'works.empty': 'No works found for these criteria.',
   'works.count': '{count} work(s)',
   'works.count_singular': 'work',
   'works.count_plural': 'works',
@@ -90,38 +81,13 @@ export const en: Record<TranslationKey, string> = {
   // About
   'about.title': 'About',
   'about.description': 'Biography and artistic statement of Sidney Carron — photographer, solar imprints.',
-  'about.bio_title': 'Biography',
-  'about.statement_title': 'Artistic Statement',
-  'about.cv_title': 'Background',
-  'about.contact_cta': 'Get in touch',
 
   // Contact
   'contact.title': 'Contact',
   'contact.description': 'Contact Sidney Carron for inquiries about solar imprints, exhibitions or collaborations.',
   'contact.intro': 'For any inquiry regarding my works, an exhibition or a collaboration, please feel free to reach out.',
-  'contact.name': 'Name',
-  'contact.name_placeholder': 'Your name',
-  'contact.email': 'Email',
-  'contact.email_placeholder': 'your@email.com',
-  'contact.subject': 'Subject',
-  'contact.subject_placeholder': 'Choose a subject',
-  'contact.subject_gallery': 'Gallery',
-  'contact.subject_collector': 'Collector',
-  'contact.subject_press': 'Press',
-  'contact.subject_other': 'Other',
-  'contact.message': 'Message',
-  'contact.message_placeholder': 'Your message...',
-  'contact.submit': 'Send',
-  'contact.sending': 'Sending...',
-  'contact.success': 'Your message has been sent successfully. I will get back to you shortly.',
-  'contact.error': 'An error occurred. Please try again or write to me directly.',
-  'contact.privacy': 'Your data is only used to respond to your inquiry.',
 
   // Footer
-  'footer.artist_title': 'Visual artist & photographer',
-  'footer.navigation': 'Navigation',
-  'footer.contact_title': 'Contact',
-  'footer.social': 'Social',
   'footer.legal': 'Legal notice',
   'footer.copyright': '© {year} Sidney Carron. All rights reserved.',
 
@@ -138,11 +104,6 @@ export const en: Record<TranslationKey, string> = {
   'legal.data_text': 'Data collected through the contact form (name, email address, message) is used solely to respond to your inquiries. It is neither shared with third parties nor used for commercial purposes. This website does not use tracking or advertising cookies.',
   'legal.design_title': 'Design',
   'legal.design_text': 'Website designed and developed for Sidney Carron.',
-
-  // Lightbox
-  'lightbox.close': 'Close',
-  'lightbox.prev': 'Previous image',
-  'lightbox.next': 'Next image',
 
   // 404
   '404.title': 'Page not found',

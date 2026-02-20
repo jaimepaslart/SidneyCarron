@@ -1,6 +1,8 @@
 ---
 import '@/styles/global.css';
+import { ClientRouter } from 'astro:transitions';
 import { getLangFromUrl, getTranslation, getLocalizedPath } from '@/i18n';
+import CustomCursor from '@/components/CustomCursor.astro';
 
 interface Props {
   title: string;
@@ -64,23 +66,25 @@ const ogImageUrl = ogImage ? `${siteUrl}${ogImage}` : `${siteUrl}/images/og-defa
     <meta name="twitter:image" content={ogImageUrl} />
 
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-    <!-- Font preloads: uncomment when .woff2 files are added to public/fonts/
-    <link rel="preload" href="/fonts/elizeth-light.woff2" as="font" type="font/woff2" crossorigin />
-    <link rel="preload" href="/fonts/relative-regular.woff2" as="font" type="font/woff2" crossorigin />
-    <link rel="preload" href="/fonts/relativemono-regular.woff2" as="font" type="font/woff2" crossorigin />
-    -->
+
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;1,300;1,400&family=Inter:wght@300;400;500&display=swap" rel="stylesheet" />
 
     {jsonLd && (
       <script type="application/ld+json" set:html={JSON.stringify(jsonLd)} />
     )}
+
+    <ClientRouter />
   </head>
   <body class="flex flex-col min-h-dvh">
     <a
       href="#main-content"
-      class="sr-only focus:not-sr-only focus:fixed focus:top-4 focus:left-4 focus:z-[200] focus:bg-museum-accent focus:text-museum-white focus:px-4 focus:py-2 focus:text-caption focus:font-sans"
+      class="sr-only focus:not-sr-only focus:fixed focus:top-4 focus:left-4 focus:z-[200] focus:bg-text focus:text-white focus:px-4 focus:py-2 focus:text-caption focus:font-sans"
     >
       {t('a11y.skip')}
     </a>
+    <CustomCursor />
     <slot />
   </body>
 </html>

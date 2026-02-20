@@ -1,0 +1,78 @@
+---
+interface Props {
+  tag?: string;
+  delay?: number;
+  threshold?: number;
+  class?: string;
+}
+
+const {
+  tag: Tag = 'div',
+  delay = 0,
+  threshold = 0.1,
+  class: className = '',
+} = Astro.props;
+---
+
+<Tag
+  class={`scroll-reveal ${className}`}
+  data-sr-delay={delay}
+  data-sr-threshold={threshold}
+>
+  <slot />
+</Tag>
+
+<script>
+  function initScrollReveal() {
+    // Clean up stale animations from HMR reloads
+    document.querySelectorAll('.scroll-reveal[data-sr-init]').forEach((el) => {
+      el.getAnimations().forEach((a) => a.cancel());
+      el.removeAttribute('data-sr-init');
+    });
+
+    const elements = document.querySelectorAll('.scroll-reveal:not([data-sr-init])') as NodeListOf<HTMLElement>;
+    if (!elements.length) return;
+
+    const prefersReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+    elements.forEach((el) => {
+      el.setAttribute('data-sr-init', '');
+
+      if (prefersReduced) {
+        el.style.opacity = '1';
+        el.style.transform = 'none';
+        return;
+      }
+
+      // Set initial hidden state (no transition)
+      el.style.opacity = '0';
+      el.style.transform = 'translateY(20px)';
+
+      const delay = parseInt(el.getAttribute('data-sr-delay') || '0', 10);
+      const threshold = parseFloat(el.getAttribute('data-sr-threshold') || '0.1');
+
+      const observer = new IntersectionObserver(
+        (entries) => {
+          entries.forEach((entry) => {
+            if (entry.isIntersecting) {
+              setTimeout(() => {
+                // Force reflow so browser knows current state before transition
+                el.style.transition = 'none';
+                void el.offsetHeight;
+                el.style.transition = 'opacity 700ms cubic-bezier(0.25, 0.1, 0.25, 1), transform 700ms cubic-bezier(0.25, 0.1, 0.25, 1)';
+                el.style.opacity = '1';
+                el.style.transform = 'translateY(0)';
+              }, delay);
+              observer.unobserve(entry.target);
+            }
+          });
+        },
+        { rootMargin: '0px', threshold }
+      );
+
+      observer.observe(el);
+    });
+  }
+
+  document.addEventListener('astro:page-load', initScrollReveal);
+</script>

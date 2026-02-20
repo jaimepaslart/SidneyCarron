@@ -1,0 +1,39 @@
+---
+import LocationWorksPage from '@/components/pages/LocationWorksPage.astro';
+import { getCollection } from 'astro:content';
+
+const locations = [
+  { slug: 'bresil', name_fr: 'Brésil', name_en: 'Brazil' },
+  { slug: 'dakar', name_fr: 'Dakar', name_en: 'Dakar' },
+  { slug: 'saint-tropez', name_fr: 'Saint-Tropez', name_en: 'Saint-Tropez' },
+  { slug: 'reunion', name_fr: 'La Réunion', name_en: 'Reunion Island' },
+  { slug: 'sri-lanka', name_fr: 'Sri Lanka', name_en: 'Sri Lanka' },
+  { slug: 'costa-rica', name_fr: 'Costa Rica', name_en: 'Costa Rica' },
+];
+
+export async function getStaticPaths() {
+  const allWorks = await getCollection('works');
+  const locations = [
+    { slug: 'bresil', name_fr: 'Brésil', name_en: 'Brazil' },
+    { slug: 'dakar', name_fr: 'Dakar', name_en: 'Dakar' },
+    { slug: 'saint-tropez', name_fr: 'Saint-Tropez', name_en: 'Saint-Tropez' },
+    { slug: 'reunion', name_fr: 'La Réunion', name_en: 'Reunion Island' },
+    { slug: 'sri-lanka', name_fr: 'Sri Lanka', name_en: 'Sri Lanka' },
+    { slug: 'costa-rica', name_fr: 'Costa Rica', name_en: 'Costa Rica' },
+  ];
+
+  return locations.map(loc => ({
+    params: { location: loc.slug },
+    props: {
+      locationName: loc.name_en,
+      works: allWorks
+        .filter(w => w.data.location === loc.slug)
+        .sort((a, b) => a.data.order - b.data.order),
+    },
+  }));
+}
+
+const { location } = Astro.params;
+const { locationName, works } = Astro.props;
+---
+<LocationWorksPage location={location!} locationName={locationName} works={works} lang="en" />

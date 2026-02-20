@@ -1,0 +1,102 @@
+---
+import ScrollReveal from '@/components/ScrollReveal.astro';
+import { getTranslation, getLocalizedPath, type Lang } from '@/i18n';
+
+interface Exhibition {
+  slug: string;
+  title: string;
+  venue: string;
+  city: string;
+  start_date: string;
+  end_date: string;
+  status: 'upcoming' | 'current' | 'past';
+}
+
+interface Props {
+  exhibitions: Exhibition[];
+  lang: Lang;
+}
+
+const { exhibitions, lang } = Astro.props;
+const t = getTranslation(lang);
+
+function formatDates(startStr: string, endStr: string): string {
+  const start = new Date(startStr);
+  const end = new Date(endStr);
+  const sd = String(start.getDate()).padStart(2, '0');
+  const sm = String(start.getMonth() + 1).padStart(2, '0');
+  const ed = String(end.getDate()).padStart(2, '0');
+  const em = String(end.getMonth() + 1).padStart(2, '0');
+  const ey = end.getFullYear();
+  if (start.getFullYear() === end.getFullYear()) {
+    return `${sd}.${sm} — ${ed}.${em}.${ey}`;
+  }
+  return `${sd}.${sm}.${start.getFullYear()} — ${ed}.${em}.${ey}`;
+}
+
+function getStatusBadge(status: string): { text: string; class: string } {
+  switch (status) {
+    case 'current':
+      return { text: t('exhibitions.current_badge'), class: 'text-green-700 bg-green-50' };
+    case 'upcoming':
+      return { text: t('exhibitions.upcoming_badge'), class: 'text-blue-700 bg-blue-50' };
+    default:
+      return { text: t('exhibitions.past_badge'), class: 'text-secondary bg-[#F5F5F5]' };
+  }
+}
+
+// Group by year
+const grouped = new Map<string, Exhibition[]>();
+exhibitions.forEach(ex => {
+  const year = new Date(ex.start_date).getFullYear().toString();
+  if (!grouped.has(year)) grouped.set(year, []);
+  grouped.get(year)!.push(ex);
+});
+const years = Array.from(grouped.keys()).sort((a, b) => Number(b) - Number(a));
+---
+
+<div class="relative">
+  {years.map((year, yearIndex) => {
+    const yearExhibitions = grouped.get(year)!;
+    return (
+      <div class="mb-12 last:mb-0">
+        <ScrollReveal delay={yearIndex * 100}>
+          <h3 class="font-serif text-2xl text-text mb-6">{year}</h3>
+        </ScrollReveal>
+        <div class="relative border-l-2 border-border pl-8 ml-1.5 space-y-8">
+          {yearExhibitions.map((ex, i) => {
+            const badge = getStatusBadge(ex.status);
+            return (
+              <ScrollReveal delay={(yearIndex * 100) + (i * 80)}>
+                <div class="relative">
+                  {/* Dot on the timeline */}
+                  <div class="absolute -left-[calc(2rem+7px)] top-1.5 w-3 h-3 rounded-full bg-text" />
+                  {/* Card */}
+                  <div>
+                    <span class={`inline-block text-xs uppercase tracking-widest px-2 py-0.5 rounded ${badge.class}`}>
+                      {badge.text}
+                    </span>
+                    <h4 class="mt-2">
+                      <a
+                        href={getLocalizedPath(lang, `/exhibitions/${ex.slug}`)}
+                        class="font-serif text-xl text-text hover:text-hover transition-colors duration-hover ease"
+                      >
+                        {ex.title}
+                      </a>
+                    </h4>
+                    <p class="font-sans text-sm text-secondary mt-1">
+                      {ex.venue}, {ex.city}
+                    </p>
+                    <p class="font-sans text-xs text-secondary mt-1">
+                      {formatDates(ex.start_date, ex.end_date)}
+                    </p>
+                  </div>
+                </div>
+              </ScrollReveal>
+            );
+          })}
+        </div>
+      </div>
+    );
+  })}
+</div>

@@ -1,0 +1,64 @@
+---
+import TextReveal from './TextReveal.astro';
+
+interface Props {
+  statement: string;
+  subtitle: string;
+  lang: 'fr' | 'en';
+}
+
+const { statement, subtitle, lang } = Astro.props;
+---
+
+<section class="hero-section min-h-screen flex items-center justify-center bg-white relative overflow-hidden">
+  <!-- SC monogram background -->
+  <div class="absolute inset-0 flex items-center justify-center pointer-events-none select-none" aria-hidden="true">
+    <span class="text-[20vw] font-serif font-light text-text opacity-5 leading-none">SC</span>
+  </div>
+
+  <!-- Content -->
+  <div class="relative z-10 text-center px-gutter-sm md:px-gutter-md">
+    <TextReveal text={statement} tag="h1" class="font-serif font-light text-4xl md:text-6xl lg:text-7xl text-text" />
+    <p class="hero-subtitle font-sans text-sm uppercase tracking-widest text-secondary mt-8">
+      {subtitle}
+    </p>
+  </div>
+
+  <!-- Scroll arrow -->
+  <div class="absolute bottom-8 left-1/2 -translate-x-1/2" aria-hidden="true">
+    <svg
+      class="w-6 h-6 text-secondary animate-bounce"
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      stroke-width="1.5"
+      stroke-linecap="round"
+      stroke-linejoin="round"
+    >
+      <path d="M12 5v14M5 12l7 7 7-7" />
+    </svg>
+  </div>
+</section>
+
+<style>
+  .hero-subtitle {
+    opacity: 0;
+    transform: translateY(10px);
+    animation: heroSubtitleIn 600ms ease-out 800ms forwards;
+  }
+
+  @keyframes heroSubtitleIn {
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .hero-subtitle {
+      opacity: 1;
+      transform: none;
+      animation: none;
+    }
+  }
+</style>

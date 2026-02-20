@@ -1,7 +1,9 @@
 ---
 import PageLayout from '@/layouts/PageLayout.astro';
-import WorkViewer from '@/components/WorkViewer.astro';
+import ImageCarousel from '@/components/ImageCarousel';
 import WorkCard from '@/components/WorkCard.astro';
+import MasonryGallery from '@/components/MasonryGallery.astro';
+import ScrollReveal from '@/components/ScrollReveal.astro';
 import { getCollection } from 'astro:content';
 import { getTranslation, getLocalizedPath, type Lang } from '@/i18n';
 
@@ -29,25 +31,25 @@ const nextWork = workIndex < sortedWorks.length - 1 ? sortedWorks[workIndex + 1]
 const title = lang === 'en' ? work.data.title_en : work.data.title_fr;
 const medium = lang === 'en' ? work.data.medium_en : work.data.medium_fr;
 const description = lang === 'en' ? work.data.description_en : work.data.description_fr;
+const locationLabel = t(`works.location.${work.data.location}` as any);
 
 const prevTitle = prevWork ? (lang === 'en' ? prevWork.data.title_en : prevWork.data.title_fr) : '';
 const nextTitle = nextWork ? (lang === 'en' ? nextWork.data.title_en : nextWork.data.title_fr) : '';
 
-const images = work.data.images.map(img => ({
+const images = work.data.images.map((img: any) => ({
   src: img.src,
   alt: lang === 'en' ? img.alt_en : img.alt_fr,
 }));
 
+// Related works from same series
 const relatedWorks = sortedWorks
   .filter(w => w.data.series === work.data.series && w.data.slug !== work.data.slug)
-  .slice(0, 3);
+  .slice(0, 6);
 
 const allSeries = await getCollection('series');
 const seriesData = allSeries.find(s => s.data.slug === work.data.series);
 const seriesTitle = seriesData ? (lang === 'en' ? seriesData.data.title_en : seriesData.data.title_fr) : '';
 const seriesSlug = seriesData ? (lang === 'en' ? seriesData.data.slug_en : seriesData.data.slug) : '';
-
-const details = `${medium}, ${work.data.dimensions}, ${work.data.year}`;
 
 const siteUrl = 'https://sidneycarron.com';
 
@@ -91,114 +93,87 @@ const jsonLd = {
 >
   <section class="museum-section">
     <div class="museum-container">
-      <!-- Split layout: 40% info (sticky) / 60% images -->
+      <!-- Split layout: 60% images / 40% info -->
       <div class="flex flex-col lg:flex-row lg:gap-16">
 
-        <!-- LEFT COLUMN: Info (sticky on desktop) -->
-        <div class="lg:w-[40%] lg:shrink-0">
-          <div class="lg:sticky lg:top-32 detail-info">
+        <!-- LEFT: Images (60%) -->
+        <div class="lg:w-[60%]">
+          {images.length > 1 ? (
+            <ImageCarousel images={images} title={title} client:visible />
+          ) : (
+            <div class="bg-[#F5F5F5]">
+              <img
+                src={images[0].src}
+                alt={images[0].alt}
+                width="800"
+                height="1000"
+                loading="eager"
+                class="w-full h-auto object-contain"
+              />
+            </div>
+          )}
+        </div>
+
+        <!-- RIGHT: Info (40%, sticky) -->
+        <div class="lg:w-[40%] mt-8 lg:mt-0">
+          <div class="lg:sticky lg:top-24 detail-info">
             <!-- Back link -->
             <a
               href={getLocalizedPath(lang, '/works')}
-              class="inline-block font-sans text-small text-museum-label hover:text-museum-text transition-colors duration-base ease-museum mb-8"
+              class="inline-block font-sans text-sm text-secondary hover:text-text transition-colors duration-hover ease mb-6"
             >
-              ← {t('works.back')}
+              &larr; {t('works.back')}
             </a>
 
             <!-- Title -->
-            <h1 class="text-h1 font-serif font-light text-museum-text">
-              {title}
-            </h1>
-
-            <!-- Separator -->
-            <div class="h-px bg-[#E8E6E0] my-6"></div>
+            <h1 class="font-serif font-light text-3xl text-text">{title}</h1>
 
             <!-- Metadata -->
-            <dl class="space-y-4">
+            <dl class="mt-8 space-y-5">
               <div>
-                <dt class="museum-label">{t('works.year').toUpperCase()}</dt>
-                <dd class="museum-mono text-body text-museum-text mt-1">{work.data.year}</dd>
+                <dt class="text-xs uppercase tracking-widest text-secondary">{t('works.year')}</dt>
+                <dd class="text-base text-text mt-1">{work.data.year}</dd>
               </div>
               <div>
-                <dt class="museum-label">{t('works.medium').toUpperCase()}</dt>
-                <dd class="museum-mono text-body text-museum-text mt-1">{medium}</dd>
+                <dt class="text-xs uppercase tracking-widest text-secondary">{t('works.medium')}</dt>
+                <dd class="text-base text-text mt-1">{medium}</dd>
               </div>
               <div>
-                <dt class="museum-label">{t('works.dimensions').toUpperCase()}</dt>
-                <dd class="museum-mono text-body text-museum-text mt-1">{work.data.dimensions}</dd>
+                <dt class="text-xs uppercase tracking-widest text-secondary">{t('works.dimensions')}</dt>
+                <dd class="text-base text-text mt-1">{work.data.dimensions}</dd>
               </div>
               {seriesData && (
                 <div>
-                  <dt class="museum-label">{t('works.series').toUpperCase()}</dt>
+                  <dt class="text-xs uppercase tracking-widest text-secondary">{t('works.series')}</dt>
                   <dd class="mt-1">
                     <a
                       href={getLocalizedPath(lang, `/series/${seriesSlug}`)}
-                      class="font-sans text-body text-museum-text"
+                      class="text-base text-text hover:text-hover transition-colors duration-hover ease underline underline-offset-2"
                     >
                       {seriesTitle}
                     </a>
                   </dd>
                 </div>
               )}
+              <div>
+                <dt class="text-xs uppercase tracking-widest text-secondary">{t('works.location')}</dt>
+                <dd class="mt-1">
+                  <a
+                    href={getLocalizedPath(lang, `/works/${work.data.location}`)}
+                    class="text-base text-text hover:text-hover transition-colors duration-hover ease underline underline-offset-2"
+                  >
+                    {locationLabel}
+                  </a>
+                </dd>
+              </div>
             </dl>
-
-            <!-- Separator -->
-            {description && <div class="h-px bg-[#E8E6E0] my-6"></div>}
 
             <!-- Description -->
             {description && (
-              <p class="font-sans text-body text-museum-text" style="line-height: 1.7;">
-                {description}
-              </p>
+              <div class="mt-8 pt-6 border-t border-border">
+                <p class="font-sans text-base text-text leading-relaxed">{description}</p>
+              </div>
             )}
-          </div>
-        </div>
-
-        <!-- RIGHT COLUMN: Images (scrollable) -->
-        <div class="lg:w-[60%] mt-10 lg:mt-0">
-          <!-- Mobile: horizontal scroll carousel -->
-          <div class="flex gap-4 overflow-x-auto snap-x snap-mandatory pb-4 lg:hidden -mx-gutter-sm px-gutter-sm">
-            {images.map((img, i) => (
-              <button
-                class="snap-center shrink-0 w-[85vw] cursor-pointer bg-[#E8E6E0]"
-                onclick={`window.openWorkViewer && window.openWorkViewer(${i})`}
-                aria-label={`${lang === 'fr' ? 'Agrandir' : 'Enlarge'} — ${img.alt}`}
-              >
-                <img
-                  src={img.src}
-                  alt={img.alt}
-                  width="800"
-                  height="1000"
-                  loading={i === 0 ? 'eager' : 'lazy'}
-                  class="w-full h-auto object-contain"
-                />
-              </button>
-            ))}
-          </div>
-
-          <!-- Desktop: stacked vertical images -->
-          <div class="hidden lg:flex lg:flex-col lg:gap-6">
-            {images.map((img, i) => (
-              <figure class="reveal-image">
-                <button
-                  class="w-full cursor-pointer bg-[#E8E6E0]"
-                  onclick={`window.openWorkViewer && window.openWorkViewer(${i})`}
-                  aria-label={`${lang === 'fr' ? 'Agrandir' : 'Enlarge'} — ${img.alt}`}
-                >
-                  <img
-                    src={img.src}
-                    alt={img.alt}
-                    width="800"
-                    height="1000"
-                    loading={i === 0 ? 'eager' : 'lazy'}
-                    class="w-full h-auto object-contain"
-                  />
-                </button>
-                <figcaption class="museum-mono text-small text-museum-label mt-2">
-                  {img.alt}
-                </figcaption>
-              </figure>
-            ))}
           </div>
         </div>
       </div>
@@ -206,24 +181,24 @@ const jsonLd = {
   </section>
 
   <!-- Prev / Next navigation -->
-  <nav class="border-t border-[#E8E6E0]" aria-label={lang === 'fr' ? 'Navigation entre œuvres' : 'Works navigation'}>
+  <nav class="border-t border-border" aria-label={lang === 'fr' ? 'Navigation entre œuvres' : 'Works navigation'}>
     <div class="museum-container py-8 flex justify-between items-start">
       {prevWork ? (
         <a
           href={getLocalizedPath(lang, `/works/${lang === 'en' ? prevWork.data.slug_en : prevWork.data.slug}`)}
-          class="group font-sans text-caption text-museum-label hover:text-museum-text transition-colors duration-base ease-museum"
+          class="group font-sans text-sm text-secondary hover:text-text transition-colors duration-hover ease"
         >
-          <span>← {t('works.prev')}</span>
-          <span class="block museum-mono text-small text-museum-label mt-1">{prevTitle}</span>
+          <span>&larr; {t('works.prev')}</span>
+          <span class="block text-xs text-secondary mt-1">{prevTitle}</span>
         </a>
       ) : <span />}
       {nextWork ? (
         <a
           href={getLocalizedPath(lang, `/works/${lang === 'en' ? nextWork.data.slug_en : nextWork.data.slug}`)}
-          class="group font-sans text-caption text-museum-label hover:text-museum-text transition-colors duration-base ease-museum text-right"
+          class="group font-sans text-sm text-secondary hover:text-text transition-colors duration-hover ease text-right"
         >
-          <span>{t('works.next')} →</span>
-          <span class="block museum-mono text-small text-museum-label mt-1">{nextTitle}</span>
+          <span>{t('works.next')} &rarr;</span>
+          <span class="block text-xs text-secondary mt-1">{nextTitle}</span>
         </a>
       ) : <span />}
     </div>
@@ -231,34 +206,37 @@ const jsonLd = {
 
   <!-- Related works from same series -->
   {relatedWorks.length > 0 && (
-    <section class="museum-section border-t border-[#E8E6E0]">
+    <section class="museum-section border-t border-border">
       <div class="museum-container">
-        <p class="museum-label mb-8 md:mb-12">
-          {t('works.related').toUpperCase()}
-        </p>
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-10">
-          {relatedWorks.map((rw) => (
-            <WorkCard
-              slug={lang === 'en' ? rw.data.slug_en : rw.data.slug}
-              title={lang === 'en' ? rw.data.title_en : rw.data.title_fr}
-              year={rw.data.year}
-              medium={lang === 'en' ? rw.data.medium_en : rw.data.medium_fr}
-              image={{
-                src: rw.data.images[0].src,
-                alt: lang === 'en' ? rw.data.images[0].alt_en : rw.data.images[0].alt_fr,
-              }}
-            />
+        <ScrollReveal>
+          <h2 class="font-serif font-light text-2xl text-text mb-8">
+            {t('works.related')}
+          </h2>
+        </ScrollReveal>
+        <MasonryGallery>
+          {relatedWorks.map((rw, i) => (
+            <div class="break-inside-avoid mb-4 md:mb-6">
+              <ScrollReveal delay={i * 100}>
+                <WorkCard
+                  slug={lang === 'en' ? rw.data.slug_en : rw.data.slug}
+                  title={lang === 'en' ? rw.data.title_en : rw.data.title_fr}
+                  year={rw.data.year}
+                  medium={lang === 'en' ? rw.data.medium_en : rw.data.medium_fr}
+                  image={{
+                    src: rw.data.images[0].src,
+                    alt: lang === 'en' ? rw.data.images[0].alt_en : rw.data.images[0].alt_fr,
+                  }}
+                />
+              </ScrollReveal>
+            </div>
           ))}
-        </div>
+        </MasonryGallery>
       </div>
     </section>
   )}
-
-  <WorkViewer images={images} title={title} details={details} />
 </PageLayout>
 
 <style>
-  /* Left column fade-in on load */
   .detail-info {
     opacity: 0;
     transform: translateY(16px);
@@ -272,30 +250,11 @@ const jsonLd = {
     }
   }
 
-  /* Right column images fade-in on scroll */
-  .reveal-image {
-    opacity: 0;
-    transform: translateY(20px);
-  }
-  .reveal-image.is-visible {
-    opacity: 1;
-    transform: translateY(0);
-    transition: opacity 500ms ease-out, transform 500ms ease-out;
+  @media (prefers-reduced-motion: reduce) {
+    .detail-info {
+      opacity: 1;
+      transform: none;
+      animation: none;
+    }
   }
 </style>
-
-<script>
-  const images = document.querySelectorAll('.reveal-image');
-  const observer = new IntersectionObserver(
-    (entries) => {
-      entries.forEach((entry) => {
-        if (entry.isIntersecting) {
-          entry.target.classList.add('is-visible');
-          observer.unobserve(entry.target);
-        }
-      });
-    },
-    { threshold: 0.15, rootMargin: '0px 0px -30px 0px' }
-  );
-  images.forEach(img => observer.observe(img));
-</script>

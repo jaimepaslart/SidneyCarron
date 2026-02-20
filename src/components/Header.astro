@@ -1,6 +1,7 @@
 ---
 import { getLangFromUrl, getTranslation, getLocalizedPath } from '@/i18n';
 import LanguageToggle from './LanguageToggle.astro';
+import MobileMenu from './MobileMenu.astro';
 
 interface Props {
   alternateHref?: string;
@@ -9,96 +10,43 @@ interface Props {
 const { alternateHref } = Astro.props;
 const lang = getLangFromUrl(Astro.url);
 const t = getTranslation(lang);
-
-const navItems = [
-  { label: t('nav.works'), href: getLocalizedPath(lang, '/works') },
-  { label: t('nav.series'), href: getLocalizedPath(lang, '/series') },
-  { label: t('nav.exhibitions'), href: getLocalizedPath(lang, '/exhibitions') },
-  { label: t('nav.press'), href: getLocalizedPath(lang, '/press') },
-  { label: t('nav.about'), href: getLocalizedPath(lang, '/about') },
-  { label: t('nav.contact'), href: getLocalizedPath(lang, '/contact') },
-];
-
 const currentPath = Astro.url.pathname;
 const homePath = getLocalizedPath(lang, '/');
+
+const locationLinks = [
+  { label: t('nav.location.bresil'), href: getLocalizedPath(lang, '/works/bresil/') },
+  { label: t('nav.location.dakar'), href: getLocalizedPath(lang, '/works/dakar/') },
+  { label: t('nav.location.saint-tropez'), href: getLocalizedPath(lang, '/works/saint-tropez/') },
+  { label: t('nav.location.reunion'), href: getLocalizedPath(lang, '/works/reunion/') },
+  { label: t('nav.location.sri-lanka'), href: getLocalizedPath(lang, '/works/sri-lanka/') },
+  { label: t('nav.location.costa-rica'), href: getLocalizedPath(lang, '/works/costa-rica/') },
+];
+
+const pageLinks = [
+  { label: t('nav.series'), href: getLocalizedPath(lang, '/series/') },
+  { label: t('nav.exhibitions'), href: getLocalizedPath(lang, '/exhibitions/') },
+  { label: t('nav.press'), href: getLocalizedPath(lang, '/press/') },
+  { label: t('nav.about'), href: getLocalizedPath(lang, '/about/') },
+  { label: t('nav.contact'), href: getLocalizedPath(lang, '/contact/') },
+];
 ---
 
 <header
   id="site-header"
-  class="sticky top-0 z-50 transition-all duration-base ease-museum"
+  class="fixed top-0 left-0 right-0 z-50 transition-all duration-hover ease-ease"
 >
-  <div class="museum-container flex items-center justify-between h-16 lg:h-20">
-    <a
-      href={homePath}
-      class="font-sans text-[1.1rem] font-medium tracking-museum uppercase text-museum-text bg-none z-[110]"
-    >
-      Sidney Carron
-    </a>
-
-    <nav class="hidden md:flex items-center gap-5 lg:gap-7" aria-label={t('a11y.main_nav')}>
-      {navItems.map(({ label, href }) => {
-        const isActive = currentPath === href || (href !== homePath && currentPath.startsWith(href));
-        const isContact = href.includes('/contact');
-        return isContact ? (
-          <a
-            href={href}
-            class:list={[
-              'font-sans text-small font-normal uppercase tracking-widest bg-none transition-colors duration-base ease-museum',
-              'border border-current rounded-full px-4 py-1',
-              isActive ? 'text-museum-text' : 'text-museum-caption hover:text-museum-text',
-            ]}
-          >
-            {label}
-          </a>
-        ) : (
-          <a
-            href={href}
-            class:list={[
-              'font-sans text-small font-normal uppercase tracking-widest bg-none transition-colors duration-base ease-museum',
-              isActive
-                ? 'text-museum-text underline underline-offset-[6px] decoration-[1px]'
-                : 'text-museum-caption hover:text-museum-text',
-            ]}
-          >
-            {label}
-          </a>
-        );
-      })}
-      <LanguageToggle alternateHref={alternateHref} />
-    </nav>
-
-    <!-- Hamburger / X toggle -->
-    <button
-      id="menu-toggle"
-      class="md:hidden relative w-10 h-10 flex items-center justify-center z-[110]"
-      aria-label={t('a11y.menu_open')}
-      aria-expanded="false"
-      aria-controls="mobile-menu"
-      data-label-open={t('a11y.menu_open')}
-      data-label-close={t('a11y.menu_close')}
-    >
-      <span class="hamburger-line hamburger-line--top" id="menu-line-1"></span>
-      <span class="hamburger-line hamburger-line--bottom" id="menu-line-2"></span>
-    </button>
-  </div>
-
-  <!-- Mobile fullscreen menu -->
-  <div
-    id="mobile-menu"
-    class="mobile-overlay md:hidden"
-    aria-hidden="true"
-  >
-    <nav class="flex flex-col items-center gap-1" aria-label="Menu mobile">
-      {navItems.map(({ label, href }, i) => {
-        const isContact = href.includes('/contact');
+  <div class="mx-auto w-full max-w-container px-gutter-sm md:px-gutter-md lg:px-gutter-lg flex items-center justify-between h-16 lg:h-20">
+    <!-- Left: Location links (desktop only) -->
+    <nav class="hidden lg:flex items-center gap-5" aria-label="Locations">
+      {locationLinks.map(({ label, href }) => {
+        const isActive = currentPath.startsWith(href);
         return (
           <a
             href={href}
             class:list={[
-              'mobile-nav-link',
-              isContact && 'mobile-nav-contact',
+              'header-nav-link text-xs uppercase tracking-widest font-sans',
+              isActive ? 'text-text' : 'text-secondary hover:text-text',
             ]}
-            style={`--stagger: ${i}`}
           >
             {label}
           </a>
@@ -106,14 +54,73 @@ const homePath = getLocalizedPath(lang, '/');
       })}
     </nav>
 
-    <div class="mobile-nav-link" style={`--stagger: ${navItems.length}`}>
+    <!-- Center: SC monogram -->
+    <a
+      href={homePath}
+      class="font-serif text-xl font-light text-text lg:absolute lg:left-1/2 lg:-translate-x-1/2"
+    >
+      SC
+    </a>
+
+    <!-- Right: Page links + Language toggle (desktop only) -->
+    <nav class="hidden lg:flex items-center gap-5" aria-label={t('a11y.main_nav')}>
+      {pageLinks.map(({ label, href }) => {
+        const isActive = currentPath === href || currentPath.startsWith(href);
+        return (
+          <a
+            href={href}
+            class:list={[
+              'header-nav-link text-xs uppercase tracking-widest font-sans',
+              isActive ? 'text-text' : 'text-secondary hover:text-text',
+            ]}
+          >
+            {label}
+          </a>
+        );
+      })}
       <LanguageToggle alternateHref={alternateHref} />
-    </div>
+    </nav>
+
+    <!-- Mobile: Hamburger button -->
+    <button
+      id="menu-toggle"
+      class="lg:hidden relative w-10 h-10 flex items-center justify-center z-[110]"
+      aria-label={t('a11y.menu_open')}
+      aria-expanded="false"
+      aria-controls="mobile-menu"
+    >
+      <span class="hamburger-line hamburger-line--top"></span>
+      <span class="hamburger-line hamburger-line--bottom"></span>
+    </button>
   </div>
 </header>
 
+<!-- Mobile menu overlay -->
+<MobileMenu lang={lang} alternateHref={alternateHref} />
+
 <style>
-  /* --- Hamburger lines --- */
+  /* Animated underline on hover */
+  .header-nav-link {
+    position: relative;
+    transition: color 300ms ease;
+  }
+
+  .header-nav-link::after {
+    content: '';
+    position: absolute;
+    bottom: -2px;
+    left: 0;
+    width: 0;
+    height: 1px;
+    background-color: currentColor;
+    transition: width 300ms cubic-bezier(0.25, 0.1, 0.25, 1);
+  }
+
+  .header-nav-link:hover::after {
+    width: 100%;
+  }
+
+  /* Hamburger lines */
   .hamburger-line {
     position: absolute;
     width: 22px;
@@ -140,180 +147,68 @@ const homePath = getLocalizedPath(lang, '/');
     transform: translateY(0) rotate(-45deg);
   }
 
-  /* --- Fullscreen overlay --- */
-  .mobile-overlay {
-    position: fixed;
-    inset: 0;
-    z-index: 100;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    gap: 2rem;
-    background-color: #FAFAF8;
-
-    /* Clip-path circle reveal from top-right */
-    clip-path: circle(0% at calc(100% - 2rem) 2rem);
-    transition: clip-path 700ms cubic-bezier(0.76, 0, 0.24, 1);
-
-    pointer-events: none;
+  /* Header scroll state */
+  #site-header.is-scrolled {
+    background-color: rgba(255, 255, 255, 0.9);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    border-bottom: 1px solid #E5E5E5;
   }
 
-  .mobile-overlay.is-open {
-    clip-path: circle(150% at calc(100% - 2rem) 2rem);
-    pointer-events: auto;
-  }
-
-  /* --- Nav links: staggered reveal --- */
-  .mobile-nav-link {
-    font-family: 'Elizeth', 'Georgia', serif;
-    font-weight: 300;
-    font-size: clamp(1.5rem, 5vw, 2.25rem);
-    color: #1A1A1A;
-    text-decoration: none;
-    background: none;
-    letter-spacing: 0.02em;
-    padding: 0.4rem 0;
-    position: relative;
-
-    opacity: 0;
-    transform: translateY(20px);
-    transition: opacity 400ms ease, transform 400ms ease, color 300ms ease;
-    transition-delay: calc(var(--stagger, 0) * 80ms);
-  }
-
-  .mobile-overlay.is-open .mobile-nav-link {
-    opacity: 1;
-    transform: translateY(0);
-  }
-
-  .mobile-nav-link::after {
-    content: '';
-    position: absolute;
-    bottom: 0;
-    left: 50%;
-    width: 0;
-    height: 1px;
-    background-color: currentColor;
-    transform: translateX(-50%);
-    transition: width 300ms cubic-bezier(0.76, 0, 0.24, 1);
-  }
-
-  .mobile-nav-link:hover::after {
-    width: 100%;
-  }
-
-  .mobile-nav-link:hover {
-    color: #888888;
-  }
-
-  /* Contact: pill style */
-  .mobile-nav-contact {
-    margin-top: 1rem;
-    font-family: 'Relative', 'Helvetica Neue', Arial, sans-serif;
-    font-size: 0.8rem;
-    font-weight: 400;
-    text-transform: uppercase;
-    letter-spacing: 0.15em;
-    border: 1px solid currentColor;
-    border-radius: 9999px;
-    padding: 0.5rem 2rem;
-  }
-
-  .mobile-nav-contact::after {
-    display: none;
-  }
-
-  .mobile-nav-contact:hover {
-    background-color: #1A1A1A;
-    color: #FAFAF8;
-  }
-
-  /* Logo color when menu is open */
-  .menu-open #site-header a:first-child {
-    color: #1A1A1A;
-  }
-
-  /* Respect reduced motion */
   @media (prefers-reduced-motion: reduce) {
-    .mobile-overlay {
-      clip-path: none;
-      opacity: 0;
-      transition: opacity 200ms ease;
-    }
-
-    .mobile-overlay.is-open {
-      opacity: 1;
-    }
-
     .hamburger-line {
       transition: transform 200ms ease;
     }
 
-    .mobile-nav-link {
-      opacity: 1;
-      transform: none;
-      transition: color 200ms ease;
+    .header-nav-link::after {
+      transition: none;
     }
   }
 </style>
 
 <script>
-  const header = document.getElementById('site-header');
-  const menuToggle = document.getElementById('menu-toggle');
-  const mobileMenu = document.getElementById('mobile-menu');
-  let isOpen = false;
+  function initHeader() {
+    const header = document.getElementById('site-header');
+    const menuToggle = document.getElementById('menu-toggle');
+    let menuIsOpen = false;
 
-  // Scroll: transparent → white
-  function handleScroll() {
-    if (!header || isOpen) return;
-    if (window.scrollY > 20) {
-      header.classList.add('bg-white', 'shadow-sm');
-    } else {
-      header.classList.remove('bg-white', 'shadow-sm');
+    // Scroll detection
+    function handleScroll() {
+      if (!header || menuIsOpen) return;
+      if (window.scrollY > 50) {
+        header.classList.add('is-scrolled');
+      } else {
+        header.classList.remove('is-scrolled');
+      }
     }
-  }
-  window.addEventListener('scroll', handleScroll, { passive: true });
-  handleScroll();
 
-  function openMenu() {
-    if (!mobileMenu || !menuToggle) return;
-    isOpen = true;
-    mobileMenu.classList.add('is-open');
-    menuToggle.classList.add('menu-open');
-    menuToggle.setAttribute('aria-expanded', 'true');
-    menuToggle.setAttribute('aria-label', menuToggle.dataset.labelClose || '');
-    mobileMenu.setAttribute('aria-hidden', 'false');
-    document.body.style.overflow = 'hidden';
-    // Remove header scroll style during menu
-    header?.classList.remove('bg-white', 'shadow-sm');
-  }
-
-  function closeMenu() {
-    if (!mobileMenu || !menuToggle) return;
-    isOpen = false;
-    mobileMenu.classList.remove('is-open');
-    menuToggle.classList.remove('menu-open');
-    menuToggle.setAttribute('aria-expanded', 'false');
-    menuToggle.setAttribute('aria-label', menuToggle.dataset.labelOpen || '');
-    mobileMenu.setAttribute('aria-hidden', 'true');
-    document.body.style.overflow = '';
+    window.addEventListener('scroll', handleScroll, { passive: true });
     handleScroll();
+
+    // Hamburger toggle
+    menuToggle?.addEventListener('click', () => {
+      document.dispatchEvent(new CustomEvent('mobile-menu:toggle'));
+    });
+
+    // Listen for menu state changes
+    document.addEventListener('mobile-menu:opened', () => {
+      menuIsOpen = true;
+      menuToggle?.classList.add('menu-open');
+      menuToggle?.setAttribute('aria-expanded', 'true');
+      header?.classList.remove('is-scrolled');
+    });
+
+    document.addEventListener('mobile-menu:closed', () => {
+      menuIsOpen = false;
+      menuToggle?.classList.remove('menu-open');
+      menuToggle?.setAttribute('aria-expanded', 'false');
+      handleScroll();
+    });
   }
 
-  menuToggle?.addEventListener('click', () => {
-    isOpen ? closeMenu() : openMenu();
-  });
+  initHeader();
 
-  // Close on link click
-  mobileMenu?.querySelectorAll('a').forEach(link => {
-    link.addEventListener('click', closeMenu);
-  });
-
-  // Close on Escape
-  document.addEventListener('keydown', (e) => {
-    if (e.key === 'Escape' && isOpen) {
-      closeMenu();
-    }
+  document.addEventListener('astro:page-load', () => {
+    initHeader();
   });
 </script>

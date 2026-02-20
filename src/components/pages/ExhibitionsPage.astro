@@ -1,6 +1,7 @@
 ---
 import PageLayout from '@/layouts/PageLayout.astro';
-import ExhibitionList from '@/components/ExhibitionList.astro';
+import ExhibitionTimeline from '@/components/ExhibitionTimeline.astro';
+import ScrollReveal from '@/components/ScrollReveal.astro';
 import { getCollection } from 'astro:content';
 import { getTranslation, getLocalizedPath, type Lang } from '@/i18n';
 
@@ -13,26 +14,8 @@ const t = getTranslation(lang);
 
 const allExhibitions = await getCollection('exhibitions');
 
-const upcoming = allExhibitions
-  .filter(e => e.data.status === 'upcoming' || e.data.status === 'current')
-  .sort((a, b) => new Date(a.data.start_date).getTime() - new Date(b.data.start_date).getTime())
-  .map(e => ({
-    slug: lang === 'en' ? e.data.slug_en : e.data.slug,
-    title: lang === 'en' ? e.data.title_en : e.data.title_fr,
-    venue: lang === 'en' ? e.data.venue_en : e.data.venue_fr,
-    city: e.data.city,
-    start_date: e.data.start_date,
-    end_date: e.data.end_date,
-    status: e.data.status,
-    image: e.data.image ? {
-      src: e.data.image.src,
-      alt: lang === 'en' ? e.data.image.alt_en : e.data.image.alt_fr,
-    } : undefined,
-  }));
-
-const past = allExhibitions
-  .filter(e => e.data.status === 'past')
-  .sort((a, b) => new Date(b.data.start_date).getTime() - new Date(a.data.start_date).getTime())
+// Sort: upcoming first, then current, then past (by date descending)
+const sorted = allExhibitions
   .map(e => ({
     slug: lang === 'en' ? e.data.slug_en : e.data.slug,
     title: lang === 'en' ? e.data.title_en : e.data.title_fr,
@@ -41,11 +24,14 @@ const past = allExhibitions
     start_date: e.data.start_date,
     end_date: e.data.end_date,
     status: e.data.status as 'upcoming' | 'current' | 'past',
-    image: e.data.image ? {
-      src: e.data.image.src,
-      alt: lang === 'en' ? e.data.image.alt_en : e.data.image.alt_fr,
-    } : undefined,
-  }));
+  }))
+  .sort((a, b) => {
+    const statusOrder = { upcoming: 0, current: 1, past: 2 };
+    const sA = statusOrder[a.status] ?? 2;
+    const sB = statusOrder[b.status] ?? 2;
+    if (sA !== sB) return sA - sB;
+    return new Date(b.start_date).getTime() - new Date(a.start_date).getTime();
+  });
 
 const siteUrl = 'https://sidneycarron.com';
 
@@ -75,11 +61,15 @@ const jsonLd = {
   canonicalPath="/exhibitions"
   jsonLd={jsonLd}
 >
-  <div class="museum-container pt-section-sm md:pt-section-md lg:pt-section-lg">
-    <h1 class="text-h1 font-serif font-light text-museum-text mb-0">
-      {t('exhibitions.title')}
-    </h1>
-  </div>
+  <section class="museum-section">
+    <div class="museum-container">
+      <ScrollReveal>
+        <h1 class="font-serif font-light text-4xl text-text mb-8 md:mb-12">
+          {t('exhibitions.title')}
+        </h1>
+      </ScrollReveal>
 
-  <ExhibitionList upcoming={upcoming} past={past} />
+      <ExhibitionTimeline exhibitions={sorted} lang={lang} />
+    </div>
+  </section>
 </PageLayout>

@@ -1,69 +1,8 @@
 /* ============================================
    Sidney Carron — Global Styles
-   Theme: "Blanc Musée" v2
+   Refonte v4 — Minimaliste
    ============================================ */
 
-/* --- @font-face : Elizeth (titres) --- */
-/* Font files not yet available — using system fallbacks (font-display: swap) */
-@font-face {
-  font-family: 'Elizeth';
-  src: url('../assets/fonts/elizeth-light.woff2') format('woff2');
-  font-weight: 300;
-  font-style: normal;
-  font-display: swap;
-}
-
-@font-face {
-  font-family: 'Elizeth';
-  src: url('../assets/fonts/elizeth-regular.woff2') format('woff2');
-  font-weight: 400;
-  font-style: normal;
-  font-display: swap;
-}
-
-@font-face {
-  font-family: 'Elizeth';
-  src: url('../assets/fonts/elizeth-medium.woff2') format('woff2');
-  font-weight: 500;
-  font-style: normal;
-  font-display: swap;
-}
-
-/* --- @font-face : Relative (corps/UI) --- */
-@font-face {
-  font-family: 'Relative';
-  src: url('../assets/fonts/relative-regular.woff2') format('woff2');
-  font-weight: 400;
-  font-style: normal;
-  font-display: swap;
-}
-
-@font-face {
-  font-family: 'Relative';
-  src: url('../assets/fonts/relative-medium.woff2') format('woff2');
-  font-weight: 500;
-  font-style: normal;
-  font-display: swap;
-}
-
-@font-face {
-  font-family: 'RelativeBook';
-  src: url('../assets/fonts/relativebook-regular.woff2') format('woff2');
-  font-weight: 400;
-  font-style: normal;
-  font-display: swap;
-}
-
-/* --- @font-face : RelativeMono (données techniques) --- */
-@font-face {
-  font-family: 'RelativeMono';
-  src: url('../assets/fonts/relativemono-regular.woff2') format('woff2');
-  font-weight: 400;
-  font-style: normal;
-  font-display: swap;
-}
-
-/* --- Tailwind Layers --- */
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -78,15 +17,13 @@
   }
 
   body {
-    @apply bg-museum-white font-sans text-body;
+    @apply bg-white font-sans text-body;
     color: #1A1A1A;
     min-height: 100dvh;
   }
 
-  /* Headings default to Elizeth Light */
   h1, h2, h3, h4, h5, h6 {
-    @apply font-serif;
-    font-weight: 300;
+    @apply font-serif font-light;
     color: #1A1A1A;
     text-wrap: balance;
   }
@@ -95,116 +32,55 @@
   h2 { @apply text-h2; }
   h3 { @apply text-h3; }
 
-  /* Links: animated underline from left to right */
   a {
-    @apply text-museum-accent;
-    background-image: linear-gradient(currentColor, currentColor);
-    background-size: 0% 1px;
-    background-position: left bottom;
-    background-repeat: no-repeat;
-    transition: background-size 300ms ease;
+    color: inherit;
+    text-decoration: none;
   }
 
-  a:hover {
-    background-size: 100% 1px;
-  }
-
-  /* Images: prevent layout shift, fallback background for broken images */
   img {
-    @apply max-w-full h-auto block;
-    background-color: #E8E6E0;
+    @apply block max-w-full;
+    height: auto;
   }
 
-  /* Focus visible: accessible accent ring */
   :focus-visible {
-    @apply outline-2 outline-offset-2 outline-museum-accent;
+    @apply outline-2 outline-offset-2 outline-text;
   }
 
-  /* Remove default focus for mouse users */
   :focus:not(:focus-visible) {
     outline: none;
   }
 
-  /* Selection: light accent */
   ::selection {
-    background-color: rgba(26, 26, 46, 0.12);
+    background-color: rgba(26, 26, 26, 0.12);
     color: #1A1A1A;
   }
 }
 
 /* --- Component Utilities --- */
 @layer components {
-  /* Museum container with max-width and responsive gutters */
   .museum-container {
     @apply mx-auto w-full max-w-container px-gutter-sm md:px-gutter-md lg:px-gutter-lg;
   }
 
-  /* Section spacing */
   .museum-section {
     @apply py-section-sm md:py-section-md lg:py-section-lg;
   }
 
-  /* 12-column grid */
   .museum-grid {
     @apply grid grid-cols-layout-sm gap-gutter-sm md:grid-cols-layout-md md:gap-gutter-md lg:grid-cols-layout lg:gap-gutter-lg;
   }
-
-  /* Caption text styling */
-  .museum-caption {
-    @apply text-caption text-museum-caption font-sans;
-  }
-
-  /* Museum label: uppercase, spaced, small */
-  .museum-label {
-    font-family: 'Relative', 'Helvetica Neue', Arial, sans-serif;
-    text-transform: uppercase;
-    letter-spacing: 0.15em;
-    font-size: 0.75rem;
-    color: #888888;
-  }
-
-  /* Museum mono: for dates, dimensions, medium */
-  .museum-mono {
-    font-family: 'RelativeMono', 'Courier New', Courier, monospace;
-  }
 }
 
-/* --- Utility Additions --- */
-@layer utilities {
-  /* Hover image overlay effect */
-  .museum-hover-overlay {
-    @apply relative overflow-hidden;
-  }
+/* --- Animation Classes --- */
+/* ScrollReveal and TextReveal animations are handled via inline JS styles
+   in their respective components to avoid CSS specificity conflicts.
+   The .scroll-reveal class is kept as a selector hook only. */
 
-  .museum-hover-overlay::after {
-    content: '';
-    @apply absolute inset-0 bg-museum-text/0 transition-colors duration-base ease-museum;
-  }
-
-  .museum-hover-overlay:hover::after {
-    @apply bg-museum-text/15;
-  }
-
-  /* Scroll-triggered fade-in animation */
-  .animate-on-scroll {
-    opacity: 0;
-    transform: translateY(20px);
-  }
-
-  .animate-on-scroll.is-visible {
-    opacity: 1;
-    transform: translateY(0);
-    transition: opacity 500ms ease-out, transform 500ms ease-out;
-  }
-
-  @media (prefers-reduced-motion: reduce) {
-    .animate-on-scroll {
-      opacity: 1;
-      transform: none;
-    }
-
-    .animate-on-scroll.is-visible {
-      transition: none;
-    }
+/* --- Reduced Motion --- */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
   }
 }

@@ -1,5 +1,6 @@
 ---
 import PageLayout from '@/layouts/PageLayout.astro';
+import ScrollReveal from '@/components/ScrollReveal.astro';
 import { getTranslation, type Lang } from '@/i18n';
 
 interface Props {
@@ -47,20 +48,24 @@ const sections = [
 >
   <section class="museum-section">
     <div class="museum-container max-w-3xl">
-      <h1 class="text-h1 font-serif font-light text-museum-text mb-8 md:mb-12">
-        {t('legal.title')}
-      </h1>
+      <ScrollReveal>
+        <h1 class="font-serif font-light text-4xl text-text mb-8 md:mb-12">
+          {t('legal.title')}
+        </h1>
+      </ScrollReveal>
 
       <div class="space-y-10">
-        {sections.map(({ title, text }) => (
-          <div>
-            <h2 class="font-serif text-h3 text-museum-text mb-3">{title}</h2>
-            <div class="font-sans text-body text-museum-caption space-y-2" style="line-height: 1.7;">
-              {text.split('\n').map((line) => (
-                <p>{line}</p>
-              ))}
+        {sections.map(({ title, text }, i) => (
+          <ScrollReveal delay={i * 80}>
+            <div>
+              <h2 class="font-serif text-xl text-text mb-3">{title}</h2>
+              <div class="font-sans text-base text-secondary space-y-2 leading-relaxed">
+                {text.split('\n').map((line) => (
+                  <p>{line}</p>
+                ))}
+              </div>
             </div>
-          </div>
+          </ScrollReveal>
         ))}
       </div>
     </div>

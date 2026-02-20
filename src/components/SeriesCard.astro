@@ -1,0 +1,56 @@
+---
+import { getLocalizedPath, type Lang } from '@/i18n';
+
+interface Props {
+  series: {
+    title: string;
+    slug: string;
+    cover: { src: string; alt: string };
+    description: string;
+  };
+  workCount: number;
+  lang: Lang;
+}
+
+const { series, workCount, lang } = Astro.props;
+const href = getLocalizedPath(lang, `/series/${series.slug}`);
+const countLabel = lang === 'en'
+  ? `${workCount} ${workCount <= 1 ? 'work' : 'works'}`
+  : `${workCount} ${workCount <= 1 ? 'œuvre' : 'œuvres'}`;
+---
+
+<a href={href} class="group block">
+  <div class="relative overflow-hidden bg-[#F5F5F5]">
+    <img
+      src={series.cover.src}
+      alt={series.cover.alt}
+      width="800"
+      height="533"
+      loading="lazy"
+      class="w-full h-auto object-cover aspect-[3/2] transition-transform duration-hover ease"
+      style="transition-duration: 300ms;"
+    />
+    <!-- Hover overlay (desktop only) -->
+    <div class="hidden md:flex absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity duration-hover ease items-center justify-center flex-col text-center p-6" style="transition-duration: 300ms;">
+      <span class="font-serif font-light text-3xl text-white">{series.title}</span>
+      {series.description && (
+        <span class="font-sans text-sm text-white/80 mt-3 line-clamp-2 max-w-xs">{series.description}</span>
+      )}
+      <span class="font-sans text-xs text-white/60 mt-2">{countLabel}</span>
+    </div>
+  </div>
+  <!-- Normal state (always visible) -->
+  <div class="mt-4">
+    <h2 class="font-serif text-xl text-text">{series.title}</h2>
+    {series.description && (
+      <p class="font-sans text-sm text-secondary mt-1 line-clamp-2">{series.description}</p>
+    )}
+    <p class="font-sans text-sm text-secondary mt-2">{countLabel}</p>
+  </div>
+</a>
+
+<style>
+  a:hover img {
+    transform: scale(1.02);
+  }
+</style>
