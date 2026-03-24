@@ -2,7 +2,6 @@
 import { locations } from '@/data/locations';
 import { getGallery } from '@/data/gallery-loader';
 import { getTranslation, getLocalizedPath, type Lang } from '@/i18n';
-import ScrollReveal from './ScrollReveal.astro';
 
 interface Props {
   lang: Lang;
@@ -16,40 +15,38 @@ const sortedLocations = [...locations].sort((a, b) => b.photoCount - a.photoCoun
 
 <div class="hidden md:block">
   <ul class="globe-list">
-    {sortedLocations.map((loc, i) => {
+    {sortedLocations.map((loc) => {
       const name = lang === 'en' ? loc.name_en : loc.name_fr;
       const country = lang === 'en' ? loc.country_en : loc.country_fr;
       const gallery = getGallery(loc.slug);
       const thumbnail = loc.cover || gallery?.images?.[0]?.src || '';
       return (
-        <li>
-          <ScrollReveal delay={i * 60}>
-            <a
-              href={getLocalizedPath(lang, `/works/${loc.slug}/`)}
-              data-globe-loc={loc.slug}
-              data-lat={loc.coords.lat}
-              data-lng={loc.coords.lng}
-              class="globe-list__item group"
-            >
-              {thumbnail && (
-                <div class="globe-list__polaroid">
-                  <div class="globe-list__polaroid-img">
-                    <img src={thumbnail} alt={name} width="60" height="45" loading="lazy" decoding="async" />
-                  </div>
+        <li class="globe-list__row">
+          <a
+            href={getLocalizedPath(lang, `/works/${loc.slug}/`)}
+            data-globe-loc={loc.slug}
+            data-lat={loc.coords.lat}
+            data-lng={loc.coords.lng}
+            class="globe-list__item group"
+          >
+            {thumbnail && (
+              <div class="globe-list__polaroid">
+                <div class="globe-list__polaroid-img">
+                  <img src={thumbnail} alt={name} width="60" height="45" loading="lazy" decoding="async" />
                 </div>
-              )}
-              <div class="globe-list__info">
-                <span class="font-display text-sm uppercase tracking-wide text-text group-hover:opacity-60 transition-opacity duration-300">
-                  {name}
-                </span>
-                <span class="block text-xs text-secondary mt-0.5">{country}</span>
               </div>
-              <div class="flex items-center gap-3 ml-auto">
-                <span class="text-xs text-muted">{loc.photoCount} photos</span>
-                <span class="text-secondary group-hover:translate-x-1 transition-transform duration-300">&rarr;</span>
-              </div>
-            </a>
-          </ScrollReveal>
+            )}
+            <div class="globe-list__info">
+              <span class="font-display text-sm uppercase tracking-wide text-text group-hover:opacity-60 transition-opacity duration-300">
+                {name}
+              </span>
+              <span class="block text-xs text-secondary mt-0.5">{country}</span>
+            </div>
+            <div class="flex items-center gap-3 ml-auto">
+              <span class="text-xs text-muted">{loc.photoCount} photos</span>
+              <span class="text-secondary group-hover:translate-x-1 transition-transform duration-300">&rarr;</span>
+            </div>
+          </a>
         </li>
       );
     })}
@@ -71,6 +68,10 @@ const sortedLocations = [...locations].sort((a, b) => b.photoCount - a.photoCoun
     border-bottom: 1px solid #E5E5E5;
     text-decoration: none;
     color: inherit;
+    /* Rinaldi initial state */
+    opacity: 0;
+    transform: translateY(80px) skewY(5deg);
+    will-change: opacity, transform;
   }
 
   .globe-list__polaroid {
@@ -103,15 +104,26 @@ const sortedLocations = [...locations].sort((a, b) => b.photoCount - a.photoCoun
   .globe-list__info {
     min-width: 0;
   }
+
+  @media (prefers-reduced-motion: reduce) {
+    .globe-list__item {
+      opacity: 1;
+      transform: none;
+    }
+  }
 </style>
 
 <script>
+  import { animate, inView } from 'motion';
   import { triggerZoomTransition } from '@/utils/globe-transition';
+
+  const POWER4_OUT: [number, number, number, number] = [0.16, 1, 0.3, 1];
 
   function initGlobeList() {
     const controller = new AbortController();
-    const links = document.querySelectorAll('[data-globe-loc]');
+    const links = document.querySelectorAll<HTMLElement>('[data-globe-loc]');
 
+    // ─── Hover → focus globe ───
     links.forEach(link => {
       link.addEventListener('mouseenter', () => {
         const lat = parseFloat(link.getAttribute('data-lat')!);
@@ -141,6 +153,24 @@ const sortedLocations = [...locations].sort((a, b) => b.photoCount - a.photoCoun
         });
       }, { signal: controller.signal });
     });
+
+    // ─── Rinaldi reveal — stagger items on scroll ───
+    const prefersReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    if (!prefersReduced) {
+      const lists = document.querySelectorAll<HTMLElement>('.globe-list');
+      lists.forEach(list => {
+        const items = list.querySelectorAll<HTMLElement>('.globe-list__item');
+        inView(list, () => {
+          items.forEach((item, i) => {
+            animate(
+              item,
+              { opacity: [0, 1], y: [80, 0], skewY: [5, 0] },
+              { duration: 1.2, easing: POWER4_OUT, delay: i * 0.08 }
+            );
+          });
+        }, { margin: '0px 0px -10% 0px' });
+      });
+    }
 
     document.addEventListener('astro:before-swap', () => {
       controller.abort();
