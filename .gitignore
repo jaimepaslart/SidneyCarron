@@ -27,5 +27,5 @@ pnpm-debug.log*
 # Local Netlify folder
 .netlify
 
-# Data files (photos, videos, PDFs)
-Data/
+# Data files (photos, videos, PDFs) — anchored to root only
+/Data/

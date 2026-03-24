@@ -1,0 +1,182 @@
+slug: dakar
+name_fr: Dakar
+name_en: Dakar
+country_fr: Sénégal
+country_en: Senegal
+lat: 14.7167
+lng: -17.4677
+photoCount: 57
+type: travel
+cover: "/images/galleries/dakar/dakar-001.jpg"
+images:
+  - src: "/images/galleries/dakar/dakar-001.jpg"
+    width: 1600
+    height: 1200
+  - src: "/images/galleries/dakar/dakar-002.jpg"
+    width: 1200
+    height: 1600
+  - src: "/images/galleries/dakar/dakar-003.jpg"
+    width: 1088
+    height: 1600
+  - src: "/images/galleries/dakar/dakar-004.jpg"
+    width: 1600
+    height: 1200
+  - src: "/images/galleries/dakar/dakar-005.jpg"
+    width: 1600
+    height: 1200
+  - src: "/images/galleries/dakar/dakar-006.jpg"
+    width: 1200
+    height: 1600
+  - src: "/images/galleries/dakar/dakar-007.jpg"
+    width: 1600
+    height: 1200
+  - src: "/images/galleries/dakar/dakar-008.jpg"
+    width: 1600
+    height: 1200
+  - src: "/images/galleries/dakar/dakar-009.jpg"
+    width: 1600
+    height: 1200
+  - src: "/images/galleries/dakar/dakar-010.jpg"
+    width: 1600
+    height: 1200
+  - src: "/images/galleries/dakar/dakar-011.jpg"
+    width: 830
+    height: 1600
+  - src: "/images/galleries/dakar/dakar-012.jpg"
+    width: 848
+    height: 1600
+  - src: "/images/galleries/dakar/dakar-013.jpg"
+    width: 1600
+    height: 1200
+  - src: "/images/galleries/dakar/dakar-014.jpg"
+    width: 905
+    height: 1600
+  - src: "/images/galleries/dakar/dakar-015.jpg"
+    width: 1600
+    height: 1200
+  - src: "/images/galleries/dakar/dakar-016.jpg"
+    width: 1600
+    height: 841
+  - src: "/images/galleries/dakar/dakar-017.jpg"
+    width: 1200
+    height: 1600
+  - src: "/images/galleries/dakar/dakar-018.jpg"
+    width: 608
+    height: 1080
+  - src: "/images/galleries/dakar/dakar-019.jpg"
+    width: 1490
+    height: 1118
+  - src: "/images/galleries/dakar/dakar-020.jpg"
+    width: 905
+    height: 1600
+  - src: "/images/galleries/dakar/dakar-021.jpg"
+    width: 720
+    height: 1280
+  - src: "/images/galleries/dakar/dakar-022.jpg"
+    width: 983
+    height: 1600
+  - src: "/images/galleries/dakar/dakar-023.jpg"
+    width: 873
+    height: 1600
+  - src: "/images/galleries/dakar/dakar-024.jpg"
+    width: 841
+    height: 1600
+  - src: "/images/galleries/dakar/dakar-025.jpg"
+    width: 1116
+    height: 1600
+  - src: "/images/galleries/dakar/dakar-026.jpg"
+    width: 1223
+    height: 1600
+  - src: "/images/galleries/dakar/dakar-027.jpg"
+    width: 830
+    height: 1600
+  - src: "/images/galleries/dakar/dakar-028.jpg"
+    width: 870
+    height: 1600
+  - src: "/images/galleries/dakar/dakar-029.jpg"
+    width: 953
+    height: 1600
+  - src: "/images/galleries/dakar/dakar-030.jpg"
+    width: 1176
+    height: 1600
+  - src: "/images/galleries/dakar/dakar-031.jpg"
+    width: 848
+    height: 1600
+  - src: "/images/galleries/dakar/dakar-032.jpg"
+    width: 1600
+    height: 927
+  - src: "/images/galleries/dakar/dakar-033.jpg"
+    width: 768
+    height: 1600
+  - src: "/images/galleries/dakar/dakar-034.jpg"
+    width: 1325
+    height: 1600
+  - src: "/images/galleries/dakar/dakar-035.jpg"
+    width: 1316
+    height: 1600
+  - src: "/images/galleries/dakar/dakar-036.jpg"
+    width: 1049
+    height: 1600
+  - src: "/images/galleries/dakar/dakar-037.jpg"
+    width: 857
+    height: 1600
+  - src: "/images/galleries/dakar/dakar-038.jpg"
+    width: 1088
+    height: 1600
+  - src: "/images/galleries/dakar/dakar-039.jpg"
+    width: 1600
+    height: 1200
+  - src: "/images/galleries/dakar/dakar-040.jpg"
+    width: 1600
+    height: 1200
+  - src: "/images/galleries/dakar/dakar-041.jpg"
+    width: 1600
+    height: 1200
+  - src: "/images/galleries/dakar/dakar-042.jpg"
+    width: 1200
+    height: 1600
+  - src: "/images/galleries/dakar/dakar-043.jpg"
+    width: 1200
+    height: 1600
+  - src: "/images/galleries/dakar/dakar-044.jpg"
+    width: 1200
+    height: 1600
+  - src: "/images/galleries/dakar/dakar-045.jpg"
+    width: 1200
+    height: 1600
+  - src: "/images/galleries/dakar/dakar-046.jpg"
+    width: 905
+    height: 1600
+  - src: "/images/galleries/dakar/dakar-047.jpg"
+    width: 1120
+    height: 1599
+  - src: "/images/galleries/dakar/dakar-048.jpg"
+    width: 1200
+    height: 1348
+  - src: "/images/galleries/dakar/dakar-049.jpg"
+    width: 1600
+    height: 841
+  - src: "/images/galleries/dakar/dakar-050.jpg"
+    width: 1600
+    height: 1200
+  - src: "/images/galleries/dakar/dakar-051.jpg"
+    width: 1600
+    height: 1200
+  - src: "/images/galleries/dakar/dakar-052.jpg"
+    width: 900
+    height: 1600
+  - src: "/images/galleries/dakar/dakar-053.jpg"
+    width: 1600
+    height: 1073
+  - src: "/images/galleries/dakar/dakar-054.jpg"
+    width: 900
+    height: 1600
+  - src: "/images/galleries/dakar/dakar-055.jpg"
+    width: 1200
+    height: 1600
+  - src: "/images/galleries/dakar/dakar-056.jpg"
+    width: 900
+    height: 1600
+  - src: "/images/galleries/dakar/dakar-057.jpg"
+    width: 1600
+    height: 938

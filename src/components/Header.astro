@@ -1,108 +1,165 @@
 ---
 import { getLangFromUrl, getTranslation, getLocalizedPath } from '@/i18n';
+import { locations } from '@/data/locations';
 import LanguageToggle from './LanguageToggle.astro';
 import MobileMenu from './MobileMenu.astro';
 
 interface Props {
   alternateHref?: string;
+  variant?: 'page' | 'hero';
 }
 
-const { alternateHref } = Astro.props;
+const { alternateHref, variant = 'page' } = Astro.props;
 const lang = getLangFromUrl(Astro.url);
 const t = getTranslation(lang);
 const currentPath = Astro.url.pathname;
 const homePath = getLocalizedPath(lang, '/');
+const cartePath = getLocalizedPath(lang, lang === 'fr' ? '/carte/' : '/carte/');
 
 const locationLinks = [
-  { label: t('nav.location.bresil'), href: getLocalizedPath(lang, '/works/bresil/') },
-  { label: t('nav.location.dakar'), href: getLocalizedPath(lang, '/works/dakar/') },
-  { label: t('nav.location.saint-tropez'), href: getLocalizedPath(lang, '/works/saint-tropez/') },
-  { label: t('nav.location.reunion'), href: getLocalizedPath(lang, '/works/reunion/') },
-  { label: t('nav.location.sri-lanka'), href: getLocalizedPath(lang, '/works/sri-lanka/') },
-  { label: t('nav.location.costa-rica'), href: getLocalizedPath(lang, '/works/costa-rica/') },
+  { label: t('nav.carte'), href: getLocalizedPath(lang, lang === 'fr' ? '/carte/' : '/carte/'), isHighlight: true },
+  ...locations.map(loc => ({
+    label: t(`nav.location.${loc.slug}` as any),
+    href: getLocalizedPath(lang, `/works/${loc.slug}/`),
+    isHighlight: false,
+  })),
 ];
 
 const pageLinks = [
-  { label: t('nav.series'), href: getLocalizedPath(lang, '/series/') },
   { label: t('nav.exhibitions'), href: getLocalizedPath(lang, '/exhibitions/') },
   { label: t('nav.press'), href: getLocalizedPath(lang, '/press/') },
   { label: t('nav.about'), href: getLocalizedPath(lang, '/about/') },
   { label: t('nav.contact'), href: getLocalizedPath(lang, '/contact/') },
 ];
+
+const isHero = variant === 'hero';
 ---
 
-<header
-  id="site-header"
-  class="fixed top-0 left-0 right-0 z-50 transition-all duration-hover ease-ease"
->
-  <div class="mx-auto w-full max-w-container px-gutter-sm md:px-gutter-md lg:px-gutter-lg flex items-center justify-between h-16 lg:h-20">
-    <!-- Left: Location links (desktop only) -->
-    <nav class="hidden lg:flex items-center gap-5" aria-label="Locations">
-      {locationLinks.map(({ label, href }) => {
-        const isActive = currentPath.startsWith(href);
-        return (
-          <a
-            href={href}
-            class:list={[
-              'header-nav-link text-xs uppercase tracking-widest font-sans',
-              isActive ? 'text-text' : 'text-secondary hover:text-text',
-            ]}
-          >
-            {label}
-          </a>
-        );
-      })}
-    </nav>
-
-    <!-- Center: SC monogram -->
-    <a
-      href={homePath}
-      class="font-serif text-xl font-light text-text lg:absolute lg:left-1/2 lg:-translate-x-1/2"
-    >
-      SC
-    </a>
-
-    <!-- Right: Page links + Language toggle (desktop only) -->
-    <nav class="hidden lg:flex items-center gap-5" aria-label={t('a11y.main_nav')}>
-      {pageLinks.map(({ label, href }) => {
-        const isActive = currentPath === href || currentPath.startsWith(href);
-        return (
-          <a
-            href={href}
-            class:list={[
-              'header-nav-link text-xs uppercase tracking-widest font-sans',
-              isActive ? 'text-text' : 'text-secondary hover:text-text',
-            ]}
-          >
-            {label}
-          </a>
-        );
-      })}
-      <LanguageToggle alternateHref={alternateHref} />
-    </nav>
-
-    <!-- Mobile: Hamburger button -->
+<!-- Same layout everywhere: vertical stacked nav, centered SiD logo -->
+<header id="site-header" class="w-full px-5 md:px-8 lg:px-[7.5%] pt-[4vh] lg:pt-[12vh]" data-variant={variant}>
+  <nav class="flex justify-between items-center lg:items-start relative min-h-[70px] lg:min-h-0">
+    <!-- Mobile: Hamburger button LEFT -->
     <button
       id="menu-toggle"
-      class="lg:hidden relative w-10 h-10 flex items-center justify-center z-[110]"
+      class:list={['burger lg:hidden z-[110] order-first', { 'burger-hero': isHero }]}
       aria-label={t('a11y.menu_open')}
       aria-expanded="false"
       aria-controls="mobile-menu"
     >
-      <span class="hamburger-line hamburger-line--top"></span>
-      <span class="hamburger-line hamburger-line--bottom"></span>
+      <span class="burger-line"></span>
+      <span class="burger-line"></span>
     </button>
-  </div>
+
+    <!-- Left: Locations (stacked vertically, desktop only) -->
+    <ul class="hidden lg:block hero-menu-left" aria-label="Locations">
+      {locationLinks.map(({ label, href, isHighlight }, i) => {
+        const isActive = currentPath.startsWith(href);
+        return (
+          <li
+            class:list={['hero-nav-item', { 'no-anim': !isHero }]}
+            style={`--stagger: ${i}`}
+          >
+            <a
+              href={href}
+              class:list={[
+                'header-nav-link font-sans text-base font-normal uppercase leading-6 block',
+                isHighlight ? 'font-medium' : '',
+                isActive ? 'text-text' : 'text-text hover:opacity-60',
+              ]}
+            >
+              {label}
+            </a>
+          </li>
+        );
+      })}
+    </ul>
+
+    <!-- Center: SiD stamp logo -->
+    <a
+      href={homePath}
+      id="hero-monogram"
+      class:list={['hero-monogram absolute left-1/2 -translate-x-1/2 top-0 lg:top-1/2 lg:-translate-y-1/2', { 'no-anim': !isHero }]}
+    >
+      <img src="/images/sid-logo.svg" alt="Sidney Carron" class="h-[70px] lg:h-[100px] w-auto" />
+    </a>
+
+    <!-- Right: Pages + Language toggle (stacked vertically, desktop only) -->
+    <ul class="hidden lg:block text-right hero-menu-right" aria-label={t('a11y.main_nav')}>
+      {pageLinks.map(({ label, href }, i) => {
+        const isActive = currentPath === href || currentPath.startsWith(href);
+        return (
+          <li
+            class:list={['hero-nav-item', { 'no-anim': !isHero }]}
+            style={`--stagger: ${i}`}
+          >
+            <a
+              href={href}
+              class:list={[
+                'header-nav-link font-sans text-base font-normal uppercase leading-6 block',
+                isActive ? 'text-text' : 'text-text hover:opacity-60',
+              ]}
+            >
+              {label}
+            </a>
+          </li>
+        );
+      })}
+      <li
+        class:list={['hero-nav-item mt-1', { 'no-anim': !isHero }]}
+        style={`--stagger: ${pageLinks.length}`}
+      >
+        <LanguageToggle alternateHref={alternateHref} />
+      </li>
+    </ul>
+  </nav>
 </header>
 
 <!-- Mobile menu overlay -->
 <MobileMenu lang={lang} alternateHref={alternateHref} />
 
 <style>
+  /* === Monogram: gentle fade-up (hero only) === */
+  .hero-monogram img {
+    opacity: 0;
+    transform: translateY(25px);
+    transition: opacity 1.8s cubic-bezier(0.16, 1, 0.3, 1),
+                transform 1.8s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+
+  .hero-monogram.is-revealed img,
+  .hero-monogram.no-anim img {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  /* No-anim: skip transition, show immediately */
+  .hero-monogram.no-anim img {
+    transition: none;
+  }
+
+  /* === Nav items: staggered fade-up (hero) or visible (page) === */
+  .hero-nav-item {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+
+  .hero-nav-item.is-revealed {
+    opacity: 1;
+    transform: translateY(0);
+    transition: opacity 0.9s cubic-bezier(0.165, 0.84, 0.44, 1),
+                transform 0.9s cubic-bezier(0.165, 0.84, 0.44, 1);
+  }
+
+  /* Page variant: visible immediately, no animation */
+  .hero-nav-item.no-anim {
+    opacity: 1;
+    transform: none;
+  }
+
   /* Animated underline on hover */
   .header-nav-link {
     position: relative;
-    transition: color 300ms ease;
+    transition: color 300ms ease, opacity 300ms ease;
   }
 
   .header-nav-link::after {
@@ -120,43 +177,70 @@ const pageLinks = [
     width: 100%;
   }
 
-  /* Hamburger lines */
-  .hamburger-line {
-    position: absolute;
-    width: 22px;
-    height: 1.5px;
+  /* Burger — Rinaldi style (hidden on lg via Tailwind lg:hidden) */
+  .burger {
+    width: 36px;
+    height: 22px;
+    flex-direction: column;
+    justify-content: space-between;
+    cursor: pointer;
+    position: relative;
+    background: none;
+    border: none;
+    padding: 0;
+  }
+
+  @media (max-width: 1023px) {
+    .burger {
+      display: flex;
+    }
+  }
+
+  .burger-line {
+    display: block;
+    width: 100%;
+    height: 2px;
     background-color: #1A1A1A;
-    transition: transform 500ms cubic-bezier(0.76, 0, 0.24, 1),
-                opacity 300ms ease;
+    border-radius: 1px;
+    transition: transform 0.45s cubic-bezier(0.76, 0, 0.24, 1),
+                width 0.45s cubic-bezier(0.76, 0, 0.24, 1);
+    transform-origin: center;
   }
 
-  .hamburger-line--top {
-    transform: translateY(-4px);
+  .menu-open .burger-line:first-child {
+    transform: translateY(10px) rotate(45deg);
   }
 
-  .hamburger-line--bottom {
-    transform: translateY(4px);
+  .menu-open .burger-line:last-child {
+    transform: translateY(-10px) rotate(-45deg);
   }
 
-  /* Morphed to X */
-  .menu-open .hamburger-line--top {
-    transform: translateY(0) rotate(45deg);
+  /* Burger entrance animation on hero: lines draw left-to-right (Rinaldi style) */
+  .burger-hero .burger-line {
+    width: 0;
   }
 
-  .menu-open .hamburger-line--bottom {
-    transform: translateY(0) rotate(-45deg);
+  .burger-hero.is-revealed .burger-line {
+    width: 100%;
+    transition: width 1.3s cubic-bezier(0.22, 1, 0.36, 1);
   }
 
-  /* Header scroll state */
-  #site-header.is-scrolled {
-    background-color: rgba(255, 255, 255, 0.9);
-    backdrop-filter: blur(8px);
-    -webkit-backdrop-filter: blur(8px);
-    border-bottom: 1px solid #E5E5E5;
+  .burger-hero.is-revealed .burger-line:last-child {
+    transition-delay: 0.15s;
   }
 
   @media (prefers-reduced-motion: reduce) {
-    .hamburger-line {
+    .hero-monogram img {
+      opacity: 1;
+      transform: none;
+    }
+
+    .hero-nav-item {
+      opacity: 1;
+      transform: none;
+    }
+
+    .burger-line {
       transition: transform 200ms ease;
     }
 
@@ -167,48 +251,76 @@ const pageLinks = [
 </style>
 
 <script>
+  let headerAbort: AbortController | null = null;
+
   function initHeader() {
+    // Clean up previous listeners to prevent duplicates
+    if (headerAbort) headerAbort.abort();
+    headerAbort = new AbortController();
+    const signal = headerAbort.signal;
+
     const header = document.getElementById('site-header');
     const menuToggle = document.getElementById('menu-toggle');
-    let menuIsOpen = false;
+    if (!header) return;
 
-    // Scroll detection
-    function handleScroll() {
-      if (!header || menuIsOpen) return;
-      if (window.scrollY > 50) {
-        header.classList.add('is-scrolled');
+    const isHeroVariant = header.dataset.variant === 'hero';
+
+    // === Hero sequence listeners (only on homepage) ===
+    const monogram = document.getElementById('hero-monogram');
+    const leftItems = header.querySelectorAll('.hero-menu-left .hero-nav-item');
+    const rightItems = header.querySelectorAll('.hero-menu-right .hero-nav-item');
+
+    if (monogram && isHeroVariant) {
+      const prefersReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+      if (prefersReduced) {
+        monogram.classList.add('is-revealed');
+        menuToggle?.classList.add('is-revealed');
+        leftItems.forEach((el) => el.classList.add('is-revealed'));
+        rightItems.forEach((el) => el.classList.add('is-revealed'));
       } else {
-        header.classList.remove('is-scrolled');
+        // Phase 1: Logo + burger fade-up
+        document.addEventListener('hero:phase-logo', () => {
+          monogram.classList.add('is-revealed');
+          menuToggle?.classList.add('is-revealed');
+        }, { once: true, signal });
+
+        // Phase 3: Left menu — 160ms stagger per item
+        document.addEventListener('hero:phase-menu-left', () => {
+          leftItems.forEach((item) => {
+            const el = item as HTMLElement;
+            const stagger = parseInt(el.style.getPropertyValue('--stagger') || '0', 10);
+            setTimeout(() => el.classList.add('is-revealed'), stagger * 160);
+          });
+        }, { once: true, signal });
+
+        // Phase 4: Right menu — 160ms stagger per item
+        document.addEventListener('hero:phase-menu-right', () => {
+          rightItems.forEach((item) => {
+            const el = item as HTMLElement;
+            const stagger = parseInt(el.style.getPropertyValue('--stagger') || '0', 10);
+            setTimeout(() => el.classList.add('is-revealed'), stagger * 160);
+          });
+        }, { once: true, signal });
       }
     }
 
-    window.addEventListener('scroll', handleScroll, { passive: true });
-    handleScroll();
-
-    // Hamburger toggle
+    // === Hamburger toggle ===
     menuToggle?.addEventListener('click', () => {
       document.dispatchEvent(new CustomEvent('mobile-menu:toggle'));
-    });
+    }, { signal });
 
-    // Listen for menu state changes
     document.addEventListener('mobile-menu:opened', () => {
-      menuIsOpen = true;
       menuToggle?.classList.add('menu-open');
       menuToggle?.setAttribute('aria-expanded', 'true');
-      header?.classList.remove('is-scrolled');
-    });
+    }, { signal });
 
     document.addEventListener('mobile-menu:closed', () => {
-      menuIsOpen = false;
       menuToggle?.classList.remove('menu-open');
       menuToggle?.setAttribute('aria-expanded', 'false');
-      handleScroll();
-    });
+    }, { signal });
   }
 
   initHeader();
-
-  document.addEventListener('astro:page-load', () => {
-    initHeader();
-  });
+  document.addEventListener('astro:page-load', initHeader);
 </script>

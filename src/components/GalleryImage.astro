@@ -1,0 +1,30 @@
+---
+interface Props {
+  src: string;
+  width: number;
+  height: number;
+  index: number;
+  locationName: string;
+}
+
+const { src, width, height, index, locationName } = Astro.props;
+const alt = `${locationName} — ${index + 1}`;
+---
+
+<button
+  class="gallery-image-btn w-full cursor-zoom-in focus:outline-none focus-visible:ring-2 focus-visible:ring-text focus-visible:ring-offset-2"
+  data-lightbox-index={index}
+  data-src={src}
+  aria-label={`${alt} — ${width}×${height}`}
+  type="button"
+>
+  <img
+    src={src}
+    alt={alt}
+    width={width}
+    height={height}
+    loading="lazy"
+    decoding="async"
+    class="w-full h-auto block bg-surface"
+  />
+</button>

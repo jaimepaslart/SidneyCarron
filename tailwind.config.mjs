@@ -13,12 +13,14 @@ export default {
         white: '#FFFFFF',
         text: '#1A1A1A',
         secondary: '#666666',
+        muted: '#999999',
         border: '#E5E5E5',
         hover: '#333333',
+        surface: '#F5F5F5',
       },
       fontFamily: {
-        serif: ['"Cormorant Garamond"', 'Georgia', 'serif'],
         sans: ['"Inter"', 'system-ui', 'sans-serif'],
+        display: ['"Syne"', 'sans-serif'],
       },
       fontSize: {
         hero: ['clamp(3rem, 5vw, 5rem)', { lineHeight: '1.05', letterSpacing: '-0.02em', fontWeight: '300' }],

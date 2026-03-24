@@ -1,0 +1,122 @@
+---
+import PageLayout from '@/layouts/PageLayout.astro';
+import GalleryImage from '@/components/GalleryImage.astro';
+import Lightbox from '@/components/Lightbox.astro';
+import MasonryGallery from '@/components/MasonryGallery.astro';
+import ScrollReveal from '@/components/ScrollReveal.astro';
+import { getTranslation, getLocalizedPath, type Lang } from '@/i18n';
+import type { Gallery } from '@/data/gallery-loader';
+import type { Location } from '@/data/locations';
+
+interface Props {
+  location: Location;
+  gallery: Gallery;
+  lang: Lang;
+}
+
+const { location, gallery, lang } = Astro.props;
+const t = getTranslation(lang);
+
+const locationName = lang === 'en' ? location.name_en : location.name_fr;
+const country = lang === 'en' ? location.country_en : location.country_fr;
+const siteUrl = 'https://sidneycarron.com';
+const cartePath = lang === 'fr' ? '/carte/' : '/en/map/';
+
+const jsonLd = {
+  '@context': 'https://schema.org',
+  '@graph': [
+    {
+      '@type': 'CollectionPage',
+      name: `${t('works.title')} — ${locationName}`,
+      description: `${t('works.title')} ${lang === 'fr' ? 'réalisées à' : 'created in'} ${locationName}`,
+      url: `${siteUrl}${getLocalizedPath(lang, `/works/${location.slug}`)}`,
+    },
+    {
+      '@type': 'BreadcrumbList',
+      itemListElement: [
+        { '@type': 'ListItem', position: 1, name: 'Sidney Carron', item: siteUrl },
+        { '@type': 'ListItem', position: 2, name: t('map.title'), item: `${siteUrl}${cartePath}` },
+        { '@type': 'ListItem', position: 3, name: locationName },
+      ],
+    },
+  ],
+};
+
+// Separate images by section if applicable
+const hasSections = gallery.sections && gallery.sections.length > 0;
+---
+
+<PageLayout
+  title={`${locationName} — Sidney Carron`}
+  description={`${t('works.title')} ${lang === 'fr' ? 'réalisées à' : 'created in'} ${locationName}`}
+  jsonLd={jsonLd}
+>
+  <section class="museum-section">
+    <div class="museum-container">
+      <ScrollReveal>
+        <a
+          href={getLocalizedPath(lang, cartePath)}
+          class="inline-block font-sans text-sm text-secondary hover:text-text transition-colors duration-300 ease mb-8"
+        >
+          &larr; {t('gallery.back')}
+        </a>
+        <h1 class="font-display font-light text-4xl text-text">{locationName}</h1>
+        <p class="text-sm text-secondary mt-1">{country}</p>
+        <p class="text-sm text-muted uppercase tracking-widest mt-2">
+          {t('gallery.photos_count', { count: gallery.images.length })}
+        </p>
+      </ScrollReveal>
+
+      {hasSections ? (
+        gallery.sections!.map((sectionName) => {
+          const sectionImages = gallery.images.filter(img => img.section === sectionName);
+          return (
+            <div class="mt-12">
+              <ScrollReveal>
+                <h2 class="font-display font-light text-2xl text-text mb-6">{sectionName}</h2>
+              </ScrollReveal>
+              <MasonryGallery>
+                {sectionImages.map((img, i) => {
+                  const globalIndex = gallery.images.indexOf(img);
+                  return (
+                    <div class="break-inside-avoid mb-4 md:mb-6">
+                      <ScrollReveal delay={i * 80}>
+                        <GalleryImage
+                          src={img.src}
+                          width={img.width}
+                          height={img.height}
+                          index={globalIndex}
+                          locationName={locationName}
+                        />
+                      </ScrollReveal>
+                    </div>
+                  );
+                })}
+              </MasonryGallery>
+            </div>
+          );
+        })
+      ) : (
+        <div class="mt-12">
+          <MasonryGallery>
+            {gallery.images.map((img, i) => (
+              <div class="break-inside-avoid mb-4 md:mb-6">
+                <ScrollReveal delay={i * 80}>
+                  <GalleryImage
+                    src={img.src}
+                    width={img.width}
+                    height={img.height}
+                    index={i}
+                    locationName={locationName}
+                  />
+                </ScrollReveal>
+              </div>
+            ))}
+          </MasonryGallery>
+        </div>
+      )}
+    </div>
+  </section>
+
+  <Lightbox images={gallery.images} />
+</PageLayout>

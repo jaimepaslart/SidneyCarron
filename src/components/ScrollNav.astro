@@ -1,0 +1,87 @@
+---
+import { getLangFromUrl, getTranslation, getLocalizedPath } from '@/i18n';
+
+const lang = getLangFromUrl(Astro.url);
+const t = getTranslation(lang);
+---
+
+<div
+  id="scroll-nav"
+  class="fixed top-0 left-0 right-0 z-50 px-6 md:px-8 py-4 flex justify-between items-center opacity-0 -translate-y-4 pointer-events-none transition-all duration-300 ease-out"
+  aria-hidden="true"
+>
+  <a
+    href={getLocalizedPath(lang, lang === 'fr' ? '/carte/' : '/carte/')}
+    class="scroll-nav-pill"
+  >
+    {t('nav.scroll.works')}
+  </a>
+  <a
+    href={getLocalizedPath(lang, '/about/')}
+    class="scroll-nav-pill"
+  >
+    {t('nav.scroll.about')}
+  </a>
+</div>
+
+<style>
+  /* Rinaldi exact: Instrument Sans, 23px, weight 500, bg rgba(0,0,0,0.03), br 19px, padding 15px */
+  .scroll-nav-pill {
+    display: inline-block;
+    background-color: rgba(0, 0, 0, 0.03);
+    border-radius: 19px;
+    padding: 15px;
+    font-family: 'Inter', system-ui, sans-serif;
+    font-size: 23px;
+    font-weight: 500;
+    line-height: 1.22;
+    color: #1A1A1A;
+    text-decoration: none;
+    transition: background-color 300ms ease;
+  }
+
+  .scroll-nav-pill:hover {
+    background-color: rgba(0, 0, 0, 0.07);
+  }
+
+  #scroll-nav.is-visible {
+    opacity: 1;
+    transform: translateY(0);
+    pointer-events: auto;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    #scroll-nav {
+      transition: opacity 100ms ease;
+      transform: none !important;
+    }
+  }
+</style>
+
+<script>
+  function initScrollNav() {
+    const scrollNav = document.getElementById('scroll-nav');
+    const heroSection = document.getElementById('hero-section');
+    if (!scrollNav || !heroSection) return;
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            scrollNav.classList.remove('is-visible');
+            scrollNav.setAttribute('aria-hidden', 'true');
+          } else {
+            scrollNav.classList.add('is-visible');
+            scrollNav.setAttribute('aria-hidden', 'false');
+          }
+        });
+      },
+      { rootMargin: '-80px 0px 0px 0px', threshold: 0 }
+    );
+
+    observer.observe(heroSection);
+  }
+
+  initScrollNav();
+  document.addEventListener('astro:page-load', initScrollNav);
+</script>

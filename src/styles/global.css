@@ -23,7 +23,7 @@
   }
 
   h1, h2, h3, h4, h5, h6 {
-    @apply font-serif font-light;
+    @apply font-light;
     color: #1A1A1A;
     text-wrap: balance;
   }
@@ -43,7 +43,8 @@
   }
 
   :focus-visible {
-    @apply outline-2 outline-offset-2 outline-text;
+    @apply outline-2 outline-offset-2;
+    outline-color: #1A1A1A;
   }
 
   :focus:not(:focus-visible) {

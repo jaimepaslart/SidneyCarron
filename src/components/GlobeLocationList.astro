@@ -1,0 +1,128 @@
+---
+import { locations } from '@/data/locations';
+import { getGallery } from '@/data/gallery-loader';
+import { getTranslation, getLocalizedPath, type Lang } from '@/i18n';
+import ScrollReveal from './ScrollReveal.astro';
+
+interface Props {
+  lang: Lang;
+}
+
+const { lang } = Astro.props;
+const t = getTranslation(lang);
+
+const sortedLocations = [...locations].sort((a, b) => b.photoCount - a.photoCount);
+---
+
+<div class="hidden md:block">
+  <ul class="globe-list">
+    {sortedLocations.map((loc, i) => {
+      const name = lang === 'en' ? loc.name_en : loc.name_fr;
+      const country = lang === 'en' ? loc.country_en : loc.country_fr;
+      const gallery = getGallery(loc.slug);
+      const thumbnail = loc.cover || gallery?.images?.[0]?.src || '';
+      return (
+        <li>
+          <ScrollReveal delay={i * 60}>
+            <a
+              href={getLocalizedPath(lang, `/works/${loc.slug}/`)}
+              data-globe-loc={loc.slug}
+              data-lat={loc.coords.lat}
+              data-lng={loc.coords.lng}
+              class="globe-list__item group"
+            >
+              {thumbnail && (
+                <div class="globe-list__polaroid">
+                  <div class="globe-list__polaroid-img">
+                    <img src={thumbnail} alt={name} width="60" height="45" loading="lazy" decoding="async" />
+                  </div>
+                </div>
+              )}
+              <div class="globe-list__info">
+                <span class="font-display text-lg uppercase tracking-wide text-text group-hover:opacity-60 transition-opacity duration-300">
+                  {name}
+                </span>
+                <span class="block text-sm text-secondary mt-0.5">{country}</span>
+              </div>
+              <div class="flex items-center gap-4 ml-auto">
+                <span class="text-sm text-muted">{loc.photoCount} photos</span>
+                <span class="text-secondary group-hover:translate-x-1 transition-transform duration-300">&rarr;</span>
+              </div>
+            </a>
+          </ScrollReveal>
+        </li>
+      );
+    })}
+  </ul>
+</div>
+
+<style>
+  .globe-list {
+    border-top: 1px solid #E5E5E5;
+  }
+
+  .globe-list__item {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    padding: 0.75rem 0;
+    border-bottom: 1px solid #E5E5E5;
+    text-decoration: none;
+    color: inherit;
+  }
+
+  .globe-list__polaroid {
+    flex-shrink: 0;
+    background: #fff;
+    padding: 3px 3px 8px;
+    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.08), 0 2px 8px rgba(0, 0, 0, 0.04);
+    transition: box-shadow 300ms ease, transform 300ms cubic-bezier(0.16, 1, 0.3, 1);
+  }
+
+  .globe-list__item:hover .globe-list__polaroid {
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.12), 0 2px 6px rgba(0, 0, 0, 0.06);
+    transform: rotate(-2deg) scale(1.05);
+  }
+
+  .globe-list__polaroid-img {
+    width: 56px;
+    height: 42px;
+    overflow: hidden;
+    background: #e0e0e0;
+  }
+
+  .globe-list__polaroid-img img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+  }
+
+  .globe-list__info {
+    min-width: 0;
+  }
+</style>
+
+<script>
+  function initGlobeList() {
+    const controller = new AbortController();
+    const links = document.querySelectorAll('[data-globe-loc]');
+
+    links.forEach(link => {
+      link.addEventListener('mouseenter', () => {
+        const lat = parseFloat(link.getAttribute('data-lat')!);
+        const lng = parseFloat(link.getAttribute('data-lng')!);
+        if ((window as any).__cobeGlobeFocus) {
+          (window as any).__cobeGlobeFocus(lat, lng);
+        }
+      }, { signal: controller.signal });
+    });
+
+    document.addEventListener('astro:before-swap', () => {
+      controller.abort();
+    }, { once: true });
+  }
+
+  initGlobeList();
+  document.addEventListener('astro:page-load', initGlobeList);
+</script>

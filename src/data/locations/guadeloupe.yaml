@@ -1,0 +1,20 @@
+slug: guadeloupe
+name_fr: Guadeloupe
+name_en: Guadeloupe
+country_fr: France
+country_en: France
+lat: 16.265
+lng: -61.551
+photoCount: 3
+type: travel
+cover: "/images/galleries/guadeloupe/guadeloupe-001.jpg"
+images:
+  - src: "/images/galleries/guadeloupe/guadeloupe-001.jpg"
+    width: 1600
+    height: 1600
+  - src: "/images/galleries/guadeloupe/guadeloupe-002.jpg"
+    width: 1600
+    height: 1600
+  - src: "/images/galleries/guadeloupe/guadeloupe-003.jpg"
+    width: 1600
+    height: 1200

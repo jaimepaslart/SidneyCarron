@@ -13,9 +13,10 @@ interface Props {
   enCanonicalPath?: string;
   jsonLd?: Record<string, unknown>;
   noindex?: boolean;
+  hideHeader?: boolean;
 }
 
-const props = Astro.props;
+const { hideHeader = false, ...props } = Astro.props;
 const lang = getLangFromUrl(Astro.url);
 
 // Compute alternate href for LanguageToggle on detail pages with translated slugs
@@ -28,7 +29,7 @@ if (props.canonicalPath && props.enCanonicalPath) {
 ---
 
 <BaseLayout {...props}>
-  <Header alternateHref={alternateHref} />
+  {!hideHeader && <Header alternateHref={alternateHref} />}
   <main id="main-content" class="flex-1">
     <slot />
   </main>

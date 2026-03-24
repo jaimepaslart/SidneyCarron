@@ -1,11 +1,14 @@
 ---
 import PageLayout from '@/layouts/PageLayout.astro';
 import HeroSection from '@/components/HeroSection.astro';
-import WorkCard from '@/components/WorkCard.astro';
-import MasonryGallery from '@/components/MasonryGallery.astro';
+import LocationCard from '@/components/LocationCard.astro';
 import ScrollReveal from '@/components/ScrollReveal.astro';
+import HomeExhibitionsSection from '@/components/HomeExhibitionsSection.astro';
 import { getCollection } from 'astro:content';
 import { getTranslation, getLocalizedPath, type Lang } from '@/i18n';
+import { locations, getLocation } from '@/data/locations';
+import { getHome, getSettings, localize, SITE_URL } from '@/utils/site';
+import { buildPersonSchema, buildBreadcrumbs } from '@/utils/seo';
 
 interface Props {
   lang: Lang;
@@ -14,41 +17,22 @@ interface Props {
 const { lang } = Astro.props;
 const t = getTranslation(lang);
 
-// Hero data (matches home.yaml values via i18n)
-const heroStatement = t('home.hero.statement');
-const heroSubtitle = t('home.hero.subtitle');
+// Featured locations from CMS
+const homeData = getHome();
+const featuredSlugs = homeData.featured_locations;
+const featuredLocations = featuredSlugs
+  .map(slug => getLocation(slug))
+  .filter((loc): loc is NonNullable<typeof loc> => loc !== undefined);
 
-// Featured works
-const allWorks = await getCollection('works');
-const featuredWorks = allWorks
-  .filter(w => w.data.featured)
-  .sort((a, b) => a.data.order - b.data.order);
-
-// Current/upcoming exhibition
+// All exhibitions sorted by start_date desc
 const allExhibitions = await getCollection('exhibitions');
-const currentExhibition = allExhibitions
-  .filter(e => e.data.status === 'current' || e.data.status === 'upcoming')
-  .sort((a, b) => new Date(a.data.start_date).getTime() - new Date(b.data.start_date).getTime())
-  [0];
+const sortedExhibitions = allExhibitions
+  .sort((a, b) => new Date(b.data.start_date).getTime() - new Date(a.data.start_date).getTime());
 
-function formatDates(startStr: string, endStr: string): string {
-  const start = new Date(startStr);
-  const end = new Date(endStr);
-  const sd = String(start.getDate()).padStart(2, '0');
-  const sm = String(start.getMonth() + 1).padStart(2, '0');
-  const ed = String(end.getDate()).padStart(2, '0');
-  const em = String(end.getMonth() + 1).padStart(2, '0');
-  const ey = end.getFullYear();
-  if (start.getFullYear() === end.getFullYear()) {
-    return `${sd}.${sm} — ${ed}.${em}.${ey}`;
-  }
-  return `${sd}.${sm}.${start.getFullYear()} — ${ed}.${em}.${ey}`;
-}
+// Artist statement from CMS
+const artistStatement = localize(lang, homeData.hero_statement_fr, homeData.hero_statement_en);
 
-// Artist statement
-const artistStatement = lang === 'en'
-  ? "I write with light. To be in osmosis, in total harmony with nature, I replaced the camera with the sun."
-  : "J'écris avec la lumière. Pour être en osmose, en accord total avec la nature, j'ai remplacé l'appareil photo par le soleil.";
+const cartePath = lang === 'fr' ? '/carte/' : '/en/map/';
 
 const jsonLd = {
   '@context': 'https://schema.org',
@@ -56,22 +40,10 @@ const jsonLd = {
     {
       '@type': 'WebSite',
       name: 'Sidney Carron',
-      url: 'https://sidneycarron.com',
+      url: SITE_URL,
       inLanguage: [lang === 'fr' ? 'fr-FR' : 'en-US'],
     },
-    {
-      '@type': 'Person',
-      name: 'Sidney Carron',
-      jobTitle: lang === 'fr' ? 'Artiste photographe' : 'Visual artist & photographer',
-      description: lang === 'fr'
-        ? 'Artiste contemporaine explorant l\'empreinte solaire, l\'héliographie et le dialogue entre corps, lumière et matière photosensible.'
-        : 'Contemporary artist exploring solar imprints, heliography and the dialogue between body, light and photosensitive material.',
-      url: 'https://sidneycarron.com',
-      image: 'https://sidneycarron.com/images/portrait-sidney-carron.jpg',
-      sameAs: [
-        'https://instagram.com/sidneycarron',
-      ],
-    },
+    buildPersonSchema(lang),
   ],
 };
 ---
@@ -80,40 +52,35 @@ const jsonLd = {
   title={t('home.title')}
   description={t('home.description')}
   jsonLd={jsonLd}
+  hideHeader={true}
 >
-  <!-- 1. Hero Section -->
-  <HeroSection statement={heroStatement} subtitle={heroSubtitle} lang={lang} />
+  <!-- 1. Hero Section (includes static header + artist name + parallax image) -->
+  <HeroSection lang={lang} />
 
-  <!-- 2. Featured Works in MasonryGallery -->
-  {featuredWorks.length > 0 && (
+  <!-- 2. Exhibitions Section (Rinaldi-style) — right after hero -->
+  {sortedExhibitions.length > 0 && (
+    <HomeExhibitionsSection lang={lang} exhibitions={sortedExhibitions} videoSrc="/videos/sid-reel.mp4" />
+  )}
+
+  <!-- 3. Featured Locations -->
+  {featuredLocations.length > 0 && (
     <section class="museum-section">
       <div class="museum-container">
         <ScrollReveal>
           <p class="text-sm uppercase tracking-widest text-secondary mb-8">{t('home.featured.label')}</p>
         </ScrollReveal>
-        <MasonryGallery>
-          {featuredWorks.map((work, i) => (
-            <div class="break-inside-avoid mb-4 md:mb-6">
-              <ScrollReveal delay={i * 100}>
-                <WorkCard
-                  slug={lang === 'en' ? work.data.slug_en : work.data.slug}
-                  title={lang === 'en' ? work.data.title_en : work.data.title_fr}
-                  year={work.data.year}
-                  medium={lang === 'en' ? work.data.medium_en : work.data.medium_fr}
-                  image={{
-                    src: work.data.images[0].src,
-                    alt: lang === 'en' ? work.data.images[0].alt_en : work.data.images[0].alt_fr,
-                  }}
-                />
-              </ScrollReveal>
-            </div>
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6 md:gap-8">
+          {featuredLocations.map((loc, i) => (
+            <ScrollReveal delay={i * 100}>
+              <LocationCard location={loc} lang={lang} />
+            </ScrollReveal>
           ))}
-        </MasonryGallery>
+        </div>
         <ScrollReveal delay={300}>
           <div class="text-center mt-12">
             <a
-              href={getLocalizedPath(lang, '/works')}
-              class="font-sans text-sm text-secondary hover:text-hover transition-colors duration-hover ease"
+              href={getLocalizedPath(lang, cartePath)}
+              class="font-sans text-sm text-secondary hover:text-text transition-colors duration-300 ease"
             >
               {t('home.featured.cta')} &rarr;
             </a>
@@ -123,59 +90,11 @@ const jsonLd = {
     </section>
   )}
 
-  <!-- 3. Current/Upcoming Exhibition Banner -->
-  {currentExhibition && (
-    <ScrollReveal tag="section">
-      <div class="bg-[#1A1A1A] text-white">
-        <div class="museum-container py-section-sm md:py-section-md lg:py-section-lg">
-          <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-16 items-center">
-            {currentExhibition.data.image && (
-              <div class="overflow-hidden">
-                <img
-                  src={currentExhibition.data.image.src}
-                  alt={lang === 'en' ? currentExhibition.data.image.alt_en : currentExhibition.data.image.alt_fr}
-                  width="800"
-                  height="600"
-                  loading="lazy"
-                  class="w-full h-auto object-cover"
-                />
-              </div>
-            )}
-            <div>
-              <p class="text-xs uppercase tracking-widest text-white/60 mb-4">
-                {currentExhibition.data.status === 'current'
-                  ? t('exhibitions.current_badge')
-                  : t('exhibitions.upcoming_badge')}
-              </p>
-              <h2 class="font-serif font-light text-3xl md:text-4xl lg:text-5xl text-white">
-                {lang === 'en' ? currentExhibition.data.title_en : currentExhibition.data.title_fr}
-              </h2>
-              <p class="font-sans text-base text-white/70 mt-4">
-                {lang === 'en' ? currentExhibition.data.venue_en : currentExhibition.data.venue_fr}, {currentExhibition.data.city}
-              </p>
-              <p class="font-sans text-sm text-white/50 mt-2">
-                {formatDates(currentExhibition.data.start_date, currentExhibition.data.end_date)}
-              </p>
-              <div class="mt-8">
-                <a
-                  href={getLocalizedPath(lang, `/exhibitions/${lang === 'en' ? currentExhibition.data.slug_en : currentExhibition.data.slug}`)}
-                  class="font-sans text-sm text-white/70 hover:text-white transition-colors duration-hover ease"
-                >
-                  {t('home.exhibitions.cta')} &rarr;
-                </a>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </ScrollReveal>
-  )}
-
   <!-- 4. Artist Statement -->
   <section class="museum-section">
     <div class="museum-container">
       <ScrollReveal>
-        <blockquote class="text-2xl md:text-4xl font-serif italic text-center max-w-3xl mx-auto text-text leading-relaxed">
+        <blockquote class="text-2xl md:text-4xl font-sans italic text-center max-w-3xl mx-auto text-text leading-relaxed">
           &laquo; {artistStatement} &raquo;
         </blockquote>
       </ScrollReveal>

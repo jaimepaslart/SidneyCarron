@@ -92,3 +92,41 @@
 
 [build.processing.html]
   pretty_urls = true
+
+# ============================================
+# Redirects — Anciennes URLs works individuels
+# ============================================
+[[redirects]]
+  from = "/works/empreinte-*"
+  to = "/works/dakar/"
+  status = 301
+
+[[redirects]]
+  from = "/works/existence-*"
+  to = "/carte/"
+  status = 301
+
+[[redirects]]
+  from = "/works/silhouette-*"
+  to = "/works/saint-tropez/"
+  status = 301
+
+[[redirects]]
+  from = "/works/traces-*"
+  to = "/works/reunion/"
+  status = 301
+
+[[redirects]]
+  from = "/works/memoire-*"
+  to = "/works/sri-lanka/"
+  status = 301
+
+[[redirects]]
+  from = "/series/*"
+  to = "/carte/"
+  status = 301
+
+[[redirects]]
+  from = "/en/series/*"
+  to = "/en/map/"
+  status = 301

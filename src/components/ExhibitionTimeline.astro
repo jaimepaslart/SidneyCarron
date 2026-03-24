@@ -37,11 +37,11 @@ function formatDates(startStr: string, endStr: string): string {
 function getStatusBadge(status: string): { text: string; class: string } {
   switch (status) {
     case 'current':
-      return { text: t('exhibitions.current_badge'), class: 'text-green-700 bg-green-50' };
+      return { text: t('exhibitions.current_badge'), class: 'text-text bg-surface' };
     case 'upcoming':
-      return { text: t('exhibitions.upcoming_badge'), class: 'text-blue-700 bg-blue-50' };
+      return { text: t('exhibitions.upcoming_badge'), class: 'text-secondary bg-surface' };
     default:
-      return { text: t('exhibitions.past_badge'), class: 'text-secondary bg-[#F5F5F5]' };
+      return { text: t('exhibitions.past_badge'), class: 'text-secondary bg-surface' };
   }
 }
 
@@ -61,7 +61,7 @@ const years = Array.from(grouped.keys()).sort((a, b) => Number(b) - Number(a));
     return (
       <div class="mb-12 last:mb-0">
         <ScrollReveal delay={yearIndex * 100}>
-          <h3 class="font-serif text-2xl text-text mb-6">{year}</h3>
+          <h3 class="font-sans text-2xl text-text mb-6">{year}</h3>
         </ScrollReveal>
         <div class="relative border-l-2 border-border pl-8 ml-1.5 space-y-8">
           {yearExhibitions.map((ex, i) => {
@@ -79,7 +79,7 @@ const years = Array.from(grouped.keys()).sort((a, b) => Number(b) - Number(a));
                     <h4 class="mt-2">
                       <a
                         href={getLocalizedPath(lang, `/exhibitions/${ex.slug}`)}
-                        class="font-serif text-xl text-text hover:text-hover transition-colors duration-hover ease"
+                        class="font-sans text-xl text-text hover:text-hover transition-colors duration-hover ease"
                       >
                         {ex.title}
                       </a>

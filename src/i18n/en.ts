@@ -3,7 +3,7 @@ import type { TranslationKey } from './fr';
 export const en: Record<TranslationKey, string> = {
   // Navigation
   'nav.works': 'Works',
-  'nav.series': 'Series',
+  'nav.carte': 'Map',
   'nav.exhibitions': 'Exhibitions',
   'nav.press': 'Press',
   'nav.about': 'About',
@@ -16,46 +16,40 @@ export const en: Record<TranslationKey, string> = {
   'nav.location.reunion': 'Reunion',
   'nav.location.sri-lanka': 'Sri Lanka',
   'nav.location.costa-rica': 'Costa Rica',
+  'nav.location.guadeloupe': 'Guadeloupe',
+  'nav.location.paris': 'Paris',
+  'nav.location.alpes': 'Alpine Cup',
+
+  // Scroll nav (fixed pills on scroll)
+  'nav.scroll.works': 'Works',
+  'nav.scroll.about': 'About',
 
   // Home
   'home.title': 'Sidney Carron — Visual Artist & Photographer',
   'home.description': 'Official website of Sidney Carron, visual artist and photographer. Solar imprints, bodies and light. Discover her works, series, exhibitions and news.',
   'home.hero.statement': 'I write with light',
   'home.hero.subtitle': 'Visual artist & photographer',
-  'home.featured.label': 'Selection',
-  'home.featured.cta': 'View all works',
+  'home.featured.label': 'Creation locations',
+  'home.featured.cta': 'View map',
   'home.exhibitions.cta': 'View exhibitions',
+  'home.exhibitions.title': 'Exhibitions',
+  'home.exhibitions.circle_cta': 'Sidney Carron',
 
-  // Works
+  // Map
+  'map.title': 'Creations across the world',
+  'map.subtitle': 'Sidney Carron creates her solar imprints while travelling across the world',
+  'map.works_count': '{count} photos',
+  'map.discover': 'Discover',
+  'map.see_photos': 'see photos',
+
+  // Gallery
+  'gallery.photos_count': '{count} photos',
+  'gallery.back': 'Back to map',
+  'gallery.section': 'Section',
+
+  // Works (kept for gallery pages)
   'works.title': 'Works',
   'works.description': 'Discover the complete body of work by Sidney Carron: solar imprints, photographs, light installations.',
-  'works.count': '{count} work(s)',
-  'works.count_singular': 'work',
-  'works.count_plural': 'works',
-  'works.back': 'All works',
-  'works.prev': 'Previous work',
-  'works.next': 'Next work',
-  'works.related': 'From the same series',
-  'works.year': 'Year',
-  'works.medium': 'Process',
-  'works.dimensions': 'Dimensions',
-  'works.series': 'Series',
-  'works.location': 'Location',
-  'works.location.bresil': 'Brazil',
-  'works.location.dakar': 'Dakar, Senegal',
-  'works.location.saint-tropez': 'Saint-Tropez',
-  'works.location.reunion': 'Reunion Island',
-  'works.location.sri-lanka': 'Sri Lanka',
-  'works.location.costa-rica': 'Costa Rica',
-
-  // Series
-  'series.title': 'Series',
-  'series.description': 'Explore the thematic series by Sidney Carron.',
-  'series.works_count': '{count} work(s)',
-  'series.works_count_singular': 'work',
-  'series.works_count_plural': 'works',
-  'series.back': 'Back to series',
-  'series.other': 'Other series',
 
   // Exhibitions
   'exhibitions.title': 'Exhibitions',
@@ -81,11 +75,25 @@ export const en: Record<TranslationKey, string> = {
   // About
   'about.title': 'About',
   'about.description': 'Biography and artistic statement of Sidney Carron — photographer, solar imprints.',
+  'about.downloads': 'Documents',
+  'about.download_bio': 'Biography',
+  'about.download_exhibitions': 'Exhibitions',
+  'about.download_poem': 'Poem',
 
   // Contact
   'contact.title': 'Contact',
   'contact.description': 'Contact Sidney Carron for inquiries about solar imprints, exhibitions or collaborations.',
-  'contact.intro': 'For any inquiry regarding my works, an exhibition or a collaboration, please feel free to reach out.',
+  'contact.intro': 'For any inquiry regarding my works, an exhibition or a collaboration, feel free to write.',
+  'contact.direct': 'Or directly by email:',
+  'contact.form.name': 'Name',
+  'contact.form.email': 'Email',
+  'contact.form.subject': 'Subject',
+  'contact.form.message': 'Message',
+  'contact.form.submit': 'Send',
+  'contact.form.sending': 'Sending…',
+  'contact.form.success.title': 'Message sent',
+  'contact.form.success.text': 'Thank you for your message. I will get back to you as soon as possible.',
+  'contact.form.error': 'Something went wrong. Please try again or write directly to the address below.',
 
   // Footer
   'footer.legal': 'Legal notice',

@@ -1,0 +1,26 @@
+slug: alpes
+name_fr: Coupe des Alpes
+name_en: Alpine Cup
+country_fr: France
+country_en: France
+lat: 45.05
+lng: 6.87
+photoCount: 5
+type: event
+cover: "/images/galleries/alpes/alpes-001.jpg"
+images:
+  - src: "/images/galleries/alpes/alpes-001.jpg"
+    width: 1600
+    height: 1200
+  - src: "/images/galleries/alpes/alpes-002.jpg"
+    width: 1600
+    height: 1200
+  - src: "/images/galleries/alpes/alpes-003.jpg"
+    width: 1179
+    height: 883
+  - src: "/images/galleries/alpes/alpes-004.jpg"
+    width: 1179
+    height: 848
+  - src: "/images/galleries/alpes/alpes-005.jpg"
+    width: 1179
+    height: 862

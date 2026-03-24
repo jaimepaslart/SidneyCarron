@@ -1,0 +1,89 @@
+slug: reunion
+name_fr: La Réunion
+name_en: Reunion Island
+country_fr: France
+country_en: France
+lat: -21.1151
+lng: 55.5364
+photoCount: 26
+type: travel
+cover: "/images/galleries/reunion/reunion-001.jpg"
+images:
+  - src: "/images/galleries/reunion/reunion-001.jpg"
+    width: 1600
+    height: 1200
+  - src: "/images/galleries/reunion/reunion-002.jpg"
+    width: 1211
+    height: 1600
+  - src: "/images/galleries/reunion/reunion-003.jpg"
+    width: 1600
+    height: 1200
+  - src: "/images/galleries/reunion/reunion-004.jpg"
+    width: 1307
+    height: 1600
+  - src: "/images/galleries/reunion/reunion-005.jpg"
+    width: 1200
+    height: 1600
+  - src: "/images/galleries/reunion/reunion-006.jpg"
+    width: 1225
+    height: 1600
+  - src: "/images/galleries/reunion/reunion-007.jpg"
+    width: 1291
+    height: 1600
+  - src: "/images/galleries/reunion/reunion-008.jpg"
+    width: 1600
+    height: 1600
+  - src: "/images/galleries/reunion/reunion-009.jpg"
+    width: 1280
+    height: 1600
+  - src: "/images/galleries/reunion/reunion-010.jpg"
+    width: 1600
+    height: 1600
+  - src: "/images/galleries/reunion/reunion-011.jpg"
+    width: 1200
+    height: 1600
+  - src: "/images/galleries/reunion/reunion-012.jpg"
+    width: 1200
+    height: 1600
+  - src: "/images/galleries/reunion/reunion-013.jpg"
+    width: 1200
+    height: 1600
+  - src: "/images/galleries/reunion/reunion-014.jpg"
+    width: 1200
+    height: 1600
+  - src: "/images/galleries/reunion/reunion-015.jpg"
+    width: 1200
+    height: 1600
+  - src: "/images/galleries/reunion/reunion-016.jpg"
+    width: 1200
+    height: 1600
+  - src: "/images/galleries/reunion/reunion-017.jpg"
+    width: 1200
+    height: 1600
+  - src: "/images/galleries/reunion/reunion-018.jpg"
+    width: 1200
+    height: 1600
+  - src: "/images/galleries/reunion/reunion-019.jpg"
+    width: 1200
+    height: 1600
+  - src: "/images/galleries/reunion/reunion-020.jpg"
+    width: 1200
+    height: 1600
+  - src: "/images/galleries/reunion/reunion-021.jpg"
+    width: 1200
+    height: 1600
+  - src: "/images/galleries/reunion/reunion-022.jpg"
+    width: 1289
+    height: 1600
+  - src: "/images/galleries/reunion/reunion-023.jpg"
+    width: 1600
+    height: 1200
+  - src: "/images/galleries/reunion/reunion-024.jpg"
+    width: 1600
+    height: 1594
+  - src: "/images/galleries/reunion/reunion-025.jpg"
+    width: 1172
+    height: 1600
+  - src: "/images/galleries/reunion/reunion-026.jpg"
+    width: 1200
+    height: 1600

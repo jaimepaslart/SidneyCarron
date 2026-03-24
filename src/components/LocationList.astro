@@ -1,0 +1,44 @@
+---
+import { locations } from '@/data/locations';
+import { getTranslation, getLocalizedPath, type Lang } from '@/i18n';
+import ScrollReveal from './ScrollReveal.astro';
+
+interface Props {
+  lang: Lang;
+}
+
+const { lang } = Astro.props;
+const t = getTranslation(lang);
+
+const sortedLocations = [...locations].sort((a, b) => b.photoCount - a.photoCount);
+---
+
+<div class="md:hidden">
+  <ul class="divide-y divide-border">
+    {sortedLocations.map((loc, i) => {
+      const name = lang === 'en' ? loc.name_en : loc.name_fr;
+      const country = lang === 'en' ? loc.country_en : loc.country_fr;
+      return (
+        <li>
+          <ScrollReveal delay={i * 60}>
+            <a
+              href={getLocalizedPath(lang, `/works/${loc.slug}/`)}
+              class="flex items-center justify-between py-5 group"
+            >
+              <div>
+                <span class="font-display text-lg uppercase tracking-wide text-text group-hover:opacity-60 transition-opacity duration-300">
+                  {name}
+                </span>
+                <span class="block text-sm text-secondary mt-0.5">{country}</span>
+              </div>
+              <div class="flex items-center gap-4">
+                <span class="text-sm text-muted">{loc.photoCount} photos</span>
+                <span class="text-secondary group-hover:translate-x-1 transition-transform duration-300">&rarr;</span>
+              </div>
+            </a>
+          </ScrollReveal>
+        </li>
+      );
+    })}
+  </ul>
+</div>

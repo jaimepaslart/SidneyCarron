@@ -2,6 +2,8 @@
 import PageLayout from '@/layouts/PageLayout.astro';
 import ScrollReveal from '@/components/ScrollReveal.astro';
 import { getTranslation, getLocalizedPath, type Lang } from '@/i18n';
+import { getAbout, getSettings, localize, SITE_URL } from '@/utils/site';
+import { buildPersonSchema, buildBreadcrumbs } from '@/utils/seo';
 
 interface Props {
   lang: Lang;
@@ -10,90 +12,41 @@ interface Props {
 const { lang } = Astro.props;
 const t = getTranslation(lang);
 
-const siteUrl = 'https://sidneycarron.com';
+const aboutData = getAbout();
+const settings = getSettings();
 
 const jsonLd = {
   '@context': 'https://schema.org',
   '@graph': [
-    {
-      '@type': 'Person',
-      name: 'Sidney Carron',
-      jobTitle: lang === 'fr' ? 'Artiste — Empreintes solaires' : 'Artist — Solar Imprints',
-      description: lang === 'fr'
-        ? 'Artiste contemporaine explorant l\'empreinte solaire, l\'héliographie et le dialogue entre corps, lumière et matière photosensible.'
-        : 'Contemporary artist exploring solar imprints, heliography and the dialogue between body, light and photosensitive material.',
-      image: `${siteUrl}/images/portrait-sidney-carron.jpg`,
-      url: siteUrl,
-      email: 'contact@sidneycarron.com',
-      sameAs: [
-        'https://instagram.com/sidneycarron',
-      ],
-    },
-    {
-      '@type': 'BreadcrumbList',
-      itemListElement: [
-        { '@type': 'ListItem', position: 1, name: 'Sidney Carron', item: siteUrl },
-        { '@type': 'ListItem', position: 2, name: lang === 'fr' ? 'À propos' : 'About' },
-      ],
-    },
+    buildPersonSchema(lang),
+    buildBreadcrumbs([{ name: localize(lang, 'À propos', 'About') }]),
   ],
 };
 
-const bio = lang === 'fr' ? {
-  title: 'À propos de Sidney Carron',
-  intro: 'Née à Vienne, dans l\'Isère, Sidney Carron est une artiste dont le travail explore le dialogue entre le corps, la lumière et les éléments naturels. Photographe, joaillière, voyageuse — elle écrit avec la lumière.',
-  bioTitle: 'Biographie',
-  bioText: `Passionnée de peinture dès l'âge de cinq ans, Sidney Carron suit des études de joaillerie à l'École du Louvre, dont elle sort deuxième de sa promotion. Elle commence à fabriquer des bijoux place Vendôme, avant de tout quitter pour se consacrer à la photographie.
-
-Habitée par une soif de liberté inextinguible, refusant tout ancrage, elle s'envole en Afrique, en Amérique et en Israël pour des reportages photographiques. Autodidacte, elle dit avoir été « éduquée par les voyages et les rencontres ». Depuis l'enfance, elle découpe des mini-Polaroids pour fabriquer des romans-photos — première manifestation d'un instinct narratif par l'image.
-
-À son retour, elle réalise des projets remarqués : la couverture de Playboy avec Joey Starr, le clip « Dangereuse » du chanteur Christophe, l'affiche du DJ set littéraire de Frédéric Beigbeder. Mais c'est dans le retour aux origines de la photographie qu'elle trouve sa voie la plus profonde.
-
-Aujourd'hui, Sidney Carron aborde la photographie à partir de sa matrice originelle : le travail de la lumière. Elle travaille dehors, au bord de l'eau, en disposant corps, fragments végétaux, branches et pierres directement sur la surface photosensible, laissant le soleil, le vent, le sable et la mer intervenir dans l'image.
-
-Elle est représentée par la Sakanagallery à Donostia / San Sebastián.`,
-  statement: `« J'écris avec la lumière. Pour être en osmose, en accord total avec la nature, j'ai remplacé l'appareil photo par le soleil. »`,
-  cvTitle: 'Parcours',
-  cvItems: [
-    { year: 'Enfance', text: 'Née à Vienne (Isère) — passionnée de peinture dès l\'âge de cinq ans' },
-    { year: 'Formation', text: 'Études de joaillerie à l\'École du Louvre (2e de sa promotion)' },
-    { year: 'Joaillerie', text: 'Création de bijoux place Vendôme, puis rupture pour la photographie' },
-    { year: 'Reportages', text: 'Voyages en Afrique, Amérique et Israël — « éduquée par les voyages et les rencontres »' },
-    { year: 'Photographie', text: 'Couverture Playboy (Joey Starr), clip « Dangereuse » (Christophe), affiche DJ set littéraire (Beigbeder)' },
-    { year: 'Aujourd\'hui', text: 'Empreintes solaires — technique sur papier photosensible en plein air' },
-    { year: 'Galerie', text: 'Représentée par Sakanagallery, Donostia / San Sebastián' },
-  ],
-} : {
-  title: 'About Sidney Carron',
-  intro: 'Born in Vienne, in the Isère region of France, Sidney Carron is an artist whose work explores the dialogue between body, light and the natural elements. Photographer, jeweller, traveller — she writes with light.',
-  bioTitle: 'Biography',
-  bioText: `Passionate about painting from the age of five, Sidney Carron studied jewellery at the École du Louvre, graduating second in her class. She began crafting jewellery on Place Vendôme before leaving everything behind to devote herself to photography.
-
-Driven by an insatiable thirst for freedom, refusing any permanent home, she travelled to Africa, the Americas and Israel for photographic reportage. Self-taught, she says she was "educated by travel and encounters." Since childhood, she had been cutting mini-Polaroids to create photo-novels — the first sign of a narrative instinct through images.
-
-On her return, she completed notable projects: the Playboy cover featuring Joey Starr, the music video for "Dangereuse" by the singer Christophe, and the poster for Frédéric Beigbeder's literary DJ set. But it is in returning to the origins of photography that she found her deepest calling.
-
-Today, Sidney Carron approaches photography from its original matrix: the work of light. She works outdoors, by the water, placing bodies, plant fragments, branches and stones directly onto photosensitive paper, letting the sun, wind, sand and sea intervene in the image.
-
-She is represented by Sakanagallery in Donostia / San Sebastián.`,
-  statement: `"I write with light. To be in osmosis, in total harmony with nature, I replaced the camera with the sun."`,
-  cvTitle: 'Background',
-  cvItems: [
-    { year: 'Childhood', text: 'Born in Vienne (Isère, France) — passionate about painting from the age of five' },
-    { year: 'Education', text: 'Jewellery studies at the École du Louvre (2nd in class)' },
-    { year: 'Jewellery', text: 'Crafting jewellery on Place Vendôme, then a break for photography' },
-    { year: 'Reportage', text: 'Travels in Africa, the Americas and Israel — "educated by travel and encounters"' },
-    { year: 'Photography', text: 'Playboy cover (Joey Starr), "Dangereuse" music video (Christophe), literary DJ set poster (Beigbeder)' },
-    { year: 'Today', text: 'Solar imprints — photosensitive paper technique in the open air' },
-    { year: 'Gallery', text: 'Represented by Sakanagallery, Donostia / San Sebastián' },
-  ],
+const bio = {
+  title: localize(lang, 'À propos de Sidney Carron', 'About Sidney Carron'),
+  intro: localize(lang, aboutData.intro_fr, aboutData.intro_en),
+  bioTitle: localize(lang, 'Biographie', 'Biography'),
+  bioText: localize(lang, aboutData.bio_fr, aboutData.bio_en),
+  statement: localize(lang, aboutData.statement_fr, aboutData.statement_en),
+  cvTitle: localize(lang, 'Parcours', 'Career'),
+  cvItems: aboutData.cv.map(item => ({
+    year: item.year,
+    text: localize(lang, item.text_fr, item.text_en),
+  })),
 };
+
+const downloads = [
+  { href: aboutData.pdf_bio, label: t('about.download_bio') },
+  { href: aboutData.pdf_exhibitions, label: t('about.download_exhibitions') },
+  { href: aboutData.pdf_poem, label: t('about.download_poem') },
+].filter(d => d.href);
 ---
 
 <PageLayout
   title={`${t('about.title')} — Sidney Carron`}
   description={t('about.description')}
-  ogImage="/images/portrait-sidney-carron.jpg"
+  ogImage={aboutData.portrait}
   canonicalPath="/about"
   jsonLd={jsonLd}
 >
@@ -104,9 +57,9 @@ She is represented by Sakanagallery in Donostia / San Sebastián.`,
         <!-- Portrait (40%) -->
         <div class="lg:col-span-2">
           <ScrollReveal>
-            <div class="overflow-hidden bg-[#F5F5F5]">
+            <div class="overflow-hidden bg-surface">
               <img
-                src="/images/portrait-sidney-carron.jpg"
+                src={aboutData.portrait}
                 alt={lang === 'fr' ? 'Portrait de Sidney Carron' : 'Portrait of Sidney Carron'}
                 width="600"
                 height="800"
@@ -120,7 +73,7 @@ She is represented by Sakanagallery in Donostia / San Sebastián.`,
         <!-- Intro (60%) -->
         <div class="lg:col-span-3 flex flex-col justify-center">
           <ScrollReveal delay={100}>
-            <h1 class="font-serif font-light text-4xl text-text">{bio.title}</h1>
+            <h1 class="font-sans font-light text-4xl text-text">{bio.title}</h1>
             <p class="font-sans text-lg text-text mt-6 leading-relaxed">{bio.intro}</p>
           </ScrollReveal>
         </div>
@@ -132,7 +85,7 @@ She is represented by Sakanagallery in Donostia / San Sebastián.`,
   <section class="museum-section border-t border-border">
     <div class="museum-container max-w-3xl">
       <ScrollReveal>
-        <h2 class="font-serif font-light text-2xl text-text mb-6">{bio.bioTitle}</h2>
+        <h2 class="font-sans font-light text-2xl text-text mb-6">{bio.bioTitle}</h2>
       </ScrollReveal>
       <ScrollReveal delay={100}>
         <div class="font-sans text-base text-text leading-relaxed space-y-4">
@@ -148,18 +101,42 @@ She is represented by Sakanagallery in Donostia / San Sebastián.`,
   <section class="museum-section border-t border-border">
     <div class="museum-container">
       <ScrollReveal>
-        <blockquote class="font-serif italic text-2xl md:text-3xl text-center max-w-3xl mx-auto text-text leading-relaxed">
+        <blockquote class="font-sans italic text-2xl md:text-3xl text-center max-w-3xl mx-auto text-text leading-relaxed">
           {bio.statement}
         </blockquote>
       </ScrollReveal>
     </div>
   </section>
 
-  <!-- 4. CV / Timeline -->
+  <!-- 4. Downloads -->
   <section class="museum-section border-t border-border">
     <div class="museum-container max-w-3xl">
       <ScrollReveal>
-        <h2 class="font-serif font-light text-2xl text-text mb-8">{bio.cvTitle}</h2>
+        <h2 class="font-sans font-light text-2xl text-text mb-6">{t('about.downloads')}</h2>
+      </ScrollReveal>
+      <ScrollReveal delay={100}>
+        <div class="flex flex-wrap gap-4">
+          {downloads.map(({ href, label }) => (
+            <a
+              href={href}
+              target="_blank"
+              rel="noopener"
+              class="inline-flex items-center gap-2 px-5 py-3 border border-border text-sm text-text hover:bg-surface transition-colors duration-300"
+            >
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+              {label}
+            </a>
+          ))}
+        </div>
+      </ScrollReveal>
+    </div>
+  </section>
+
+  <!-- 5. CV / Timeline -->
+  <section class="museum-section border-t border-border">
+    <div class="museum-container max-w-3xl">
+      <ScrollReveal>
+        <h2 class="font-sans font-light text-2xl text-text mb-8">{bio.cvTitle}</h2>
       </ScrollReveal>
       <div class="relative border-l-2 border-border pl-8 ml-1.5 space-y-0">
         {bio.cvItems.map(({ year, text }, i) => (

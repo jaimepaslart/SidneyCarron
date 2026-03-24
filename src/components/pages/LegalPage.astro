@@ -49,7 +49,7 @@ const sections = [
   <section class="museum-section">
     <div class="museum-container max-w-3xl">
       <ScrollReveal>
-        <h1 class="font-serif font-light text-4xl text-text mb-8 md:mb-12">
+        <h1 class="font-sans font-light text-4xl text-text mb-8 md:mb-12">
           {t('legal.title')}
         </h1>
       </ScrollReveal>
@@ -58,7 +58,7 @@ const sections = [
         {sections.map(({ title, text }, i) => (
           <ScrollReveal delay={i * 80}>
             <div>
-              <h2 class="font-serif text-xl text-text mb-3">{title}</h2>
+              <h2 class="font-sans text-xl text-text mb-3">{title}</h2>
               <div class="font-sans text-base text-secondary space-y-2 leading-relaxed">
                 {text.split('\n').map((line) => (
                   <p>{line}</p>

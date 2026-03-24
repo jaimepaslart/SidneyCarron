@@ -1,7 +1,7 @@
 export const fr = {
   // Navigation
   'nav.works': 'Œuvres',
-  'nav.series': 'Séries',
+  'nav.carte': 'Carte',
   'nav.exhibitions': 'Expositions',
   'nav.press': 'Presse',
   'nav.about': 'À propos',
@@ -14,46 +14,40 @@ export const fr = {
   'nav.location.reunion': 'La Réunion',
   'nav.location.sri-lanka': 'Sri Lanka',
   'nav.location.costa-rica': 'Costa Rica',
+  'nav.location.guadeloupe': 'Guadeloupe',
+  'nav.location.paris': 'Paris',
+  'nav.location.alpes': 'Coupe des Alpes',
+
+  // Scroll nav (fixed pills on scroll)
+  'nav.scroll.works': 'Œuvres',
+  'nav.scroll.about': 'À propos',
 
   // Home
   'home.title': 'Sidney Carron — Artiste photographe',
   'home.description': 'Site officiel de Sidney Carron, artiste photographe. Empreintes solaires, corps et lumière. Découvrez ses œuvres, séries, expositions et actualités.',
   'home.hero.statement': "J'écris avec la lumière",
   'home.hero.subtitle': 'Artiste photographe',
-  'home.featured.label': 'Sélection',
-  'home.featured.cta': 'Voir toutes les œuvres',
+  'home.featured.label': 'Lieux de création',
+  'home.featured.cta': 'Voir la carte',
   'home.exhibitions.cta': 'Voir les expositions',
+  'home.exhibitions.title': 'Expositions',
+  'home.exhibitions.circle_cta': 'Sidney Carron',
 
-  // Works
+  // Map
+  'map.title': 'Créations à travers le monde',
+  'map.subtitle': 'Sidney Carron crée ses empreintes solaires en voyageant à travers le monde',
+  'map.works_count': '{count} photos',
+  'map.discover': 'Découvrir',
+  'map.see_photos': 'voir les photos',
+
+  // Gallery
+  'gallery.photos_count': '{count} photos',
+  'gallery.back': 'Retour à la carte',
+  'gallery.section': 'Section',
+
+  // Works (kept for gallery pages)
   'works.title': 'Œuvres',
   'works.description': 'Découvrez l\'ensemble des œuvres de Sidney Carron : empreintes solaires, photographies, installations lumineuses.',
-  'works.count': '{count} œuvre(s)',
-  'works.count_singular': 'œuvre',
-  'works.count_plural': 'œuvres',
-  'works.back': 'Toutes les œuvres',
-  'works.prev': 'Œuvre précédente',
-  'works.next': 'Œuvre suivante',
-  'works.related': 'De la même série',
-  'works.year': 'Année',
-  'works.medium': 'Procédé',
-  'works.dimensions': 'Dimensions',
-  'works.series': 'Série',
-  'works.location': 'Lieu',
-  'works.location.bresil': 'Brésil',
-  'works.location.dakar': 'Dakar, Sénégal',
-  'works.location.saint-tropez': 'Saint-Tropez',
-  'works.location.reunion': 'Île de la Réunion',
-  'works.location.sri-lanka': 'Sri Lanka',
-  'works.location.costa-rica': 'Costa Rica',
-
-  // Series
-  'series.title': 'Séries',
-  'series.description': 'Explorez les séries thématiques de Sidney Carron.',
-  'series.works_count': '{count} œuvre(s)',
-  'series.works_count_singular': 'œuvre',
-  'series.works_count_plural': 'œuvres',
-  'series.back': 'Retour aux séries',
-  'series.other': 'Autres séries',
 
   // Exhibitions
   'exhibitions.title': 'Expositions',
@@ -79,11 +73,25 @@ export const fr = {
   // About
   'about.title': 'À propos',
   'about.description': 'Biographie et démarche artistique de Sidney Carron — photographe, empreintes solaires.',
+  'about.downloads': 'Documents',
+  'about.download_bio': 'Biographie',
+  'about.download_exhibitions': 'Expositions',
+  'about.download_poem': 'Poème',
 
   // Contact
   'contact.title': 'Contact',
   'contact.description': 'Contactez Sidney Carron pour toute demande concernant ses empreintes solaires, expositions ou collaborations.',
-  'contact.intro': 'Pour toute demande concernant mes œuvres, une exposition ou une collaboration, n\'hésitez pas à me contacter.',
+  'contact.intro': 'Pour toute demande concernant mes œuvres, une exposition ou une collaboration, n\'hésitez pas à m\'écrire.',
+  'contact.direct': 'Ou directement par email :',
+  'contact.form.name': 'Nom',
+  'contact.form.email': 'Email',
+  'contact.form.subject': 'Sujet',
+  'contact.form.message': 'Message',
+  'contact.form.submit': 'Envoyer',
+  'contact.form.sending': 'Envoi…',
+  'contact.form.success.title': 'Message envoyé',
+  'contact.form.success.text': 'Merci pour votre message. Je vous répondrai dans les meilleurs délais.',
+  'contact.form.error': 'Une erreur est survenue. Merci de réessayer ou d\'écrire directement à l\'adresse ci-dessous.',
 
   // Footer
   'footer.legal': 'Mentions légales',

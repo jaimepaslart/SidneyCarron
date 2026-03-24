@@ -3,21 +3,26 @@ interface Props {
   text: string;
   tag?: string;
   class?: string;
-  delay?: number;
+  /** If true, waits for 'hero:phase-name' event instead of IntersectionObserver */
+  heroSequence?: boolean;
+  /** Base delay in ms added before char stagger (for multi-line sequencing) */
+  heroDelay?: number;
 }
 
 const {
   text,
   tag: Tag = 'h1',
   class: className = '',
-  delay = 0,
+  heroSequence = false,
+  heroDelay = 0,
 } = Astro.props;
 ---
 
 <Tag
   class={`text-reveal ${className}`}
   data-splitting
-  data-delay={delay}
+  data-hero-sequence={heroSequence ? 'true' : undefined}
+  data-hero-delay={heroDelay > 0 ? String(heroDelay) : undefined}
 >
   {text}
 </Tag>
@@ -42,8 +47,9 @@ const {
 
     elements.forEach((el) => {
       const chars = el.querySelectorAll('.char') as NodeListOf<HTMLElement>;
+      const isHeroSequence = el.hasAttribute('data-hero-sequence');
 
-      // Set initial state: hidden (no transition yet)
+      // Set initial state: hidden
       chars.forEach((char) => {
         char.style.display = 'inline-block';
         if (prefersReduced) {
@@ -51,36 +57,48 @@ const {
           char.style.transform = 'none';
         } else {
           char.style.opacity = '0';
-          char.style.transform = 'translateY(10px)';
+          char.style.transform = 'translateY(60%) rotateX(-40deg)';
+          char.style.transformOrigin = 'center bottom';
+          char.style.willChange = 'opacity, transform';
         }
       });
 
       if (prefersReduced) return;
 
-      const baseDelay = parseInt(el.getAttribute('data-delay') || '0', 10);
+      const baseDelay = parseInt((el as HTMLElement).dataset.heroDelay || '0', 10);
 
-      const observer = new IntersectionObserver(
-        (entries) => {
-          entries.forEach((entry) => {
-            if (entry.isIntersecting) {
-              chars.forEach((char, i) => {
-                const charDelay = baseDelay + i * 30;
-                setTimeout(() => {
-                  char.style.transition = 'none';
-                  void char.offsetHeight;
-                  char.style.transition = 'opacity 0.4s ease, transform 0.4s ease';
-                  char.style.opacity = '1';
-                  char.style.transform = 'translateY(0)';
-                }, charDelay);
-              });
-              observer.unobserve(entry.target);
-            }
-          });
-        },
-        { rootMargin: '0px', threshold: 0.1 }
-      );
+      function revealChars() {
+        chars.forEach((char, i) => {
+          // 40ms stagger between chars, 1.6s duration, power3.out
+          const charDelay = baseDelay + i * 40;
+          setTimeout(() => {
+            char.style.transition = 'none';
+            void char.offsetHeight;
+            char.style.transition = 'opacity 1.6s cubic-bezier(0.165, 0.84, 0.44, 1), transform 1.6s cubic-bezier(0.165, 0.84, 0.44, 1)';
+            char.style.opacity = '1';
+            char.style.transform = 'translateY(0) rotateX(0deg)';
+          }, charDelay);
+        });
+      }
 
-      observer.observe(el);
+      if (isHeroSequence) {
+        // Wait for the hero orchestrator to trigger
+        document.addEventListener('hero:phase-name', () => revealChars(), { once: true });
+      } else {
+        // Standard IntersectionObserver for non-hero TextReveals
+        const observer = new IntersectionObserver(
+          (entries) => {
+            entries.forEach((entry) => {
+              if (entry.isIntersecting) {
+                revealChars();
+                observer.unobserve(entry.target);
+              }
+            });
+          },
+          { rootMargin: '0px', threshold: 0.1 }
+        );
+        observer.observe(el);
+      }
     });
   }
 

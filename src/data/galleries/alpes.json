@@ -1,0 +1,30 @@
+{
+  "slug": "alpes",
+  "images": [
+    {
+      "src": "/images/galleries/alpes/alpes-001.jpg",
+      "width": 1600,
+      "height": 1200
+    },
+    {
+      "src": "/images/galleries/alpes/alpes-002.jpg",
+      "width": 1600,
+      "height": 1200
+    },
+    {
+      "src": "/images/galleries/alpes/alpes-003.jpg",
+      "width": 1179,
+      "height": 883
+    },
+    {
+      "src": "/images/galleries/alpes/alpes-004.jpg",
+      "width": 1179,
+      "height": 848
+    },
+    {
+      "src": "/images/galleries/alpes/alpes-005.jpg",
+      "width": 1179,
+      "height": 862
+    }
+  ]
+}

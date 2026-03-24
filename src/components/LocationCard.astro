@@ -1,0 +1,37 @@
+---
+import { getLocalizedPath, type Lang } from '@/i18n';
+import type { Location } from '@/data/locations';
+import { getGallery } from '@/data/gallery-loader';
+
+interface Props {
+  location: Location;
+  lang: Lang;
+}
+
+const { location, lang } = Astro.props;
+const gallery = getGallery(location.slug);
+const coverImage = gallery?.images[0];
+const name = lang === 'en' ? location.name_en : location.name_fr;
+const country = lang === 'en' ? location.country_en : location.country_fr;
+const href = getLocalizedPath(lang, `/works/${location.slug}/`);
+---
+
+<a href={href} class="group block">
+  {coverImage && (
+    <div class="overflow-hidden bg-surface aspect-[4/3]">
+      <img
+        src={coverImage.src}
+        alt={name}
+        width={coverImage.width}
+        height={coverImage.height}
+        loading="lazy"
+        decoding="async"
+        class="w-full h-full object-cover transition-transform duration-700 ease-out group-hover:scale-105"
+      />
+    </div>
+  )}
+  <div class="mt-3">
+    <h3 class="font-display text-lg uppercase tracking-wide text-text">{name}</h3>
+    <p class="text-sm text-secondary mt-0.5">{country} — {location.photoCount} photos</p>
+  </div>
+</a>

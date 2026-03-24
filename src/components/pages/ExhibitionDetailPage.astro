@@ -1,7 +1,5 @@
 ---
 import PageLayout from '@/layouts/PageLayout.astro';
-import WorkCard from '@/components/WorkCard.astro';
-import MasonryGallery from '@/components/MasonryGallery.astro';
 import ScrollReveal from '@/components/ScrollReveal.astro';
 import { getCollection } from 'astro:content';
 import { getTranslation, getLocalizedPath, type Lang } from '@/i18n';
@@ -42,21 +40,15 @@ function formatDates(startStr: string, endStr: string): string {
 function getStatusBadge(status: string): { text: string; class: string } {
   switch (status) {
     case 'current':
-      return { text: t('exhibitions.current_badge'), class: 'text-green-700 bg-green-50' };
+      return { text: t('exhibitions.current_badge'), class: 'text-text bg-surface' };
     case 'upcoming':
-      return { text: t('exhibitions.upcoming_badge'), class: 'text-blue-700 bg-blue-50' };
+      return { text: t('exhibitions.upcoming_badge'), class: 'text-secondary bg-surface' };
     default:
-      return { text: t('exhibitions.past_badge'), class: 'text-secondary bg-[#F5F5F5]' };
+      return { text: t('exhibitions.past_badge'), class: 'text-secondary bg-surface' };
   }
 }
 
 const badge = getStatusBadge(exhibition.data.status);
-
-// Get exhibited works
-const allWorks = await getCollection('works');
-const exhibitedWorks = exhibition.data.works_slugs
-  ? allWorks.filter(w => exhibition.data.works_slugs.includes(w.data.slug))
-  : [];
 
 const siteUrl = 'https://sidneycarron.com';
 
@@ -119,7 +111,7 @@ const jsonLd = {
       <!-- Image if available -->
       {exhibition.data.image && (
         <ScrollReveal>
-          <div class="w-full max-h-[50vh] overflow-hidden bg-[#F5F5F5] mb-8">
+          <div class="w-full max-h-[50vh] overflow-hidden bg-surface mb-8">
             <img
               src={exhibition.data.image.src}
               alt={lang === 'en' ? exhibition.data.image.alt_en : exhibition.data.image.alt_fr}
@@ -139,7 +131,7 @@ const jsonLd = {
         </span>
 
         <!-- Title -->
-        <h1 class="font-serif font-light text-4xl text-text mt-3">{title}</h1>
+        <h1 class="font-sans font-light text-4xl text-text mt-3">{title}</h1>
 
         <!-- Metadata -->
         <dl class="mt-6 space-y-3">
@@ -161,7 +153,7 @@ const jsonLd = {
       {description && (
         <ScrollReveal delay={200}>
           <div class="mt-8 pt-6 border-t border-border max-w-3xl">
-            <p class="font-serif text-lg text-text leading-relaxed">{description}</p>
+            <p class="font-sans text-lg text-text leading-relaxed">{description}</p>
           </div>
         </ScrollReveal>
       )}
@@ -184,34 +176,4 @@ const jsonLd = {
     </div>
   </section>
 
-  <!-- Exhibited works -->
-  {exhibitedWorks.length > 0 && (
-    <section class="museum-section border-t border-border">
-      <div class="museum-container">
-        <ScrollReveal>
-          <h2 class="font-serif font-light text-2xl text-text mb-8">
-            {t('exhibitions.works_shown')}
-          </h2>
-        </ScrollReveal>
-        <MasonryGallery>
-          {exhibitedWorks.map((work, i) => (
-            <div class="break-inside-avoid mb-4 md:mb-6">
-              <ScrollReveal delay={i * 100}>
-                <WorkCard
-                  slug={lang === 'en' ? work.data.slug_en : work.data.slug}
-                  title={lang === 'en' ? work.data.title_en : work.data.title_fr}
-                  year={work.data.year}
-                  medium={lang === 'en' ? work.data.medium_en : work.data.medium_fr}
-                  image={{
-                    src: work.data.images[0].src,
-                    alt: lang === 'en' ? work.data.images[0].alt_en : work.data.images[0].alt_fr,
-                  }}
-                />
-              </ScrollReveal>
-            </div>
-          ))}
-        </MasonryGallery>
-      </div>
-    </section>
-  )}
 </PageLayout>

@@ -1,30 +1,33 @@
 ---
 import { getLangFromUrl, getTranslation, getLocalizedPath } from '@/i18n';
+import { getSettings } from '@/utils/site';
 
 const lang = getLangFromUrl(Astro.url);
 const t = getTranslation(lang);
+const settings = getSettings();
 const year = new Date().getFullYear();
+const instagramHandle = '@' + settings.socials.instagram.split('/').filter(Boolean).pop();
 ---
 
 <footer class="border-t border-border">
   <div class="mx-auto w-full max-w-container px-gutter-sm md:px-gutter-md lg:px-gutter-lg py-8">
     <div class="flex flex-wrap items-center justify-center gap-x-4 gap-y-2 text-xs text-secondary">
-      <span>Sidney Carron</span>
+      <span>{settings.artistName}</span>
       <span class="text-border" aria-hidden="true">&middot;</span>
       <a
-        href="mailto:contact@sidneycarron.com"
+        href={`mailto:${settings.email}`}
         class="hover:text-hover transition-colors duration-hover"
       >
-        contact@sidneycarron.com
+        {settings.email}
       </a>
       <span class="text-border" aria-hidden="true">&middot;</span>
       <a
-        href="https://instagram.com/sidneycarron"
+        href={settings.socials.instagram}
         target="_blank"
         rel="noopener noreferrer"
         class="hover:text-hover transition-colors duration-hover"
       >
-        @sidneycarron
+        {instagramHandle}
       </a>
       <span class="text-border" aria-hidden="true">&middot;</span>
       <span>&copy; {year}</span>

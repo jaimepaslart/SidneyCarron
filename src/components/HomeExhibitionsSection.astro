@@ -1,0 +1,561 @@
+---
+import TextReveal from '@/components/TextReveal.astro';
+import { getTranslation, getLocalizedPath, type Lang } from '@/i18n';
+
+interface ExhibitionEntry {
+  data: {
+    title_fr: string;
+    title_en: string;
+    venue_fr: string;
+    venue_en: string;
+    city: string;
+    start_date: string;
+    slug: string;
+    slug_en: string;
+    status: string;
+    image?: { src: string; alt_fr: string; alt_en: string };
+  };
+}
+
+interface Props {
+  lang: Lang;
+  exhibitions: ExhibitionEntry[];
+  videoSrc?: string;
+}
+
+const { lang, exhibitions, videoSrc } = Astro.props;
+const t = getTranslation(lang);
+
+const monthsFr = ['Jan', 'Fév', 'Mar', 'Avr', 'Mai', 'Juin', 'Juil', 'Aoû', 'Sep', 'Oct', 'Nov', 'Déc'];
+const monthsEn = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+
+function formatExhibitionDate(dateStr: string): string {
+  const date = new Date(dateStr);
+  const day = String(date.getDate()).padStart(2, '0');
+  const months = lang === 'fr' ? monthsFr : monthsEn;
+  const month = months[date.getMonth()];
+  const year = date.getFullYear();
+  return `${day} — ${month} — ${year}`;
+}
+
+const firstExpoImage = exhibitions[0]?.data.image;
+---
+
+<section class="expo-section" data-expo-section>
+  <div class="expo-section__container">
+    <div class="expo-section__grid">
+      <!-- Left column: title + video/image + circle CTA -->
+      <div class="expo-section__left">
+        <TextReveal
+          text={t('home.exhibitions.title')}
+          tag="h2"
+          class="font-display font-medium uppercase leading-[0.85] text-[clamp(1.75rem,5vw,3rem)] text-text text-center"
+        />
+
+        <div class="expo-section__media" data-expo-media>
+          {videoSrc ? (
+            <div class="expo-section__media-wrapper">
+              <video
+                autoplay
+                muted
+                loop
+                playsinline
+                class="expo-section__video"
+              >
+                <source src={videoSrc} type="video/mp4" />
+              </video>
+            </div>
+          ) : firstExpoImage ? (
+            <div class="expo-section__media-wrapper expo-section__media-wrapper--image">
+              <img
+                src={firstExpoImage.src}
+                alt={lang === 'en' ? firstExpoImage.alt_en : firstExpoImage.alt_fr}
+                width="600"
+                height="750"
+                loading="lazy"
+                class="expo-section__image"
+              />
+            </div>
+          ) : null}
+        </div>
+
+        <div class="expo-section__cta-wrap" data-expo-media>
+          <a
+            href={getLocalizedPath(lang, '/exhibitions')}
+            class="expo-section__cta"
+            aria-label={t('home.exhibitions.cta')}
+          >
+            <span>{t('home.exhibitions.circle_cta')}</span>
+          </a>
+        </div>
+      </div>
+
+      <!-- Right column: exhibition list -->
+      <div class="expo-section__right">
+        <ul class="expo-list">
+          {exhibitions.map((expo, i) => {
+            const title = lang === 'en' ? expo.data.title_en : expo.data.title_fr;
+            const venue = lang === 'en' ? expo.data.venue_en : expo.data.venue_fr;
+            const slug = lang === 'en' ? expo.data.slug_en : expo.data.slug;
+            const dateFormatted = formatExhibitionDate(expo.data.start_date);
+
+            return (
+              <li class="expo-list__item" data-expo-item={i}>
+                <div class="expo-list__item-content">
+                  <p class="expo-list__date" data-expo-line>
+                    <span class="expo-list__bullet" />
+                    <span>{dateFormatted}</span>
+                  </p>
+                  <a
+                    href={getLocalizedPath(lang, `/exhibitions/${slug}`)}
+                    class="expo-list__title"
+                    data-expo-line
+                  >
+                    {title}
+                  </a>
+                  <p class="expo-list__venue" data-expo-line>
+                    {venue}, {expo.data.city}
+                  </p>
+                </div>
+                <div class="expo-list__separator" data-expo-separator />
+              </li>
+            );
+          })}
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <!-- Full-width bottom line -->
+  <div class="expo-section__bottom-line" data-expo-bottom-line />
+</section>
+
+<style>
+  /* ============================================
+     Block: .expo-section
+     Home exhibitions — two-column layout
+     ============================================ */
+
+  /* Block: .expo-section — top spacing matches hero title→image gap */
+  .expo-section {
+    padding-top: 3rem;
+  }
+
+  @media (min-width: 768px) {
+    .expo-section {
+      padding-top: 4rem;
+    }
+  }
+
+  @media (min-width: 1024px) {
+    .expo-section {
+      padding-top: 5rem;
+    }
+  }
+
+  /* Element: .expo-section__container — matches header padding */
+  .expo-section__container {
+    width: 100%;
+    padding-left: 1.25rem;
+    padding-right: 1.25rem;
+  }
+
+  @media (min-width: 768px) {
+    .expo-section__container {
+      padding-left: 2rem;
+      padding-right: 2rem;
+    }
+  }
+
+  @media (min-width: 1024px) {
+    .expo-section__container {
+      padding-left: 7.5%;
+      padding-right: 7.5%;
+    }
+  }
+
+  /* Element: .expo-section__grid */
+  .expo-section__grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 3rem;
+  }
+
+  @media (min-width: 1024px) {
+    .expo-section__grid {
+      grid-template-columns: 1fr 1fr;
+      gap: 4rem;
+      align-items: start;
+    }
+  }
+
+  /* Element: .expo-section__left */
+  .expo-section__left {
+    display: flex;
+    flex-direction: column;
+    gap: 3rem;
+  }
+
+  @media (min-width: 1024px) {
+    .expo-section__left {
+      justify-content: flex-start;
+    }
+  }
+
+  /* Element: .expo-section__media — video/image container */
+  .expo-section__media {
+    opacity: 0;
+    transform: translateY(80px) skewY(2deg);
+    will-change: opacity, transform;
+  }
+
+  .expo-section__media--revealed {
+    opacity: 1;
+    transform: translateY(0) skewY(0deg);
+  }
+
+  /* Element: .expo-section__media-wrapper */
+  .expo-section__media-wrapper {
+    overflow: hidden;
+  }
+
+  .expo-section__media-wrapper--image {
+    aspect-ratio: 4 / 5;
+  }
+
+  /* Element: .expo-section__video — no crop, no deform, just adapt */
+  .expo-section__video {
+    width: 100%;
+    max-width: 480px;
+    height: auto;
+    display: block;
+    margin: 0 auto;
+  }
+
+  /* Element: .expo-section__image */
+  .expo-section__image {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  /* Element: .expo-section__cta-wrap */
+  .expo-section__cta-wrap {
+    display: flex;
+    justify-content: center;
+    opacity: 0;
+    transform: translateY(80px) skewY(2deg);
+    will-change: opacity, transform;
+  }
+
+  .expo-section__cta-wrap--revealed {
+    opacity: 1;
+    transform: translateY(0) skewY(0deg);
+  }
+
+  /* Element: .expo-section__cta — circle button */
+  .expo-section__cta {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 130px;
+    height: 130px;
+    border-radius: 50%;
+    border: 1px solid #1A1A1A;
+    font-family: 'Syne', sans-serif;
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: #1A1A1A;
+    text-align: center;
+    transition: transform 300ms cubic-bezier(0.25, 0.1, 0.25, 1);
+  }
+
+  .expo-section__cta:hover {
+    transform: scale(1.05);
+  }
+
+  /* Element: .expo-section__right */
+  .expo-section__right {
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+  }
+
+  /* ============================================
+     Block: .expo-list
+     Exhibition list items
+     ============================================ */
+
+  .expo-list {
+    display: flex;
+    flex-direction: column;
+  }
+
+  /* Element: .expo-list__item-content */
+  .expo-list__item-content {
+    padding: 0.75rem 0;
+  }
+
+  .expo-list__item:first-child .expo-list__item-content {
+    padding-top: 0;
+  }
+
+  .expo-list__item:first-child .expo-list__date {
+    margin-top: -2px;
+  }
+
+  /* Element: .expo-list__date */
+  .expo-list__date {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    font-family: 'Inter', system-ui, sans-serif;
+    font-size: 0.625rem;
+    font-weight: 400;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: #999999;
+    /* Rinaldi-style initial state */
+    opacity: 0;
+    transform: translateY(80px) skewY(5deg);
+    will-change: opacity, transform;
+  }
+
+  .expo-list__date--revealed {
+    opacity: 1;
+    transform: translateY(0) skewY(0deg);
+  }
+
+  /* Element: .expo-list__bullet */
+  .expo-list__bullet {
+    display: inline-block;
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: #1A1A1A;
+    flex-shrink: 0;
+  }
+
+  /* Element: .expo-list__title */
+  .expo-list__title {
+    display: block;
+    margin-top: 0.5rem;
+    font-family: 'Inter', system-ui, sans-serif;
+    font-size: 0.875rem;
+    font-weight: 500;
+    color: #1A1A1A;
+    transition: color 300ms ease;
+    /* Rinaldi-style initial state */
+    opacity: 0;
+    transform: translateY(80px) skewY(5deg);
+    will-change: opacity, transform;
+  }
+
+  @media (min-width: 768px) {
+    .expo-list__title {
+      font-size: 1rem;
+    }
+  }
+
+  .expo-list__title:hover {
+    color: #333333;
+  }
+
+  .expo-list__title--revealed {
+    opacity: 1;
+    transform: translateY(0) skewY(0deg);
+  }
+
+  /* Element: .expo-list__venue */
+  .expo-list__venue {
+    margin-top: 0.5rem;
+    font-family: 'Inter', system-ui, sans-serif;
+    font-size: 0.8125rem;
+    font-weight: 300;
+    color: #666666;
+    /* Rinaldi-style initial state */
+    opacity: 0;
+    transform: translateY(80px) skewY(5deg);
+    will-change: opacity, transform;
+  }
+
+  @media (min-width: 768px) {
+    .expo-list__venue {
+      font-size: 0.9375rem;
+    }
+  }
+
+  @media (min-width: 1024px) {
+    .expo-list__venue {
+      font-size: 1.0625rem;
+    }
+  }
+
+  .expo-list__venue--revealed {
+    opacity: 1;
+    transform: translateY(0) skewY(0deg);
+  }
+
+  /* Element: .expo-list__separator — animated line */
+  .expo-list__separator {
+    height: 1px;
+    background: #E5E5E5;
+    width: 0;
+    will-change: width;
+  }
+
+  .expo-list__separator--revealed {
+    width: 100%;
+  }
+
+  /* Element: .expo-section__bottom-line */
+  .expo-section__bottom-line {
+    height: 1px;
+    background: #E5E5E5;
+    width: 0;
+    margin-top: 48px;
+    will-change: width;
+  }
+
+  @media (min-width: 768px) {
+    .expo-section__bottom-line {
+      margin-top: 80px;
+    }
+  }
+
+  @media (min-width: 1024px) {
+    .expo-section__bottom-line {
+      margin-top: 120px;
+    }
+  }
+
+  .expo-section__bottom-line--revealed {
+    width: 100%;
+  }
+
+  /* Reduced motion */
+  @media (prefers-reduced-motion: reduce) {
+    .expo-section__media,
+    .expo-section__cta-wrap,
+    .expo-list__date,
+    .expo-list__title,
+    .expo-list__venue {
+      opacity: 1;
+      transform: none;
+    }
+
+    .expo-list__separator,
+    .expo-section__bottom-line {
+      width: 100%;
+    }
+  }
+</style>
+
+<script>
+  import { animate, inView } from 'motion';
+
+  /**
+   * Exhibitions section — Rinaldi-style animations
+   *
+   * Text lines: y:80 → 0, skewY:5 → 0, opacity:0 → 1
+   * Duration: 1.2s, ease: power4.out equivalent, stagger: 0.2s
+   * Trigger: element at 80% viewport (IntersectionObserver rootMargin -20%)
+   *
+   * BEM selectors via data-attributes for JS hooks.
+   */
+
+  /* power4.out CSS equivalent */
+  const POWER4_OUT: [number, number, number, number] = [0.16, 1, 0.3, 1];
+  const POWER2_OUT: [number, number, number, number] = [0.22, 1, 0.36, 1];
+
+  const SELECTORS = {
+    item: '[data-expo-item]',
+    line: '[data-expo-line]',
+    separator: '[data-expo-separator]',
+    media: '[data-expo-media]',
+    bottomLine: '[data-expo-bottom-line]',
+  } as const;
+
+  const CLASSES = {
+    dateRevealed: 'expo-list__date--revealed',
+    titleRevealed: 'expo-list__title--revealed',
+    venueRevealed: 'expo-list__venue--revealed',
+    separatorRevealed: 'expo-list__separator--revealed',
+    mediaRevealed: 'expo-section__media--revealed',
+    ctaRevealed: 'expo-section__cta-wrap--revealed',
+    bottomLineRevealed: 'expo-section__bottom-line--revealed',
+  } as const;
+
+  function initExpoAnimations(): void {
+    const prefersReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+    if (prefersReduced) {
+      document.querySelectorAll<HTMLElement>(SELECTORS.line).forEach(el => {
+        el.classList.add(CLASSES.dateRevealed, CLASSES.titleRevealed, CLASSES.venueRevealed);
+      });
+      document.querySelectorAll<HTMLElement>(SELECTORS.separator).forEach(el => {
+        el.classList.add(CLASSES.separatorRevealed);
+      });
+      document.querySelectorAll<HTMLElement>(SELECTORS.media).forEach(el => {
+        el.classList.add(CLASSES.mediaRevealed, CLASSES.ctaRevealed);
+      });
+      const bottomLine = document.querySelector<HTMLElement>(SELECTORS.bottomLine);
+      bottomLine?.classList.add(CLASSES.bottomLineRevealed);
+      return;
+    }
+
+    // Animate each exhibition item — Rinaldi style
+    document.querySelectorAll<HTMLElement>(SELECTORS.item).forEach((item) => {
+      const lines = item.querySelectorAll<HTMLElement>(SELECTORS.line);
+      const separator = item.querySelector<HTMLElement>(SELECTORS.separator);
+
+      inView(item, () => {
+        // Stagger text lines: y:80→0, skewY:5→0, opacity:0→1
+        lines.forEach((line, j) => {
+          animate(
+            line,
+            { opacity: [0, 1], y: [80, 0], skewY: [5, 0] },
+            { duration: 1.2, easing: POWER4_OUT, delay: j * 0.2 }
+          );
+        });
+
+        // Separator line draws after text
+        if (separator) {
+          const lineDelay = lines.length * 0.2;
+          animate(
+            separator,
+            { width: ['0%', '100%'] },
+            { duration: 1.3, easing: POWER2_OUT, delay: lineDelay }
+          );
+        }
+      }, { margin: '0px 0px -20% 0px' });
+    });
+
+    // Media (video/image) and CTA — same Rinaldi curve
+    document.querySelectorAll<HTMLElement>(SELECTORS.media).forEach((el, i) => {
+      inView(el, () => {
+        animate(
+          el,
+          { opacity: [0, 1], y: [80, 0], skewY: [2, 0] },
+          { duration: 1.2, easing: POWER4_OUT, delay: i * 0.2 }
+        );
+      }, { margin: '0px 0px -20% 0px' });
+    });
+
+    // Bottom full-width line
+    const bottomLine = document.querySelector<HTMLElement>(SELECTORS.bottomLine);
+    if (bottomLine) {
+      inView(bottomLine, () => {
+        animate(
+          bottomLine,
+          { width: ['0%', '100%'] },
+          { duration: 1.3, easing: POWER2_OUT }
+        );
+      }, { margin: '0px 0px -10% 0px' });
+    }
+  }
+
+  initExpoAnimations();
+  document.addEventListener('astro:page-load', initExpoAnimations);
+</script>

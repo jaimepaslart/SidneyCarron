@@ -1,0 +1,713 @@
+---
+import { locations } from '@/data/locations';
+import { getGallery } from '@/data/gallery-loader';
+import { getTranslation, getLocalizedPath, type Lang } from '@/i18n';
+
+interface Props {
+  lang: Lang;
+}
+
+const { lang } = Astro.props;
+const t = getTranslation(lang);
+
+const pinRotations: Record<string, number> = {
+  'bresil': -1.5,
+  'dakar': 1.5,
+  'saint-tropez': -1,
+  'reunion': 2,
+  'sri-lanka': -1.5,
+  'costa-rica': 1,
+  'guadeloupe': -2,
+  'paris': 0.5,
+  'alpes': -1.5,
+};
+
+const mapLocations = locations.map((loc) => {
+  const gallery = getGallery(loc.slug);
+  const thumbnail = loc.cover || gallery?.images?.[0]?.src || '';
+  return {
+    slug: loc.slug,
+    lat: loc.coords.lat,
+    lng: loc.coords.lng,
+    name: lang === 'en' ? loc.name_en : loc.name_fr,
+    thumbnail,
+    href: getLocalizedPath(lang, `/works/${loc.slug}/`),
+    rotation: pinRotations[loc.slug] || 0,
+    photoCount: loc.photoCount,
+  };
+});
+
+const serializedLocations = JSON.stringify(
+  mapLocations.map(({ slug, lat, lng, photoCount }) => ({ slug, lat, lng, photoCount }))
+);
+---
+
+<div class="cobe-globe hidden md:block">
+  <div class="cobe-globe__sphere">
+    <canvas
+      class="cobe-globe__canvas"
+      data-locations={serializedLocations}
+    ></canvas>
+  </div>
+
+  {mapLocations.map((loc) => (
+    <a
+      href={loc.href}
+      class="cobe-globe__pin"
+      data-pin-slug={loc.slug}
+      aria-label={`${loc.name} — ${t('map.see_photos')}`}
+    >
+      <div class="cobe-globe__pin-anchor" style={`--pin-rot: ${loc.rotation}deg`}>
+        <div class="cobe-globe__tooltip">
+          <span class="cobe-globe__tooltip-count">{loc.photoCount} photos</span>
+        </div>
+        <div class="cobe-globe__polaroid">
+          <div class="cobe-globe__polaroid-img">
+            {loc.thumbnail && (
+              <img src={loc.thumbnail} alt={loc.name} width="80" height="60" loading="lazy" decoding="async" />
+            )}
+          </div>
+          <span class="cobe-globe__polaroid-label">{loc.name}</span>
+        </div>
+        <div class="cobe-globe__tack"></div>
+      </div>
+    </a>
+  ))}
+</div>
+
+<script>
+  import {
+    Scene, OrthographicCamera, WebGLRenderer,
+    SphereGeometry, ShaderMaterial, Mesh, TextureLoader,
+    RepeatWrapping, SRGBColorSpace,
+  } from 'three';
+
+  // ─── Cyanotype vertex shader ───
+  const VERT = `
+    varying vec2 vUv;
+    varying vec3 vNormal;
+    varying vec3 vViewPos;
+    void main() {
+      vUv = uv;
+      vNormal = normalize(normalMatrix * normal);
+      vec4 mv = modelViewMatrix * vec4(position, 1.0);
+      vViewPos = -mv.xyz;
+      gl_Position = projectionMatrix * mv;
+    }
+  `;
+
+  // ─── Cyanotype fragment shader ───
+  const FRAG = `
+    uniform sampler2D map;
+    uniform float bumpStrength;
+    varying vec2 vUv;
+    varying vec3 vNormal;
+    varying vec3 vViewPos;
+
+    void main() {
+      vec3 tex = texture2D(map, vUv).rgb;
+      float luma = dot(tex, vec3(0.299, 0.587, 0.114));
+
+      // Bump normals from texture derivatives (ocean relief)
+      float tw = 1.0 / 2048.0;
+      float th = 1.0 / 1024.0;
+      float hL = dot(texture2D(map, vUv - vec2(tw, 0.0)).rgb, vec3(0.299, 0.587, 0.114));
+      float hR = dot(texture2D(map, vUv + vec2(tw, 0.0)).rgb, vec3(0.299, 0.587, 0.114));
+      float hD = dot(texture2D(map, vUv - vec2(0.0, th)).rgb, vec3(0.299, 0.587, 0.114));
+      float hU = dot(texture2D(map, vUv + vec2(0.0, th)).rgb, vec3(0.299, 0.587, 0.114));
+
+      vec3 N = normalize(vNormal);
+      vec3 T = abs(N.y) > 0.999 ? normalize(cross(N, vec3(1.0, 0.0, 0.0)))
+                                 : normalize(cross(N, vec3(0.0, 1.0, 0.0)));
+      vec3 B = cross(N, T);
+      vec3 bumpN = normalize(mat3(T, B, N) * normalize(vec3(
+        (hL - hR) * bumpStrength,
+        (hD - hU) * bumpStrength,
+        1.0
+      )));
+
+      // ── Cyanotype palette (Prussian blue spectrum) ──
+      vec3 deepBlue  = vec3(0.00, 0.04, 0.14);
+      vec3 prussian  = vec3(0.04, 0.15, 0.30);
+      vec3 midBlue   = vec3(0.12, 0.32, 0.50);
+      vec3 lightBlue = vec3(0.42, 0.64, 0.77);
+      vec3 paleBlue  = vec3(0.72, 0.84, 0.91);
+      vec3 highlight = vec3(0.90, 0.95, 0.98);
+
+      vec3 color = mix(deepBlue, prussian, smoothstep(0.0, 0.15, luma));
+      color = mix(color, midBlue,   smoothstep(0.10, 0.35, luma));
+      color = mix(color, lightBlue, smoothstep(0.30, 0.55, luma));
+      color = mix(color, paleBlue,  smoothstep(0.50, 0.75, luma));
+      color = mix(color, highlight, smoothstep(0.70, 0.95, luma));
+
+      // Diffuse + ambient
+      vec3 lightDir = normalize(vec3(0.5, 0.8, 1.0));
+      float diff = max(dot(bumpN, lightDir), 0.0);
+      color *= 0.38 + diff * 0.62;
+
+      // Specular (wet cyanotype sheen)
+      vec3 viewDir = normalize(vViewPos);
+      vec3 halfDir = normalize(lightDir + viewDir);
+      float spec = pow(max(dot(bumpN, halfDir), 0.0), 64.0);
+      color += vec3(0.7, 0.85, 0.95) * spec * 0.12;
+
+      // Fresnel atmosphere glow
+      float fresnel = pow(1.0 - max(dot(viewDir, N), 0.0), 3.5);
+      color = mix(color, vec3(0.75, 0.88, 0.96), fresnel * 0.5);
+
+      // Cyanotype paper grain
+      float grain = fract(sin(dot(vUv * 500.0, vec2(12.9898, 78.233))) * 43758.5453) * 0.02 - 0.01;
+      color += grain;
+
+      gl_FragColor = vec4(color, 1.0 - fresnel * 0.25);
+    }
+  `;
+
+  function initGlobe() {
+    const canvas = document.querySelector<HTMLCanvasElement>('.cobe-globe__canvas');
+    if (!canvas) return;
+
+    const wrapper = canvas.closest('.cobe-globe') as HTMLElement | null;
+    if (!wrapper) return;
+
+    const sphereContainer = canvas.closest('.cobe-globe__sphere') as HTMLElement | null;
+    if (!sphereContainer) return;
+
+    if ((wrapper as any).__cobeInitialized) return;
+    (wrapper as any).__cobeInitialized = true;
+
+    const locationsRaw = canvas.dataset.locations;
+    const locations: { slug: string; lat: number; lng: number; photoCount: number }[] =
+      locationsRaw ? JSON.parse(locationsRaw) : [];
+
+    const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    const abortController = new AbortController();
+    const signal = abortController.signal;
+
+    // ─── Rotation state ───
+    let phi = 20 * Math.PI / 180 - Math.PI / 2;
+    let theta = 0.25;
+    let targetPhi = phi;
+    let targetTheta = theta;
+    let autoRotate = true;
+    let resumeTimeout: ReturnType<typeof setTimeout> | null = null;
+    let isDragging = false;
+    let dragStartX = 0;
+    let dragStartY = 0;
+    let dragStartPhi = 0;
+    let dragStartTheta = 0;
+
+    // Momentum
+    let velocityPhi = 0;
+    let velocityTheta = 0;
+    let lastPointerX = 0;
+    let lastPointerY = 0;
+    let lastPointerTime = 0;
+
+    // Spring focus
+    let springVelocityPhi = 0;
+    let springVelocityTheta = 0;
+    let isFocusing = false;
+    const SPRING_STIFFNESS = 0.08;
+    const SPRING_DAMPING = 0.72;
+
+    // Parallax
+    let parallaxTheta = 0;
+    let parallaxPhi = 0;
+
+    const pinFirstVisible = new Map<string, number>();
+    const pinElements = new Map<string, HTMLElement>();
+    const pinAnchors = new Map<string, HTMLElement>();
+    const slugToIndex = new Map<string, number>();
+    wrapper.querySelectorAll<HTMLElement>('.cobe-globe__pin').forEach((pin) => {
+      const slug = pin.dataset.pinSlug;
+      if (slug) {
+        pinElements.set(slug, pin);
+        const anchor = pin.querySelector('.cobe-globe__pin-anchor') as HTMLElement;
+        if (anchor) pinAnchors.set(slug, anchor);
+      }
+    });
+    locations.forEach((loc, i) => slugToIndex.set(loc.slug, i));
+
+    const GLOBE_SCALE = 0.5;
+
+    function getGlobeDimensions() {
+      const canvasSize = sphereContainer!.offsetWidth;
+      return {
+        radius: canvasSize * GLOBE_SCALE,
+        centerX: sphereContainer!.offsetLeft + canvasSize / 2,
+        centerY: sphereContainer!.offsetTop + canvasSize / 2,
+      };
+    }
+
+    let dims = getGlobeDimensions();
+
+    // Projection: Rx(theta) · Ry(phi) matches Three.js rotation order XYZ
+    function projectPoint(lat: number, lng: number) {
+      const latRad = (lat * Math.PI) / 180;
+      const lngRad = (lng * Math.PI) / 180;
+      const cosLat = Math.cos(latRad);
+      const sinLat = Math.sin(latRad);
+      const wx = cosLat * Math.cos(lngRad);
+      const wy = sinLat;
+      const wz = -cosLat * Math.sin(lngRad);
+      const cp = Math.cos(phi), sp = Math.sin(phi);
+      const ct = Math.cos(theta), st = Math.sin(theta);
+      const vx = cp * wx + sp * wz;
+      const vy = sp * st * wx + ct * wy - cp * st * wz;
+      const vz = -sp * ct * wx + st * wy + cp * ct * wz;
+      return {
+        x: dims.centerX + vx * dims.radius,
+        y: dims.centerY - vy * dims.radius,
+        z: vz,
+        visible: vz > 0.15,
+      };
+    }
+
+    function updatePins() {
+      const now = performance.now();
+      const projected: { slug: string; x: number; y: number; z: number; visible: boolean; weight: number }[] = [];
+      for (const loc of locations) {
+        const p = projectPoint(loc.lat, loc.lng);
+        projected.push({ slug: loc.slug, x: p.x, y: p.y, z: p.z, visible: p.visible, weight: loc.photoCount });
+      }
+
+      const MIN_DIST = 55;
+      for (let pass = 0; pass < 3; pass++) {
+        for (let i = 0; i < projected.length; i++) {
+          if (!projected[i].visible) continue;
+          for (let j = i + 1; j < projected.length; j++) {
+            if (!projected[j].visible) continue;
+            const dx = projected[j].x - projected[i].x;
+            const dy = projected[j].y - projected[i].y;
+            const dist = Math.sqrt(dx * dx + dy * dy);
+            if (dist < MIN_DIST && dist > 0.1) {
+              const push = (MIN_DIST - dist) * 0.4;
+              const nx = dx / dist;
+              const ny = dy / dist;
+              const totalWeight = projected[i].weight + projected[j].weight;
+              const ratioI = projected[j].weight / totalWeight;
+              const ratioJ = projected[i].weight / totalWeight;
+              projected[i].x -= nx * push * ratioI;
+              projected[i].y -= ny * push * ratioI;
+              projected[j].x += nx * push * ratioJ;
+              projected[j].y += ny * push * ratioJ;
+            }
+          }
+        }
+      }
+
+      for (const p of projected) {
+        const pin = pinElements.get(p.slug);
+        if (!pin) continue;
+        const anchor = pinAnchors.get(p.slug);
+        if (p.visible) {
+          if (!pinFirstVisible.has(p.slug)) {
+            const idx = slugToIndex.get(p.slug) ?? 0;
+            pinFirstVisible.set(p.slug, now + idx * 80);
+          }
+          const age = now - pinFirstVisible.get(p.slug)!;
+          if (age < 0) { pin.style.opacity = '0'; pin.style.pointerEvents = 'none'; continue; }
+          const entry = Math.min(1, age / 600);
+          const ease = 1 - Math.pow(1 - entry, 3);
+          const scale = (0.5 + p.z * 0.5) * ease;
+          const opacity = (0.3 + p.z * 0.7) * ease;
+          pin.style.transform = `translate(${p.x}px, ${p.y}px)`;
+          pin.style.opacity = String(Math.max(0, opacity).toFixed(2));
+          pin.style.zIndex = String(Math.round(p.z * 100));
+          pin.style.pointerEvents = entry > 0.5 ? 'auto' : 'none';
+          if (anchor) {
+            anchor.style.transform = `translate(-50%, -100%) rotate(var(--pin-rot, 0deg)) scale(${scale.toFixed(3)})`;
+          }
+        } else {
+          pin.style.opacity = '0';
+          pin.style.pointerEvents = 'none';
+          pinFirstVisible.delete(p.slug);
+        }
+      }
+    }
+
+    function scheduleResume() {
+      if (resumeTimeout) clearTimeout(resumeTimeout);
+      resumeTimeout = setTimeout(() => { autoRotate = true; }, 3000);
+    }
+
+    // ─── Pointer events (drag + momentum) ───
+    canvas.addEventListener('pointerdown', (e: PointerEvent) => {
+      isDragging = true;
+      dragStartX = e.clientX;
+      dragStartY = e.clientY;
+      dragStartPhi = phi;
+      dragStartTheta = theta;
+      lastPointerX = e.clientX;
+      lastPointerY = e.clientY;
+      lastPointerTime = performance.now();
+      velocityPhi = 0;
+      velocityTheta = 0;
+      autoRotate = false;
+      if (resumeTimeout) clearTimeout(resumeTimeout);
+    }, { signal });
+
+    window.addEventListener('pointermove', (e: PointerEvent) => {
+      if (!isDragging) return;
+      const dx = e.clientX - dragStartX;
+      const dy = e.clientY - dragStartY;
+      targetPhi = dragStartPhi - dx * 0.005;
+      targetTheta = Math.max(-Math.PI / 2, Math.min(Math.PI / 2, dragStartTheta + dy * 0.005));
+      const now = performance.now();
+      const dt = now - lastPointerTime;
+      if (dt > 0 && dt < 100) {
+        const frameDt = dt / 16;
+        velocityPhi = -(e.clientX - lastPointerX) * 0.005 / frameDt;
+        velocityTheta = (e.clientY - lastPointerY) * 0.005 / frameDt;
+      }
+      lastPointerX = e.clientX;
+      lastPointerY = e.clientY;
+      lastPointerTime = now;
+    }, { signal });
+
+    window.addEventListener('pointerup', () => {
+      if (!isDragging) return;
+      isDragging = false;
+      scheduleResume();
+    }, { signal });
+
+    // ─── Focus (spring-animated) ───
+    (window as any).__cobeGlobeFocus = function (lat: number, lng: number) {
+      targetPhi = -lng * (Math.PI / 180) - Math.PI / 2;
+      targetTheta = lat * (Math.PI / 180);
+      velocityPhi = 0;
+      velocityTheta = 0;
+      springVelocityPhi = 0;
+      springVelocityTheta = 0;
+      isFocusing = true;
+      autoRotate = false;
+      scheduleResume();
+    };
+
+    // ─── Parallax ───
+    sphereContainer.addEventListener('mousemove', (e: MouseEvent) => {
+      if (isDragging) return;
+      const rect = sphereContainer!.getBoundingClientRect();
+      parallaxPhi = ((e.clientX - rect.left) / rect.width - 0.5) * 0.015;
+      parallaxTheta = ((e.clientY - rect.top) / rect.height - 0.5) * 0.01;
+    }, { signal });
+    sphereContainer.addEventListener('mouseleave', () => {
+      parallaxPhi = 0;
+      parallaxTheta = 0;
+    }, { signal });
+
+    // ═══════════════════════════════════════════
+    //  Three.js — Cyanotype textured globe
+    // ═══════════════════════════════════════════
+    const dpr = Math.min(window.devicePixelRatio, 2);
+    const size = canvas.offsetWidth;
+
+    const renderer = new WebGLRenderer({ canvas, alpha: true, antialias: true });
+    renderer.setSize(size, size);
+    renderer.setPixelRatio(dpr);
+
+    const scene = new Scene();
+
+    // Orthographic camera: frustum ±1 matches GLOBE_SCALE = 0.5
+    const camera = new OrthographicCamera(-1, 1, 1, -1, 0.1, 100);
+    camera.position.z = 5;
+
+    const geometry = new SphereGeometry(1, 128, 64);
+
+    const textureLoader = new TextureLoader();
+    const earthTex = textureLoader.load('/images/globe-texture.jpg');
+    earthTex.colorSpace = SRGBColorSpace;
+    earthTex.wrapS = RepeatWrapping;
+
+    const material = new ShaderMaterial({
+      uniforms: {
+        map: { value: earthTex },
+        bumpStrength: { value: 15.0 },
+      },
+      vertexShader: VERT,
+      fragmentShader: FRAG,
+      transparent: true,
+    });
+
+    const sphere = new Mesh(geometry, material);
+    sphere.rotation.order = 'XYZ';
+    scene.add(sphere);
+
+    // ─── Animation loop ───
+    let animFrameId: number;
+
+    function animate() {
+      animFrameId = requestAnimationFrame(animate);
+
+      if (!prefersReducedMotion) {
+        if (autoRotate && !isDragging) targetPhi += 0.003;
+
+        if (!isDragging && !autoRotate && !isFocusing) {
+          targetPhi += velocityPhi;
+          targetTheta += velocityTheta;
+          targetTheta = Math.max(-Math.PI / 2, Math.min(Math.PI / 2, targetTheta));
+          velocityPhi *= 0.96;
+          velocityTheta *= 0.96;
+          if (Math.abs(velocityPhi) < 0.0001 && Math.abs(velocityTheta) < 0.0001) {
+            velocityPhi = 0;
+            velocityTheta = 0;
+          }
+        }
+
+        if (isFocusing) {
+          const dP = targetPhi - phi;
+          const dT = targetTheta - theta;
+          springVelocityPhi += dP * SPRING_STIFFNESS;
+          springVelocityTheta += dT * SPRING_STIFFNESS;
+          springVelocityPhi *= SPRING_DAMPING;
+          springVelocityTheta *= SPRING_DAMPING;
+          phi += springVelocityPhi;
+          theta += springVelocityTheta;
+          if (Math.abs(dP) < 0.001 && Math.abs(dT) < 0.001) isFocusing = false;
+        } else {
+          phi += (targetPhi - phi) * 0.08;
+          theta += (targetTheta - theta) * 0.08;
+        }
+
+        phi += parallaxPhi;
+        theta += parallaxTheta;
+      }
+
+      // Sync Three.js sphere rotation — Rx(theta) · Ry(phi) matches projection math
+      sphere.rotation.x = theta;
+      sphere.rotation.y = phi;
+
+      renderer.render(scene, camera);
+      updatePins();
+    }
+
+    animate();
+
+    // ─── Resize ───
+    const resizeObserver = new ResizeObserver(() => {
+      dims = getGlobeDimensions();
+      const s = sphereContainer!.offsetWidth;
+      renderer.setSize(s, s);
+    });
+    resizeObserver.observe(sphereContainer);
+
+    // ─── Cleanup ───
+    function cleanup() {
+      cancelAnimationFrame(animFrameId);
+      abortController.abort();
+      resizeObserver.disconnect();
+      if (resumeTimeout) clearTimeout(resumeTimeout);
+      renderer.dispose();
+      geometry.dispose();
+      material.dispose();
+      earthTex.dispose();
+      delete (window as any).__cobeGlobeFocus;
+      delete (wrapper as any).__cobeInitialized;
+    }
+
+    document.addEventListener('astro:before-swap', cleanup, { once: true });
+  }
+
+  initGlobe();
+  document.addEventListener('astro:page-load', initGlobe);
+</script>
+
+<style>
+  .cobe-globe {
+    position: relative;
+    overflow: visible;
+  }
+
+  /* Circular container with cyanotype-tinted ambient glow */
+  .cobe-globe__sphere {
+    width: 100%;
+    max-width: 600px;
+    margin: 0 auto;
+    border-radius: 50%;
+    overflow: hidden;
+    aspect-ratio: 1;
+    background: radial-gradient(circle, #d6eaf8 0%, #aed6f1 50%, #85c1e9 100%);
+    box-shadow:
+      0 0 80px rgba(52, 152, 219, 0.12),
+      0 0 160px rgba(52, 152, 219, 0.06);
+  }
+
+  .cobe-globe__canvas {
+    width: 100%;
+    height: 100%;
+    display: block;
+    cursor: grab;
+  }
+
+  .cobe-globe__canvas:active {
+    cursor: grabbing;
+  }
+
+  /* -- Polaroid pins (positioned by JS) -- */
+  .cobe-globe__pin {
+    position: absolute;
+    left: 0;
+    top: 0;
+    text-decoration: none;
+    color: inherit;
+    will-change: transform, opacity;
+    opacity: 0;
+  }
+
+  .cobe-globe__pin-anchor {
+    transform-origin: 50% 100%;
+  }
+
+  /* Thin connection line from pin to globe surface */
+  .cobe-globe__pin-anchor::after {
+    content: '';
+    display: block;
+    width: 1px;
+    height: 12px;
+    margin: 0 auto;
+    background: linear-gradient(to bottom, rgba(214, 48, 49, 0.4), rgba(214, 48, 49, 0));
+    pointer-events: none;
+  }
+
+  .cobe-globe__pin:hover {
+    z-index: 200 !important;
+  }
+
+  .cobe-globe__pin:hover .cobe-globe__pin-anchor {
+    transform: translate(-50%, -100%) rotate(0deg) scale(1.35) !important;
+    filter: drop-shadow(0 8px 16px rgba(0, 0, 0, 0.12));
+  }
+
+  .cobe-globe__pin:focus-visible .cobe-globe__polaroid {
+    outline: 2px solid #c0392b;
+    outline-offset: 2px;
+  }
+
+  .cobe-globe__tack {
+    width: 7px;
+    height: 7px;
+    margin: -2px auto 0;
+    border-radius: 50%;
+    background: radial-gradient(circle at 35% 30%, #f06050, #d63031 50%, #b71c1c);
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
+    pointer-events: none;
+    animation: tack-pulse 2.5s ease-in-out infinite;
+  }
+
+  @keyframes tack-pulse {
+    0%, 100% { box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3); }
+    50% { box-shadow: 0 0 6px 2px rgba(214, 48, 49, 0.35), 0 1px 3px rgba(0, 0, 0, 0.3); }
+  }
+
+  .cobe-globe__polaroid {
+    background: #fff;
+    padding: 2px 2px 0;
+    width: 48px;
+    box-shadow:
+      0 1px 3px rgba(0, 0, 0, 0.08),
+      0 4px 12px rgba(0, 0, 0, 0.05),
+      0 0 0 0.5px rgba(0, 0, 0, 0.04);
+    transition: box-shadow 300ms ease, transform 300ms cubic-bezier(0.16, 1, 0.3, 1);
+  }
+
+  .cobe-globe__pin:hover .cobe-globe__polaroid {
+    box-shadow:
+      0 12px 32px rgba(0, 0, 0, 0.15),
+      0 4px 12px rgba(0, 0, 0, 0.08),
+      0 0 0 0.5px rgba(0, 0, 0, 0.06);
+    transform: translateY(-2px);
+  }
+
+  .cobe-globe__polaroid-img {
+    width: 44px;
+    height: 33px;
+    overflow: hidden;
+    background: #e0e0e0;
+  }
+
+  .cobe-globe__polaroid-img img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+  }
+
+  .cobe-globe__polaroid-label {
+    display: block;
+    padding: 2px 1px 3px;
+    text-align: center;
+    font-family: 'Syne', sans-serif;
+    font-weight: 600;
+    font-size: 6px;
+    text-transform: uppercase;
+    letter-spacing: 0.3px;
+    color: #1A1A1A;
+    line-height: 1.2;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  /* Tooltip on hover */
+  .cobe-globe__tooltip {
+    position: absolute;
+    bottom: calc(100% + 6px);
+    left: 50%;
+    transform: translateX(-50%) translateY(4px);
+    background: rgba(26, 26, 26, 0.9);
+    color: #fff;
+    font-family: 'Inter', sans-serif;
+    font-size: 10px;
+    font-weight: 500;
+    letter-spacing: 0.2px;
+    padding: 3px 8px;
+    border-radius: 4px;
+    white-space: nowrap;
+    pointer-events: none;
+    opacity: 0;
+    transition: opacity 200ms ease, transform 200ms ease;
+  }
+
+  .cobe-globe__tooltip::after {
+    content: '';
+    position: absolute;
+    top: 100%;
+    left: 50%;
+    transform: translateX(-50%);
+    border: 4px solid transparent;
+    border-top-color: rgba(26, 26, 26, 0.9);
+  }
+
+  .cobe-globe__pin:hover .cobe-globe__tooltip {
+    opacity: 1;
+    transform: translateX(-50%) translateY(0);
+  }
+
+  @media (min-width: 1280px) {
+    .cobe-globe__polaroid {
+      width: 56px;
+      padding: 3px 3px 0;
+    }
+    .cobe-globe__polaroid-img {
+      width: 50px;
+      height: 38px;
+    }
+    .cobe-globe__polaroid-label {
+      font-size: 6.5px;
+    }
+    .cobe-globe__tack {
+      width: 8px;
+      height: 8px;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .cobe-globe__pin {
+      transition: none;
+    }
+    .cobe-globe__tack {
+      animation: none;
+    }
+  }
+</style>
