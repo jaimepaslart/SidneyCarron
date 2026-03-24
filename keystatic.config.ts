@@ -3,10 +3,11 @@ import { config, fields, collection, singleton } from '@keystatic/core';
 export default config({
   storage: import.meta.env.DEV
     ? { kind: 'local' }
-    : {
-        kind: 'github',
-        repo: 'jaimepaslart/SidneyCarron',
-      },
+    : { kind: 'cloud' },
+
+  cloud: {
+    project: 'sidneycarron/sidneycarron',
+  },
 
   ui: {
     brand: { name: 'Sidney Carron — Backoffice' },
