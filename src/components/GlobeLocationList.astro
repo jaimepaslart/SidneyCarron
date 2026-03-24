@@ -104,6 +104,8 @@ const sortedLocations = [...locations].sort((a, b) => b.photoCount - a.photoCoun
 </style>
 
 <script>
+  import { triggerZoomTransition } from '@/utils/globe-transition';
+
   function initGlobeList() {
     const controller = new AbortController();
     const links = document.querySelectorAll('[data-globe-loc]');
@@ -115,6 +117,24 @@ const sortedLocations = [...locations].sort((a, b) => b.photoCount - a.photoCoun
         if ((window as any).__cobeGlobeFocus) {
           (window as any).__cobeGlobeFocus(lat, lng);
         }
+      }, { signal: controller.signal });
+
+      link.addEventListener('click', (e: Event) => {
+        e.preventDefault();
+        const lat = parseFloat(link.getAttribute('data-lat')!);
+        const lng = parseFloat(link.getAttribute('data-lng')!);
+        const href = (link as HTMLAnchorElement).href;
+        const name = link.querySelector('.font-display')?.textContent?.trim() || '';
+        const polaroid = (link.querySelector('.globe-list__polaroid') || link) as HTMLElement;
+        const rect = polaroid.getBoundingClientRect();
+        triggerZoomTransition({
+          originX: rect.left + rect.width / 2,
+          originY: rect.top + rect.height / 2,
+          locationName: name,
+          href,
+          focusLat: lat,
+          focusLng: lng,
+        });
       }, { signal: controller.signal });
     });
 

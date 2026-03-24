@@ -85,6 +85,7 @@ const serializedLocations = JSON.stringify(
     SphereGeometry, ShaderMaterial, Mesh, TextureLoader,
     RepeatWrapping, SRGBColorSpace,
   } from 'three';
+  import { triggerZoomTransition } from '@/utils/globe-transition';
 
   // ─── Cyanotype vertex shader ───
   const VERT = `
@@ -232,6 +233,26 @@ const serializedLocations = JSON.stringify(
       }
     });
     locations.forEach((loc, i) => slugToIndex.set(loc.slug, i));
+
+    // ─── Pin click → immersive zoom transition ────────────────────────────────
+    pinElements.forEach((pin, slug) => {
+      pin.addEventListener('click', (e: MouseEvent) => {
+        e.preventDefault();
+        const loc = locations.find(l => l.slug === slug);
+        if (!loc) return;
+        const href = pin.getAttribute('href') || `/works/${slug}/`;
+        const name = (pin.querySelector('.cobe-globe__polaroid-label')?.textContent ?? '').trim();
+        const rect = pin.getBoundingClientRect();
+        triggerZoomTransition({
+          originX: rect.left + rect.width / 2,
+          originY: rect.top + rect.height / 2,
+          locationName: name,
+          href,
+          focusLat: loc.lat,
+          focusLng: loc.lng,
+        });
+      }, { signal });
+    });
 
     const GLOBE_SCALE = 0.5;
 

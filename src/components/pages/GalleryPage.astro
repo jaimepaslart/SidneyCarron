@@ -137,3 +137,18 @@ const hasSections = gallery.sections && gallery.sections.length > 0;
 
   <Lightbox images={gallery.images} lang={lang} />
 </PageLayout>
+
+<script>
+  function handleArrivalReveal() {
+    const overlay = document.getElementById('globe-zoom-overlay');
+    if (!overlay) return;
+    requestAnimationFrame(() => {
+      (overlay as HTMLElement).style.transition = 'opacity 500ms ease';
+      (overlay as HTMLElement).style.opacity = '0';
+      overlay.addEventListener('transitionend', () => overlay.remove(), { once: true });
+    });
+  }
+
+  handleArrivalReveal();
+  document.addEventListener('astro:page-load', handleArrivalReveal);
+</script>

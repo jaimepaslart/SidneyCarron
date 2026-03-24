@@ -86,11 +86,36 @@
    in their respective components to avoid CSS specificity conflicts.
    The .scroll-reveal class is kept as a selector hook only. */
 
+/* --- Globe Zoom Transition Overlay --- */
+#globe-zoom-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 10000;
+  background: #000d1f;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  pointer-events: none;
+}
+
+#globe-zoom-overlay .globe-zoom__label {
+  font-family: 'Syne', sans-serif;
+  font-weight: 700;
+  font-size: clamp(2rem, 5vw, 4rem);
+  color: rgba(255, 255, 255, 0.9);
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+}
+
 /* --- Reduced Motion --- */
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after {
     animation-duration: 0.01ms !important;
     transition-duration: 0.01ms !important;
     scroll-behavior: auto !important;
+  }
+
+  #globe-zoom-overlay {
+    display: none !important;
   }
 }
