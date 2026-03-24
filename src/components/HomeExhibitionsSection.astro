@@ -207,6 +207,8 @@ const mediaImage = imageSrc
     opacity: 0;
     transform: translateY(80px) skewY(2deg);
     will-change: opacity, transform;
+    transition: opacity 1.2s cubic-bezier(0.16, 1, 0.3, 1),
+                transform 1.2s cubic-bezier(0.16, 1, 0.3, 1);
   }
 
   .expo-section__media--revealed {
@@ -246,6 +248,8 @@ const mediaImage = imageSrc
     opacity: 0;
     transform: translateY(80px) skewY(2deg);
     will-change: opacity, transform;
+    transition: opacity 1.2s cubic-bezier(0.16, 1, 0.3, 1),
+                transform 1.2s cubic-bezier(0.16, 1, 0.3, 1);
   }
 
   .expo-section__cta-wrap--revealed {
@@ -532,14 +536,12 @@ const mediaImage = imageSrc
       }, { margin: '0px 0px -20% 0px' });
     });
 
-    // Media (video/image) and CTA — same Rinaldi curve
+    // Media (video/image) and CTA — CSS transition via class (fiable iOS Safari)
     document.querySelectorAll<HTMLElement>(SELECTORS.media).forEach((el, i) => {
       inView(el, () => {
-        animate(
-          el,
-          { opacity: [0, 1], y: [80, 0], skewY: [2, 0] },
-          { duration: 1.2, easing: POWER4_OUT, delay: i * 0.2 }
-        );
+        setTimeout(() => {
+          el.classList.add(CLASSES.mediaRevealed, CLASSES.ctaRevealed);
+        }, i * 200);
       }, { margin: '0px 0px -20% 0px' });
     });
 
