@@ -429,18 +429,27 @@ const serializedLocations = JSON.stringify(
       callback: () => void,
       clickedSlug?: string,
     ) {
-      // Fade out all pins except the clicked one
+      // Fade out ALL pins (clicked one slightly slower for a ripple feel)
       exitingPins.clear();
       pinElements.forEach((pin, slug) => {
-        if (slug !== clickedSlug) {
-          exitingPins.add(slug);
-          pin.style.transition = 'opacity 0.35s ease';
-          pin.style.opacity = '0';
-          pin.style.pointerEvents = 'none';
-        }
+        exitingPins.add(slug);
+        pin.style.transition = `opacity ${slug === clickedSlug ? '0.5s' : '0.28s'} ease`;
+        pin.style.opacity = '0';
+        pin.style.pointerEvents = 'none';
       });
-      // Start zoom
-      targetZoom = 0.4;
+
+      // CSS scale: grow the sphere circle to cover the full viewport
+      const rect = sphereContainer!.getBoundingClientRect();
+      const scale = (Math.max(window.innerWidth, window.innerHeight) / Math.min(rect.width, rect.height)) * 1.5;
+      sphereContainer!.style.transformOrigin = 'center center';
+      sphereContainer!.style.zIndex = '9999';
+      requestAnimationFrame(() => requestAnimationFrame(() => {
+        sphereContainer!.style.transition = `transform ${duration}ms cubic-bezier(0.4, 0, 1, 1)`;
+        sphereContainer!.style.transform = `scale(${scale.toFixed(2)})`;
+      }));
+
+      // Three.js camera zoom: texture dives deeper simultaneously
+      targetZoom = 0.35;
       zoomStartLevel = zoomLevel;
       zoomStartTime = performance.now();
       zoomDuration = duration;
@@ -583,6 +592,10 @@ const serializedLocations = JSON.stringify(
       geometry.dispose();
       material.dispose();
       earthTex.dispose();
+      sphereContainer!.style.transform = '';
+      sphereContainer!.style.transition = '';
+      sphereContainer!.style.transformOrigin = '';
+      sphereContainer!.style.zIndex = '';
       delete (window as any).__cobeGlobeFocus;
       delete (window as any).__cobeGlobeZoomIn;
       exitingPins.clear();
