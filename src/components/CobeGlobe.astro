@@ -444,7 +444,7 @@ const serializedLocations = JSON.stringify(
       sphereContainer!.style.transformOrigin = 'center center';
       sphereContainer!.style.zIndex = '9999';
       requestAnimationFrame(() => requestAnimationFrame(() => {
-        sphereContainer!.style.transition = `transform ${duration}ms cubic-bezier(0.4, 0, 1, 1)`;
+        sphereContainer!.style.transition = `transform ${duration}ms cubic-bezier(0.76, 0, 0.24, 1)`;
         sphereContainer!.style.transform = `scale(${scale.toFixed(2)})`;
       }));
 
@@ -545,11 +545,11 @@ const serializedLocations = JSON.stringify(
         phi += parallaxPhi;
         theta += parallaxTheta;
 
-        // Camera zoom — ease-in cubic (accelerates into the globe)
+        // Camera zoom — ease-in-out quartic (long–rapide–long)
         if (zoomCallback !== null || zoomLevel !== targetZoom) {
           const elapsed = performance.now() - zoomStartTime;
           const t = Math.min(1, elapsed / zoomDuration);
-          const eased = t * t * t;
+          const eased = t < 0.5 ? 8 * t * t * t * t : 1 - Math.pow(-2 * t + 2, 4) / 2;
           zoomLevel = zoomStartLevel + (targetZoom - zoomStartLevel) * eased;
           camera.left = -zoomLevel;
           camera.right = zoomLevel;

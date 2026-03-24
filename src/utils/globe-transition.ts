@@ -45,6 +45,14 @@ export function triggerZoomTransition(options: {
     (window as any).__cobeGlobeFocus?.(focusLat, focusLng);
   }
 
+  // Fade out the location list so it doesn't distract during the dive
+  const globeList = document.querySelector<HTMLElement>('.hero__globe-list');
+  if (globeList) {
+    globeList.style.transition = 'opacity 0.35s ease';
+    globeList.style.opacity = '0';
+    globeList.style.pointerEvents = 'none';
+  }
+
   // Called when the Three.js zoom animation completes
   const afterZoom = () => {
     const overlay = document.createElement('div');
