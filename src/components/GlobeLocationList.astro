@@ -124,6 +124,7 @@ const sortedLocations = [...locations].sort((a, b) => b.photoCount - a.photoCoun
         const lat = parseFloat(link.getAttribute('data-lat')!);
         const lng = parseFloat(link.getAttribute('data-lng')!);
         const href = (link as HTMLAnchorElement).href;
+        const slug = link.getAttribute('data-globe-loc') || '';
         const name = link.querySelector('.font-display')?.textContent?.trim() || '';
         const polaroid = (link.querySelector('.globe-list__polaroid') || link) as HTMLElement;
         const rect = polaroid.getBoundingClientRect();
@@ -132,6 +133,7 @@ const sortedLocations = [...locations].sort((a, b) => b.photoCount - a.photoCoun
           originY: rect.top + rect.height / 2,
           locationName: name,
           href,
+          slug,
           focusLat: lat,
           focusLng: lng,
         });

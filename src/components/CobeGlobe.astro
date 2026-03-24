@@ -220,6 +220,17 @@ const serializedLocations = JSON.stringify(
     let parallaxTheta = 0;
     let parallaxPhi = 0;
 
+    // Camera zoom (navigation transition)
+    let zoomLevel = 1.0;
+    let targetZoom = 1.0;
+    let zoomStartLevel = 1.0;
+    let zoomStartTime = 0;
+    let zoomDuration = 650;
+    let zoomCallback: (() => void) | null = null;
+
+    // Pins marked for fade-out (during navigation transition)
+    const exitingPins = new Set<string>();
+
     const pinFirstVisible = new Map<string, number>();
     const pinElements = new Map<string, HTMLElement>();
     const pinAnchors = new Map<string, HTMLElement>();
@@ -248,6 +259,7 @@ const serializedLocations = JSON.stringify(
           originY: rect.top + rect.height / 2,
           locationName: name,
           href,
+          slug,
           focusLat: loc.lat,
           focusLng: loc.lng,
         });
@@ -325,6 +337,7 @@ const serializedLocations = JSON.stringify(
       for (const p of projected) {
         const pin = pinElements.get(p.slug);
         if (!pin) continue;
+        if (exitingPins.has(p.slug)) continue; // fading out — JS must not override the transition
         const anchor = pinAnchors.get(p.slug);
         if (p.visible) {
           if (!pinFirstVisible.has(p.slug)) {
@@ -408,6 +421,31 @@ const serializedLocations = JSON.stringify(
       isFocusing = true;
       autoRotate = false;
       scheduleResume();
+    };
+
+    // ─── Camera zoom (navigation transition) ─────────────────────────────────
+    (window as any).__cobeGlobeZoomIn = function (
+      duration: number,
+      callback: () => void,
+      clickedSlug?: string,
+    ) {
+      // Fade out all pins except the clicked one
+      exitingPins.clear();
+      pinElements.forEach((pin, slug) => {
+        if (slug !== clickedSlug) {
+          exitingPins.add(slug);
+          pin.style.transition = 'opacity 0.35s ease';
+          pin.style.opacity = '0';
+          pin.style.pointerEvents = 'none';
+        }
+      });
+      // Start zoom
+      targetZoom = 0.4;
+      zoomStartLevel = zoomLevel;
+      zoomStartTime = performance.now();
+      zoomDuration = duration;
+      zoomCallback = callback;
+      autoRotate = false;
     };
 
     // ─── Parallax ───
@@ -497,6 +535,24 @@ const serializedLocations = JSON.stringify(
 
         phi += parallaxPhi;
         theta += parallaxTheta;
+
+        // Camera zoom — ease-in cubic (accelerates into the globe)
+        if (zoomCallback !== null || zoomLevel !== targetZoom) {
+          const elapsed = performance.now() - zoomStartTime;
+          const t = Math.min(1, elapsed / zoomDuration);
+          const eased = t * t * t;
+          zoomLevel = zoomStartLevel + (targetZoom - zoomStartLevel) * eased;
+          camera.left = -zoomLevel;
+          camera.right = zoomLevel;
+          camera.top = zoomLevel;
+          camera.bottom = -zoomLevel;
+          camera.updateProjectionMatrix();
+          if (t >= 1 && zoomCallback) {
+            const cb = zoomCallback;
+            zoomCallback = null;
+            cb();
+          }
+        }
       }
 
       // Sync Three.js sphere rotation — Rx(theta) · Ry(phi) matches projection math
@@ -528,6 +584,8 @@ const serializedLocations = JSON.stringify(
       material.dispose();
       earthTex.dispose();
       delete (window as any).__cobeGlobeFocus;
+      delete (window as any).__cobeGlobeZoomIn;
+      exitingPins.clear();
       delete (wrapper as any).__cobeInitialized;
     }
 

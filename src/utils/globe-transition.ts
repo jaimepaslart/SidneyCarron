@@ -1,16 +1,21 @@
 /**
  * globe-transition.ts
  *
- * Immersive zoom transition when clicking a globe location pin or list item.
- * A cyanotype-blue circle expands from the click origin, the location name
- * fades in, then Astro navigates to the destination page.
+ * Immersive navigation transition when clicking a globe location.
+ *
+ * Sequence:
+ *   1. Other polaroid pins fade out
+ *   2. Globe spring-rotates to center the location AND zooms in (Three.js camera)
+ *   3. Dark cyanotype overlay fades in over the zoomed globe
+ *   4. Location name appears
+ *   5. Astro navigates to the destination page
+ *   6. On the gallery page, the overlay fades out revealing the photos
  */
 
 import { navigate } from 'astro:transitions/client';
 
 let isTransitioning = false;
 
-// Reset on every page load (module is only evaluated once due to module caching)
 document.addEventListener('astro:page-load', () => {
   isTransitioning = false;
 });
@@ -20,63 +25,66 @@ export function triggerZoomTransition(options: {
   originY: number;
   locationName: string;
   href: string;
+  slug?: string;
   focusLat?: number;
   focusLng?: number;
 }) {
   if (isTransitioning) return;
   isTransitioning = true;
 
-  const { originX, originY, locationName, href, focusLat, focusLng } = options;
+  const { locationName, href, slug, focusLat, focusLng } = options;
 
-  // Reduced motion: navigate directly
+  // Reduced motion: skip animation entirely
   if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
     navigate(href);
     return;
   }
 
-  // Spring-rotate globe to center on the location
+  // Spring-rotate globe to center on location
   if (focusLat !== undefined && focusLng !== undefined) {
     (window as any).__cobeGlobeFocus?.(focusLat, focusLng);
   }
 
-  const cx = originX.toFixed(1);
-  const cy = originY.toFixed(1);
+  // Called when the Three.js zoom animation completes
+  const afterZoom = () => {
+    const overlay = document.createElement('div');
+    overlay.id = 'globe-zoom-overlay';
+    overlay.style.cssText = [
+      'position:fixed', 'inset:0', 'z-index:10000',
+      'background:#000d1f', 'opacity:0',
+      'transition:opacity 300ms ease',
+      'display:flex', 'align-items:center', 'justify-content:center',
+      'pointer-events:none',
+    ].join(';');
 
-  // Expanding dark cyanotype overlay
-  const overlay = document.createElement('div');
-  overlay.id = 'globe-zoom-overlay';
-  overlay.style.cssText = [
-    'position:fixed', 'inset:0', 'z-index:10000',
-    'background:#000d1f',
-    `clip-path:circle(0% at ${cx}px ${cy}px)`,
-    'transition:clip-path 700ms cubic-bezier(0.65,0,0.35,1)',
-    'display:flex', 'align-items:center', 'justify-content:center',
-    'pointer-events:none',
-  ].join(';');
+    const label = document.createElement('span');
+    label.className = 'globe-zoom__label';
+    label.textContent = locationName.toUpperCase();
+    label.style.cssText = 'opacity:0;transition:opacity 300ms ease 80ms';
 
-  // Location name label
-  const label = document.createElement('span');
-  label.className = 'globe-zoom__label';
-  label.textContent = locationName.toUpperCase();
-  label.style.cssText = 'opacity:0;transition:opacity 400ms ease 200ms';
+    overlay.appendChild(label);
+    document.body.appendChild(overlay);
 
-  overlay.appendChild(label);
-  document.body.appendChild(overlay);
+    // Double rAF: ensures transition fires after first paint
+    requestAnimationFrame(() => requestAnimationFrame(() => {
+      overlay.style.opacity = '1';
+      label.style.opacity = '1';
+    }));
 
-  // Double rAF ensures CSS transition fires after first paint
-  requestAnimationFrame(() => requestAnimationFrame(() => {
-    overlay.style.clipPath = `circle(150% at ${cx}px ${cy}px)`;
-    label.style.opacity = '1';
-  }));
+    // Persist overlay across Astro DOM swap so GalleryPage can fade it out
+    document.addEventListener('astro:before-swap', (e: any) => {
+      const existing = document.getElementById('globe-zoom-overlay');
+      if (existing) e.newDocument.body.appendChild(existing.cloneNode(true));
+    }, { once: true });
 
-  // Persist overlay across Astro's DOM swap so arrival page can fade it out
-  document.addEventListener('astro:before-swap', (e: any) => {
-    const existing = document.getElementById('globe-zoom-overlay');
-    if (existing) {
-      e.newDocument.body.appendChild(existing.cloneNode(true));
-    }
-  }, { once: true });
+    setTimeout(() => { navigate(href); }, 500);
+  };
 
-  // Navigate after circle animation completes
-  setTimeout(() => { navigate(href); }, 850);
+  // Trigger Three.js zoom + pin fade-out, then call afterZoom
+  if ((window as any).__cobeGlobeZoomIn) {
+    (window as any).__cobeGlobeZoomIn(650, afterZoom, slug);
+  } else {
+    // Fallback when no globe is on screen (shouldn't happen in normal flow)
+    setTimeout(afterZoom, 300);
+  }
 }
