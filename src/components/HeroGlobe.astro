@@ -1,6 +1,6 @@
 ---
 import CobeGlobe from './CobeGlobe.astro';
-import { getSettings } from '@/utils/site';
+import GlobeLocationList from './GlobeLocationList.astro';
 import type { Lang } from '@/i18n';
 
 interface Props {
@@ -8,31 +8,29 @@ interface Props {
 }
 
 const { lang } = Astro.props;
-const settings = getSettings();
 ---
 
 <div class="hero__globe" data-hero-globe-container>
-  <!-- Mobile fallback (< 768px) — pas de WebGL -->
-  <img
-    src={settings.heroImage}
-    alt={`${settings.artistName} — Carte du monde cyanotype`}
-    class="hero__globe-fallback"
-    loading="eager"
-    decoding="async"
-    width="1920"
-    height="1080"
-  />
+  <div class="hero__globe-grid">
 
-  <!-- Desktop (≥ 768px) — globe Three.js interactif sans pins -->
-  <div class="hero__globe-canvas">
-    <CobeGlobe lang={lang} showPins={false} rotationSpeed={0.004} maxWidth="min(780px, 62vh)" heroMode={true} />
+    <!-- Globe centré dans sa colonne -->
+    <div class="hero__globe-sphere">
+      <CobeGlobe lang={lang} showPins={true} rotationSpeed={0.004} maxWidth="min(88vw, 600px)" heroMode={true} />
+    </div>
+
+    <!-- Liste des lieux — visible sur tous les breakpoints -->
+    <div class="hero__globe-list">
+      <GlobeLocationList lang={lang} />
+    </div>
+
   </div>
 </div>
 
 <style>
   .hero__globe {
     width: 100%;
-    margin-top: 3rem;
+    margin-top: 2rem;
+    padding: 0 1.25rem;
     opacity: 0;
     transform: translateY(50px);
   }
@@ -44,52 +42,86 @@ const settings = getSettings();
                 transform 1.2s cubic-bezier(0.22, 0.61, 0.36, 1);
   }
 
-  /* Mobile : image plein-largeur */
-  .hero__globe-fallback {
-    display: block;
+  /* Mobile : colonne — globe en haut, liste en bas */
+  .hero__globe-grid {
+    display: flex;
+    flex-direction: column;
+    gap: 2.5rem;
+  }
+
+  /* Globe centré dans sa colonne */
+  .hero__globe-sphere {
+    display: flex;
+    justify-content: center;
+  }
+
+  .hero__globe-sphere :global(.cobe-globe) {
     width: 100%;
-    height: auto;
   }
 
-  .hero__globe-canvas {
-    display: none;
+  .hero__globe-sphere :global(.cobe-globe__sphere) {
+    margin: 0 auto;
   }
 
-  /* Desktop (≥ 768px) : globe, image cachée */
-  @media (min-width: 768px) {
-    .hero__globe-fallback {
-      display: none;
-    }
-
-    .hero__globe-canvas {
-      display: block;
-      width: 100%;
-    }
-
-    /* Force le composant CobeGlobe à prendre toute la largeur disponible */
-    .hero__globe-canvas :global(.cobe-globe) {
-      width: 100%;
-    }
+  /* Override hidden md:block du GlobeLocationList pour mobile */
+  .hero__globe-list > :global(div) {
+    display: block;
   }
 
+  /* Desktop (≥ 768px) : 2 colonnes — globe | liste */
   @media (min-width: 768px) {
     .hero__globe {
-      margin-top: 4rem;
-    }
-  }
-
-  @media (min-width: 1024px) {
-    .hero__globe {
-      height: 70vh;
-      min-height: 400px;
       margin-top: 3rem;
-      display: flex;
-      justify-content: center;
+      padding: 0 2rem;
+    }
+
+    .hero__globe-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 3rem;
       align-items: center;
     }
 
-    .hero__globe-canvas {
+    /* Contraindre le globe à la largeur de sa colonne */
+    .hero__globe-sphere :global(.cobe-globe__sphere) {
+      max-width: min(44vw, 600px);
+    }
+  }
+
+  /* Grand écran (≥ 1024px) : hauteur fixe, globe plus grand */
+  @media (min-width: 1024px) {
+    .hero__globe {
+      height: 80vh;
+      min-height: 500px;
+      margin-top: 3rem;
+      padding: 0 3rem;
+      display: flex;
+      align-items: center;
+    }
+
+    .hero__globe-grid {
+      width: 100%;
       height: 100%;
+    }
+
+    .hero__globe-sphere {
+      height: 100%;
+      align-items: center;
+    }
+
+    .hero__globe-sphere :global(.cobe-globe__sphere) {
+      max-width: min(42vw, 700px);
+    }
+
+    .hero__globe-list {
+      height: 100%;
+      overflow-y: auto;
+      display: flex;
+      align-items: center;
+    }
+
+    .hero__globe-list > :global(div) {
+      width: 100%;
     }
   }
 
