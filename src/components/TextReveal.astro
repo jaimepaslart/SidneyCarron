@@ -27,6 +27,13 @@ const {
   {text}
 </Tag>
 
+<style>
+  /* Hidden from first paint — JS reveals after splitting chars into opacity:0 */
+  .text-reveal {
+    opacity: 0;
+  }
+</style>
+
 <script>
   import Splitting from 'splitting';
 
@@ -49,7 +56,8 @@ const {
       const chars = el.querySelectorAll('.char') as NodeListOf<HTMLElement>;
       const isHeroSequence = el.hasAttribute('data-hero-sequence');
 
-      // Set initial state: hidden
+      // Set initial state on chars, then reveal the container
+      // (container starts opacity:0 in CSS to prevent FOUC)
       chars.forEach((char) => {
         char.style.display = 'inline-block';
         if (prefersReduced) {
@@ -62,6 +70,8 @@ const {
           char.style.willChange = 'opacity, transform';
         }
       });
+      // Chars are now invisible — safe to show the container
+      (el as HTMLElement).style.opacity = '1';
 
       if (prefersReduced) return;
 
