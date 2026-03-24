@@ -39,13 +39,13 @@ const sortedLocations = [...locations].sort((a, b) => b.photoCount - a.photoCoun
                 </div>
               )}
               <div class="globe-list__info">
-                <span class="font-display text-lg uppercase tracking-wide text-text group-hover:opacity-60 transition-opacity duration-300">
+                <span class="font-display text-sm uppercase tracking-wide text-text group-hover:opacity-60 transition-opacity duration-300">
                   {name}
                 </span>
-                <span class="block text-sm text-secondary mt-0.5">{country}</span>
+                <span class="block text-xs text-secondary mt-0.5">{country}</span>
               </div>
-              <div class="flex items-center gap-4 ml-auto">
-                <span class="text-sm text-muted">{loc.photoCount} photos</span>
+              <div class="flex items-center gap-3 ml-auto">
+                <span class="text-xs text-muted">{loc.photoCount} photos</span>
                 <span class="text-secondary group-hover:translate-x-1 transition-transform duration-300">&rarr;</span>
               </div>
             </a>
@@ -66,8 +66,8 @@ const sortedLocations = [...locations].sort((a, b) => b.photoCount - a.photoCoun
   .globe-list__item {
     display: flex;
     align-items: center;
-    gap: 1rem;
-    padding: 0.75rem 0;
+    gap: 0.625rem;
+    padding: 0.5rem 0;
     border-bottom: 1px solid #E5E5E5;
     text-decoration: none;
     color: inherit;
@@ -87,8 +87,8 @@ const sortedLocations = [...locations].sort((a, b) => b.photoCount - a.photoCoun
   }
 
   .globe-list__polaroid-img {
-    width: 56px;
-    height: 42px;
+    width: 42px;
+    height: 32px;
     overflow: hidden;
     background: #e0e0e0;
   }

@@ -79,16 +79,16 @@ const { lang } = Astro.props;
 
     .hero__globe-grid {
       display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 3rem;
+      grid-template-columns: 3fr 2fr;
+      gap: 4rem;
       align-items: center;
-      max-width: 860px;
+      max-width: 980px;
       margin-left: auto;
       margin-right: auto;
     }
 
     .hero__globe-sphere :global(.cobe-globe__sphere) {
-      max-width: min(44vw, 420px);
+      max-width: min(52vw, 480px);
     }
   }
 
@@ -100,12 +100,12 @@ const { lang } = Astro.props;
     }
 
     .hero__globe-grid {
-      max-width: 960px;
-      gap: 4rem;
+      max-width: 1100px;
+      gap: 6rem;
     }
 
     .hero__globe-sphere :global(.cobe-globe__sphere) {
-      max-width: 440px;
+      max-width: 540px;
     }
 
     .hero__globe-list {
