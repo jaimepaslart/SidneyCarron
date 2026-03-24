@@ -520,13 +520,13 @@ const mediaImage = imageSrc
           );
         });
 
-        // Separator line draws after text
+        // Separator draws once the last text line has settled
         if (separator) {
-          const lineDelay = lines.length * 0.2;
+          const lineDelay = (lines.length - 1) * 0.2 + 1.2;
           animate(
             separator,
             { width: ['0%', '100%'] },
-            { duration: 1.3, easing: POWER2_OUT, delay: lineDelay }
+            { duration: 0.8, easing: POWER2_OUT, delay: lineDelay }
           );
         }
       }, { margin: '0px 0px -20% 0px' });
