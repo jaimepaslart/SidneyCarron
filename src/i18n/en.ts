@@ -44,7 +44,7 @@ export const en: Record<TranslationKey, string> = {
 
   // Gallery
   'gallery.photos_count': '{count} photos',
-  'gallery.back': 'Back to map',
+  'gallery.back': 'Back to home',
   'gallery.section': 'Section',
 
   // Works (kept for gallery pages)

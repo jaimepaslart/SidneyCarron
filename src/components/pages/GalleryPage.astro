@@ -23,7 +23,7 @@ const locationDescription = lang === 'en'
   ? (location.description_en || `${t('works.title')} ${lang === 'fr' ? 'réalisées à' : 'created in'} ${locationName}`)
   : (location.description_fr || `${t('works.title')} réalisées à ${locationName}`);
 const siteUrl = 'https://sidneycarron.com';
-const cartePath = lang === 'fr' ? '/carte/' : '/en/map/';
+const cartePath = lang === 'fr' ? '/' : '/en/';
 
 const imageObjects = gallery.images.slice(0, 20).map(img => ({
   '@type': 'ImageObject',

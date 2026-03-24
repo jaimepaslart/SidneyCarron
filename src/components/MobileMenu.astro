@@ -12,11 +12,6 @@ interface Props {
 const { lang, alternateHref } = Astro.props;
 const t = getTranslation(lang);
 
-const carteLink = {
-  label: t('nav.carte'),
-  href: getLocalizedPath(lang, lang === 'fr' ? '/carte/' : '/carte/'),
-};
-
 const locationLinks = locations.map(loc => ({
   label: t(`nav.location.${loc.slug}` as any),
   href: getLocalizedPath(lang, `/works/${loc.slug}/`),
@@ -29,7 +24,7 @@ const pageLinks = [
   { label: t('nav.contact'), href: getLocalizedPath(lang, '/contact/') },
 ];
 
-const allLinks = [carteLink, ...pageLinks, ...locationLinks];
+const allLinks = [...pageLinks, ...locationLinks];
 ---
 
 <div

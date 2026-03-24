@@ -14,16 +14,11 @@ const lang = getLangFromUrl(Astro.url);
 const t = getTranslation(lang);
 const currentPath = Astro.url.pathname;
 const homePath = getLocalizedPath(lang, '/');
-const cartePath = getLocalizedPath(lang, lang === 'fr' ? '/carte/' : '/carte/');
-
-const locationLinks = [
-  { label: t('nav.carte'), href: getLocalizedPath(lang, lang === 'fr' ? '/carte/' : '/carte/'), isHighlight: true },
-  ...locations.map(loc => ({
-    label: t(`nav.location.${loc.slug}` as any),
-    href: getLocalizedPath(lang, `/works/${loc.slug}/`),
-    isHighlight: false,
-  })),
-];
+const locationLinks = locations.map(loc => ({
+  label: t(`nav.location.${loc.slug}` as any),
+  href: getLocalizedPath(lang, `/works/${loc.slug}/`),
+  isHighlight: false,
+}));
 
 const pageLinks = [
   { label: t('nav.exhibitions'), href: getLocalizedPath(lang, '/exhibitions/') },

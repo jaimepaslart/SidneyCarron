@@ -42,7 +42,7 @@ export const fr = {
 
   // Gallery
   'gallery.photos_count': '{count} photos',
-  'gallery.back': 'Retour à la carte',
+  'gallery.back': 'Retour à l\'accueil',
   'gallery.section': 'Section',
 
   // Works (kept for gallery pages)
