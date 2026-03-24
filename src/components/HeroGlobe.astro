@@ -15,7 +15,7 @@ const { lang } = Astro.props;
 
     <!-- Globe centré dans sa colonne -->
     <div class="hero__globe-sphere">
-      <CobeGlobe lang={lang} showPins={true} rotationSpeed={0.004} maxWidth="min(88vw, 600px)" heroMode={true} />
+      <CobeGlobe lang={lang} showPins={true} rotationSpeed={0.004} heroMode={true} />
     </div>
 
     <!-- Liste des lieux — visible sur tous les breakpoints -->
@@ -30,7 +30,7 @@ const { lang } = Astro.props;
   .hero__globe {
     width: 100%;
     margin-top: 2rem;
-    padding: 0 1.25rem;
+    padding: 0 1.25rem 3rem;
     opacity: 0;
     transform: translateY(50px);
   }
@@ -59,7 +59,9 @@ const { lang } = Astro.props;
     width: 100%;
   }
 
+  /* Mobile sphere: raisonnable */
   .hero__globe-sphere :global(.cobe-globe__sphere) {
+    max-width: min(86vw, 380px);
     margin: 0 auto;
   }
 
@@ -72,7 +74,7 @@ const { lang } = Astro.props;
   @media (min-width: 768px) {
     .hero__globe {
       margin-top: 3rem;
-      padding: 0 2rem;
+      padding: 0 2rem 3rem;
     }
 
     .hero__globe-grid {
@@ -82,39 +84,24 @@ const { lang } = Astro.props;
       align-items: center;
     }
 
-    /* Contraindre le globe à la largeur de sa colonne */
     .hero__globe-sphere :global(.cobe-globe__sphere) {
-      max-width: min(44vw, 600px);
+      max-width: min(44vw, 460px);
     }
   }
 
-  /* Grand écran (≥ 1024px) : hauteur fixe, globe plus grand */
+  /* Grand écran (≥ 1024px) */
   @media (min-width: 1024px) {
     .hero__globe {
-      height: 80vh;
-      min-height: 500px;
-      margin-top: 3rem;
-      padding: 0 3rem;
-      display: flex;
-      align-items: center;
-    }
-
-    .hero__globe-grid {
-      width: 100%;
-      height: 100%;
-    }
-
-    .hero__globe-sphere {
-      height: 100%;
-      align-items: center;
+      margin-top: 4rem;
+      padding: 0 4rem 5rem;
     }
 
     .hero__globe-sphere :global(.cobe-globe__sphere) {
-      max-width: min(42vw, 700px);
+      max-width: min(38vw, 520px);
     }
 
     .hero__globe-list {
-      height: 100%;
+      max-height: 540px;
       overflow-y: auto;
       display: flex;
       align-items: center;

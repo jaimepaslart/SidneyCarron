@@ -46,7 +46,7 @@ const serializedLocations = JSON.stringify(
 ---
 
 <div class={`cobe-globe${heroMode ? '' : ' hidden md:block'}`}>
-  <div class="cobe-globe__sphere" style={`max-width: ${maxWidth}`}>
+  <div class="cobe-globe__sphere" style={heroMode ? undefined : `max-width: ${maxWidth}`}>
     <canvas
       class="cobe-globe__canvas"
       data-locations={serializedLocations}
