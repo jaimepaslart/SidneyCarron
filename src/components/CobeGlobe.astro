@@ -5,9 +5,13 @@ import { getTranslation, getLocalizedPath, type Lang } from '@/i18n';
 
 interface Props {
   lang: Lang;
+  showPins?: boolean;
+  heroMode?: boolean;
+  rotationSpeed?: number;
+  maxWidth?: string;
 }
 
-const { lang } = Astro.props;
+const { lang, showPins = true, heroMode = false, rotationSpeed = 0.003, maxWidth = '600px' } = Astro.props;
 const t = getTranslation(lang);
 
 const pinRotations: Record<string, number> = {
@@ -23,8 +27,7 @@ const pinRotations: Record<string, number> = {
 };
 
 const mapLocations = locations.map((loc) => {
-  const gallery = getGallery(loc.slug);
-  const thumbnail = loc.cover || gallery?.images?.[0]?.src || '';
+  const thumbnail = showPins ? (loc.cover || getGallery(loc.slug)?.images?.[0]?.src || '') : '';
   return {
     slug: loc.slug,
     lat: loc.coords.lat,
@@ -42,15 +45,16 @@ const serializedLocations = JSON.stringify(
 );
 ---
 
-<div class="cobe-globe hidden md:block">
-  <div class="cobe-globe__sphere">
+<div class={`cobe-globe${heroMode ? '' : ' hidden md:block'}`}>
+  <div class="cobe-globe__sphere" style={`max-width: ${maxWidth}`}>
     <canvas
       class="cobe-globe__canvas"
       data-locations={serializedLocations}
+      data-rotation-speed={rotationSpeed}
     ></canvas>
   </div>
 
-  {mapLocations.map((loc) => (
+  {showPins && mapLocations.map((loc) => (
     <a
       href={loc.href}
       class="cobe-globe__pin"
@@ -441,7 +445,7 @@ const serializedLocations = JSON.stringify(
       animFrameId = requestAnimationFrame(animate);
 
       if (!prefersReducedMotion) {
-        if (autoRotate && !isDragging) targetPhi += 0.003;
+        if (autoRotate && !isDragging) targetPhi += parseFloat(canvas.dataset.rotationSpeed || '0.003');
 
         if (!isDragging && !autoRotate && !isFocusing) {
           targetPhi += velocityPhi;
@@ -522,7 +526,6 @@ const serializedLocations = JSON.stringify(
   /* Circular container with cyanotype-tinted ambient glow */
   .cobe-globe__sphere {
     width: 100%;
-    max-width: 600px;
     margin: 0 auto;
     border-radius: 50%;
     overflow: hidden;

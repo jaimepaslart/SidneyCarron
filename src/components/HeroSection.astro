@@ -1,6 +1,7 @@
 ---
 import TextReveal from './TextReveal.astro';
 import Header from './Header.astro';
+import HeroGlobe from './HeroGlobe.astro';
 import { getSettings } from '@/utils/site';
 
 interface Props {
@@ -34,19 +35,8 @@ const nameParts = settings.artistName.toUpperCase().split(' ');
     />
   </h1>
 
-  <!-- Hero image — full-width edge-to-edge, parallax via Motion -->
-  <div class="hero__image" data-hero-image>
-    <img
-      src={settings.heroImage}
-      alt={`${settings.artistName} — Galerie Sakana`}
-      class="hero__image-src"
-      data-hero-parallax
-      loading="eager"
-      decoding="async"
-      width="1920"
-      height="1080"
-    />
-  </div>
+  <!-- Globe interactif — remplace l'image hero -->
+  <HeroGlobe lang={lang} />
 </section>
 
 <style>
@@ -82,95 +72,29 @@ const nameParts = settings.artistName.toUpperCase().split(' ');
 
 
 
-  /* Element: .hero__image — parallax container */
-  .hero__image {
-    width: 100%;
-    margin-top: 3rem;
-    opacity: 0;
-    transform: translateY(50px);
-  }
-
-  @media (min-width: 768px) {
-    .hero__image {
-      margin-top: 4rem;
-    }
-  }
-
-  @media (min-width: 1024px) {
-    .hero__image {
-      height: 70vh;
-      min-height: 400px;
-      margin-top: 3rem;
-      overflow: hidden;
-    }
-  }
-
-  /* Modifier: revealed state */
-  .hero__image--revealed {
-    opacity: 1;
-    transform: translateY(0);
-    transition: opacity 1.2s cubic-bezier(0.22, 0.61, 0.36, 1),
-                transform 1.2s cubic-bezier(0.22, 0.61, 0.36, 1);
-  }
-
-  /* Element: .hero__image-src — the actual img */
-  .hero__image-src {
-    display: block;
-    width: 100%;
-    height: auto;
-  }
-
-  @media (min-width: 1024px) {
-    .hero__image-src {
-      height: 140%;
-      object-fit: cover;
-      object-position: center;
-      will-change: transform;
-    }
-  }
-
-  /* Reduced motion */
-  @media (prefers-reduced-motion: reduce) {
-    .hero__image {
-      opacity: 1;
-      transform: none;
-    }
-
-    .hero__image-src {
-      height: 100%;
-    }
-  }
+  /* Hero globe reveal handled by HeroGlobe.astro */
 </style>
 
 <script>
-  import { animate, scroll } from 'motion';
-
   /**
-   * Hero — Intro orchestrator + Parallax
+   * Hero — Intro orchestrator
    *
    * BEM selectors:
-   *   [data-hero-image]    → .hero__image container
-   *   [data-hero-parallax] → .hero__image-src (parallaxed img)
+   *   [data-hero-globe-container] → .hero__globe container (HeroGlobe.astro)
    *
    * Intro sequence (desktop):
-   *   Phase 1 (0ms):     Logo fades in
-   *   Phase 2 (800ms):   Artist name reveals char-by-char
-   *   Phase 3 (1800ms):  Left menu staggers + image fades up
-   *   Phase 4 (3000ms):  Right menu staggers in
-   *
-   * Parallax:
-   *   Uses Motion scroll() to link image translateY to scroll progress.
-   *   The image is 130% tall inside a 70vh container — scroll shifts it
-   *   from 0% to -15%, creating a smooth parallax.
+   *   Phase 1 (0ms):    Logo fades in
+   *   Phase 2 (400ms):  Artist name reveals char-by-char
+   *   Phase 3 (900ms):  Left menu staggers + globe fades up
+   *   Phase 4 (1500ms): Right menu staggers in
    */
 
   const SELECTORS = {
-    image: '[data-hero-image]',
-    parallax: '[data-hero-parallax]',
+    image: '[data-hero-globe-container]',
   } as const;
 
   const CLASSES = {
-    imageRevealed: 'hero__image--revealed',
+    imageRevealed: 'hero__globe--revealed',
   } as const;
 
   function initHeroIntro(): void {
@@ -210,26 +134,8 @@ const nameParts = settings.artistName.toUpperCase().split(' ');
     }
   }
 
-  function initHeroParallax(): void {
-    const imgEl = document.querySelector<HTMLElement>(SELECTORS.parallax);
-    const containerEl = document.querySelector<HTMLElement>(SELECTORS.image);
-    if (!imgEl || !containerEl) return;
-    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
-
-    // Motion scroll-linked animation:
-    // As the container scrolls through the viewport, translateY goes from 0% to -15%
-    scroll(
-      animate(imgEl, { y: ['0%', '-25%'] }, { ease: 'linear' }),
-      {
-        target: containerEl,
-        offset: ['start end', 'end start'],
-      }
-    );
-  }
-
   function initHero(): void {
     initHeroIntro();
-    initHeroParallax();
   }
 
   initHero();

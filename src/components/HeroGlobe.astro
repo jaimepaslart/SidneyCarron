@@ -1,0 +1,102 @@
+---
+import CobeGlobe from './CobeGlobe.astro';
+import { getSettings } from '@/utils/site';
+import type { Lang } from '@/i18n';
+
+interface Props {
+  lang: Lang;
+}
+
+const { lang } = Astro.props;
+const settings = getSettings();
+---
+
+<div class="hero__globe" data-hero-globe-container>
+  <!-- Mobile fallback (< 768px) — pas de WebGL -->
+  <img
+    src={settings.heroImage}
+    alt={`${settings.artistName} — Carte du monde cyanotype`}
+    class="hero__globe-fallback"
+    loading="eager"
+    decoding="async"
+    width="1920"
+    height="1080"
+  />
+
+  <!-- Desktop (≥ 768px) — globe Three.js interactif sans pins -->
+  <div class="hero__globe-canvas">
+    <CobeGlobe lang={lang} showPins={false} rotationSpeed={0.004} maxWidth="min(780px, 62vh)" heroMode={true} />
+  </div>
+</div>
+
+<style>
+  .hero__globe {
+    width: 100%;
+    margin-top: 3rem;
+    opacity: 0;
+    transform: translateY(50px);
+  }
+
+  .hero__globe--revealed {
+    opacity: 1;
+    transform: translateY(0);
+    transition: opacity 1.2s cubic-bezier(0.22, 0.61, 0.36, 1),
+                transform 1.2s cubic-bezier(0.22, 0.61, 0.36, 1);
+  }
+
+  /* Mobile : image plein-largeur */
+  .hero__globe-fallback {
+    display: block;
+    width: 100%;
+    height: auto;
+  }
+
+  .hero__globe-canvas {
+    display: none;
+  }
+
+  /* Desktop (≥ 768px) : globe, image cachée */
+  @media (min-width: 768px) {
+    .hero__globe-fallback {
+      display: none;
+    }
+
+    .hero__globe-canvas {
+      display: block;
+      width: 100%;
+    }
+
+    /* Force le composant CobeGlobe à prendre toute la largeur disponible */
+    .hero__globe-canvas :global(.cobe-globe) {
+      width: 100%;
+    }
+  }
+
+  @media (min-width: 768px) {
+    .hero__globe {
+      margin-top: 4rem;
+    }
+  }
+
+  @media (min-width: 1024px) {
+    .hero__globe {
+      height: 70vh;
+      min-height: 400px;
+      margin-top: 3rem;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .hero__globe-canvas {
+      height: 100%;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .hero__globe {
+      opacity: 1;
+      transform: none;
+    }
+  }
+</style>
