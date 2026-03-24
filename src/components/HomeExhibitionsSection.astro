@@ -21,9 +21,10 @@ interface Props {
   lang: Lang;
   exhibitions: ExhibitionEntry[];
   videoSrc?: string;
+  imageSrc?: string;
 }
 
-const { lang, exhibitions, videoSrc } = Astro.props;
+const { lang, exhibitions, videoSrc, imageSrc } = Astro.props;
 const t = getTranslation(lang);
 
 const monthsFr = ['Jan', 'Fév', 'Mar', 'Avr', 'Mai', 'Juin', 'Juil', 'Aoû', 'Sep', 'Oct', 'Nov', 'Déc'];
@@ -38,7 +39,12 @@ function formatExhibitionDate(dateStr: string): string {
   return `${day} — ${month} — ${year}`;
 }
 
-const firstExpoImage = exhibitions[0]?.data.image;
+const firstExpoImg = exhibitions[0]?.data.image;
+const mediaImage = imageSrc
+  ? { src: imageSrc, alt: '' }
+  : firstExpoImg
+    ? { src: firstExpoImg.src, alt: lang === 'en' ? firstExpoImg.alt_en : firstExpoImg.alt_fr }
+    : null;
 ---
 
 <section class="expo-section" data-expo-section>
@@ -55,21 +61,15 @@ const firstExpoImage = exhibitions[0]?.data.image;
         <div class="expo-section__media" data-expo-media>
           {videoSrc ? (
             <div class="expo-section__media-wrapper">
-              <video
-                autoplay
-                muted
-                loop
-                playsinline
-                class="expo-section__video"
-              >
+              <video autoplay muted loop playsinline class="expo-section__video">
                 <source src={videoSrc} type="video/mp4" />
               </video>
             </div>
-          ) : firstExpoImage ? (
+          ) : mediaImage ? (
             <div class="expo-section__media-wrapper expo-section__media-wrapper--image">
               <img
-                src={firstExpoImage.src}
-                alt={lang === 'en' ? firstExpoImage.alt_en : firstExpoImage.alt_fr}
+                src={mediaImage.src}
+                alt={mediaImage.alt}
                 width="600"
                 height="750"
                 loading="lazy"

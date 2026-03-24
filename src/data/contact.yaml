@@ -1,0 +1,15 @@
+intro_fr: "Pour toute demande concernant mes œuvres, une exposition ou une collaboration, n'hésitez pas à m'écrire."
+intro_en: "For any inquiry regarding my works, an exhibition or a collaboration, feel free to write."
+
+subjects:
+  - label_fr: "Œuvre / Tirage"
+    label_en: "Artwork / Print"
+  - label_fr: "Exposition"
+    label_en: "Exhibition"
+  - label_fr: "Collaboration"
+    label_en: "Collaboration"
+  - label_fr: "Autre"
+    label_en: "Other"
+
+success_fr: "Merci pour votre message. Je vous répondrai dans les meilleurs délais."
+success_en: "Thank you for your message. I will get back to you as soon as possible."

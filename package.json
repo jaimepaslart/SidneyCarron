@@ -7,7 +7,8 @@
     "dev": "astro dev",
     "build": "astro build",
     "preview": "astro preview",
-    "astro": "astro"
+    "astro": "astro",
+    "translate": "tsx scripts/translate.ts"
   },
   "dependencies": {
     "@astrojs/markdoc": "^0.15.10",
@@ -33,6 +34,8 @@
   },
   "devDependencies": {
     "sharp": "^0.34.5",
-    "typescript": "^5.8.0"
+    "tsx": "^4.21.0",
+    "typescript": "^5.8.0",
+    "yaml": "^2.8.3"
   }
 }

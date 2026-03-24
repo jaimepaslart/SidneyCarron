@@ -178,32 +178,35 @@ const nameParts = settings.artistName.toUpperCase().split(' ');
     const imageEl = document.querySelector<HTMLElement>(SELECTORS.image);
     const isMobile = window.innerWidth < 1024;
 
+    // Defer all dispatches by one tick so all module listeners (Header, TextReveal)
+    // are guaranteed to be registered before any event fires.
     if (prefersReduced) {
-      imageEl?.classList.add(CLASSES.imageRevealed);
-      document.dispatchEvent(new CustomEvent('hero:phase-logo'));
-      document.dispatchEvent(new CustomEvent('hero:phase-name'));
-      document.dispatchEvent(new CustomEvent('hero:phase-menu-left'));
-      document.dispatchEvent(new CustomEvent('hero:phase-menu-right'));
+      setTimeout(() => {
+        imageEl?.classList.add(CLASSES.imageRevealed);
+        document.dispatchEvent(new CustomEvent('hero:phase-logo'));
+        document.dispatchEvent(new CustomEvent('hero:phase-name'));
+        document.dispatchEvent(new CustomEvent('hero:phase-menu-left'));
+        document.dispatchEvent(new CustomEvent('hero:phase-menu-right'));
+      }, 0);
       return;
     }
 
-    // Phase 1: Logo — immediate
-    document.dispatchEvent(new CustomEvent('hero:phase-logo'));
-
     if (isMobile) {
-      setTimeout(() => document.dispatchEvent(new CustomEvent('hero:phase-name')), 600);
+      setTimeout(() => document.dispatchEvent(new CustomEvent('hero:phase-logo')), 0);
+      setTimeout(() => document.dispatchEvent(new CustomEvent('hero:phase-name')), 300);
       setTimeout(() => {
         document.dispatchEvent(new CustomEvent('hero:phase-menu-left'));
         document.dispatchEvent(new CustomEvent('hero:phase-menu-right'));
         imageEl?.classList.add(CLASSES.imageRevealed);
-      }, 1600);
+      }, 800);
     } else {
-      setTimeout(() => document.dispatchEvent(new CustomEvent('hero:phase-name')), 800);
+      setTimeout(() => document.dispatchEvent(new CustomEvent('hero:phase-logo')), 0);
+      setTimeout(() => document.dispatchEvent(new CustomEvent('hero:phase-name')), 400);
       setTimeout(() => {
         document.dispatchEvent(new CustomEvent('hero:phase-menu-left'));
         imageEl?.classList.add(CLASSES.imageRevealed);
-      }, 1800);
-      setTimeout(() => document.dispatchEvent(new CustomEvent('hero:phase-menu-right')), 3000);
+      }, 900);
+      setTimeout(() => document.dispatchEvent(new CustomEvent('hero:phase-menu-right')), 1500);
     }
   }
 

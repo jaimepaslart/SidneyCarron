@@ -2,6 +2,7 @@ import type { Lang } from '@/i18n';
 import settingsData from '../data/settings.yaml';
 import aboutData from '../data/about.yaml';
 import homeData from '../data/home.yaml';
+import contactData from '../data/contact.yaml';
 
 export const SITE_URL = 'https://sidneycarron.com';
 
@@ -56,10 +57,31 @@ interface HomeData {
   hero_subtitle_fr: string;
   hero_subtitle_en: string;
   featured_locations: string[];
+  expo_media_type: 'video' | 'image';
+  expo_video?: string;
+  expo_image?: string;
 }
 
 export function getHome(): HomeData {
   return homeData as HomeData;
+}
+
+// ─── Contact singleton (src/data/contact.yaml) ───
+interface ContactSubject {
+  label_fr: string;
+  label_en: string;
+}
+
+interface ContactData {
+  intro_fr: string;
+  intro_en: string;
+  subjects: ContactSubject[];
+  success_fr: string;
+  success_en: string;
+}
+
+export function getContact(): ContactData {
+  return contactData as ContactData;
 }
 
 // ─── Localize helper ───

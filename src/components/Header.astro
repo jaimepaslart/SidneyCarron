@@ -285,23 +285,16 @@ const isHero = variant === 'hero';
           menuToggle?.classList.add('is-revealed');
         }, { once: true, signal });
 
-        // Phase 3: Left menu — 160ms stagger per item
-        document.addEventListener('hero:phase-menu-left', () => {
-          leftItems.forEach((item) => {
+        function revealMenuItems(items: NodeListOf<Element>): void {
+          items.forEach((item) => {
             const el = item as HTMLElement;
             const stagger = parseInt(el.style.getPropertyValue('--stagger') || '0', 10);
-            setTimeout(() => el.classList.add('is-revealed'), stagger * 160);
+            setTimeout(() => el.classList.add('is-revealed'), stagger * 80);
           });
-        }, { once: true, signal });
+        }
 
-        // Phase 4: Right menu — 160ms stagger per item
-        document.addEventListener('hero:phase-menu-right', () => {
-          rightItems.forEach((item) => {
-            const el = item as HTMLElement;
-            const stagger = parseInt(el.style.getPropertyValue('--stagger') || '0', 10);
-            setTimeout(() => el.classList.add('is-revealed'), stagger * 160);
-          });
-        }, { once: true, signal });
+        document.addEventListener('hero:phase-menu-left', () => revealMenuItems(leftItems), { once: true, signal });
+        document.addEventListener('hero:phase-menu-right', () => revealMenuItems(rightItems), { once: true, signal });
       }
     }
 

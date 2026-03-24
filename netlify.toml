@@ -3,7 +3,7 @@
 # ============================================
 
 [build]
-  command = "pnpm build"
+  command = "pnpm translate && pnpm build"
   publish = "dist"
 
 [build.environment]

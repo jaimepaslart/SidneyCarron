@@ -2,7 +2,7 @@
 import PageLayout from '@/layouts/PageLayout.astro';
 import ScrollReveal from '@/components/ScrollReveal.astro';
 import { getTranslation, type Lang } from '@/i18n';
-import { getSettings, SITE_URL } from '@/utils/site';
+import { getSettings, getContact, localize, SITE_URL } from '@/utils/site';
 
 interface Props {
   lang: Lang;
@@ -11,6 +11,11 @@ interface Props {
 const { lang } = Astro.props;
 const t = getTranslation(lang);
 const settings = getSettings();
+const contact = getContact();
+
+const intro = localize(lang, contact.intro_fr, contact.intro_en);
+const successMsg = localize(lang, contact.success_fr, contact.success_en);
+const subjects = (contact.subjects ?? []).map(s => localize(lang, s.label_fr, s.label_en)).filter(Boolean);
 
 const siteUrl = SITE_URL;
 
@@ -60,7 +65,7 @@ const jsonLd = {
         <ScrollReveal delay={100}>
           <div class="space-y-8 md:sticky md:top-32">
             <p class="font-sans text-base leading-relaxed text-secondary">
-              {t('contact.intro')}
+              {intro}
             </p>
 
             <div class="space-y-3">
@@ -150,13 +155,27 @@ const jsonLd = {
                 <label for="contact-subject" class="contact-label">
                   {t('contact.form.subject')}
                 </label>
-                <input
-                  id="contact-subject"
-                  type="text"
-                  name="subject"
-                  class="contact-input"
-                  placeholder=" "
-                />
+                {subjects.length > 0 ? (
+                  <select
+                    id="contact-subject"
+                    name="subject"
+                    class="contact-input contact-select"
+                    data-has-value="false"
+                  >
+                    <option value="" disabled selected></option>
+                    {subjects.map(s => (
+                      <option value={s}>{s}</option>
+                    ))}
+                  </select>
+                ) : (
+                  <input
+                    id="contact-subject"
+                    type="text"
+                    name="subject"
+                    class="contact-input"
+                    placeholder=" "
+                  />
+                )}
                 <span class="contact-line" aria-hidden="true"></span>
               </div>
 
@@ -201,7 +220,7 @@ const jsonLd = {
                 {t('contact.form.success.title')}
               </h2>
               <p class="font-sans text-base text-secondary leading-relaxed">
-                {t('contact.form.success.text')}
+                {successMsg}
               </p>
             </div>
 
@@ -283,6 +302,31 @@ const jsonLd = {
     line-height: 1.6;
   }
 
+  /* ── Select specific ── */
+  .contact-select {
+    appearance: none;
+    -webkit-appearance: none;
+    cursor: pointer;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%23999' stroke-width='1.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 4px center;
+    padding-right: 1.5rem;
+  }
+
+  /* Float label for select — driven by JS data-has-value attribute */
+  .contact-select[data-has-value="true"] ~ .contact-label,
+  .contact-select:focus ~ .contact-label {
+    top: 0;
+    font-size: 0.6875rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: #666666;
+  }
+
+  .contact-select:focus ~ .contact-line {
+    background: #1a1a1a;
+  }
+
   /* ── Submit button ── */
   .contact-btn {
     display: inline-flex;
@@ -325,6 +369,13 @@ const jsonLd = {
 </style>
 
 <script>
+  const subjectSelect = document.getElementById('contact-subject') as HTMLSelectElement | null;
+  if (subjectSelect) {
+    subjectSelect.addEventListener('change', () => {
+      subjectSelect.setAttribute('data-has-value', subjectSelect.value !== '' ? 'true' : 'false');
+    });
+  }
+
   const form = document.getElementById('contact-form') as HTMLFormElement | null;
   const submitBtn = document.getElementById('contact-submit') as HTMLButtonElement | null;
   const btnLabel = document.getElementById('contact-btn-label');

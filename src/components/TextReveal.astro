@@ -68,16 +68,15 @@ const {
       const baseDelay = parseInt((el as HTMLElement).dataset.heroDelay || '0', 10);
 
       function revealChars() {
+        // Clear all transitions at once, then flush with a single reflow
+        chars.forEach((char) => { char.style.transition = 'none'; });
+        if (chars.length) void (chars[0] as HTMLElement).offsetHeight;
         chars.forEach((char, i) => {
-          // 40ms stagger between chars, 1.6s duration, power3.out
-          const charDelay = baseDelay + i * 40;
           setTimeout(() => {
-            char.style.transition = 'none';
-            void char.offsetHeight;
-            char.style.transition = 'opacity 1.6s cubic-bezier(0.165, 0.84, 0.44, 1), transform 1.6s cubic-bezier(0.165, 0.84, 0.44, 1)';
+            char.style.transition = 'opacity 1.2s cubic-bezier(0.165, 0.84, 0.44, 1), transform 1.2s cubic-bezier(0.165, 0.84, 0.44, 1)';
             char.style.opacity = '1';
             char.style.transform = 'translateY(0) rotateX(0deg)';
-          }, charDelay);
+          }, baseDelay + i * 25);
         });
       }
 
