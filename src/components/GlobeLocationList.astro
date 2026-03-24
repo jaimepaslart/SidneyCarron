@@ -140,17 +140,39 @@ const sortedLocations = [...locations].sort((a, b) => b.photoCount - a.photoCoun
         const href = (link as HTMLAnchorElement).href;
         const slug = link.getAttribute('data-globe-loc') || '';
         const name = link.querySelector('.font-display')?.textContent?.trim() || '';
-        const polaroid = (link.querySelector('.globe-list__polaroid') || link) as HTMLElement;
-        const rect = polaroid.getBoundingClientRect();
-        triggerZoomTransition({
-          originX: rect.left + rect.width / 2,
-          originY: rect.top + rect.height / 2,
-          locationName: name,
-          href,
-          slug,
-          focusLat: lat,
-          focusLng: lng,
-        });
+
+        const doTransition = () => {
+          const polaroid = (link.querySelector('.globe-list__polaroid') || link) as HTMLElement;
+          const r = polaroid.getBoundingClientRect();
+          triggerZoomTransition({
+            originX: r.left + r.width / 2,
+            originY: r.top + r.height / 2,
+            locationName: name,
+            href,
+            slug,
+            focusLat: lat,
+            focusLng: lng,
+          });
+        };
+
+        // Mobile: if globe is above the viewport, scroll it into view first
+        const globeSphere = document.querySelector<HTMLElement>('.cobe-globe__sphere');
+        if (window.innerWidth < 768 && globeSphere) {
+          const r = globeSphere.getBoundingClientRect();
+          if (r.bottom <= 0 || r.top >= window.innerHeight) {
+            // Pre-rotate globe toward the location while scrolling
+            (window as any).__cobeGlobeFocus?.(lat, lng);
+            globeSphere.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            // Fire after scroll settles — scrollend with timeout fallback
+            let fired = false;
+            const fire = () => { if (!fired) { fired = true; doTransition(); } };
+            window.addEventListener('scrollend', fire, { once: true });
+            setTimeout(fire, 700);
+            return;
+          }
+        }
+
+        doTransition();
       }, { signal: controller.signal });
     });
 
