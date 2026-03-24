@@ -123,4 +123,8 @@ export const en: Record<TranslationKey, string> = {
   'a11y.menu_open': 'Open menu',
   'a11y.main_nav': 'Main navigation',
   'a11y.menu_close': 'Close menu',
+  'a11y.lightbox.label': 'Image viewer',
+  'a11y.lightbox.close': 'Close',
+  'a11y.lightbox.prev': 'Previous image',
+  'a11y.lightbox.next': 'Next image',
 };

@@ -56,11 +56,13 @@ const jsonLd = {
   '@context': 'https://schema.org',
   '@graph': [
     {
-      '@type': 'ExhibitionEvent',
+      '@type': ['ExhibitionEvent', 'Event'],
       name: title,
       description: description || `${title} — ${venue}, ${exhibition.data.city}`,
       startDate: exhibition.data.start_date,
       endDate: exhibition.data.end_date,
+      eventStatus: 'https://schema.org/EventScheduled',
+      eventAttendanceMode: 'https://schema.org/OfflineEventAttendanceMode',
       location: {
         '@type': 'Place',
         name: venue,
@@ -71,6 +73,7 @@ const jsonLd = {
       },
       organizer: {
         '@type': 'Person',
+        '@id': `${siteUrl}/#person`,
         name: 'Sidney Carron',
         url: siteUrl,
       },

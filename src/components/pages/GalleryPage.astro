@@ -19,17 +19,30 @@ const t = getTranslation(lang);
 
 const locationName = lang === 'en' ? location.name_en : location.name_fr;
 const country = lang === 'en' ? location.country_en : location.country_fr;
+const locationDescription = lang === 'en'
+  ? (location.description_en || `${t('works.title')} ${lang === 'fr' ? 'réalisées à' : 'created in'} ${locationName}`)
+  : (location.description_fr || `${t('works.title')} réalisées à ${locationName}`);
 const siteUrl = 'https://sidneycarron.com';
 const cartePath = lang === 'fr' ? '/carte/' : '/en/map/';
+
+const imageObjects = gallery.images.slice(0, 20).map(img => ({
+  '@type': 'ImageObject',
+  contentUrl: `${siteUrl}${img.src}`,
+  width: img.width,
+  height: img.height,
+  creator: { '@id': `${siteUrl}/#person` },
+}));
 
 const jsonLd = {
   '@context': 'https://schema.org',
   '@graph': [
     {
-      '@type': 'CollectionPage',
-      name: `${t('works.title')} — ${locationName}`,
-      description: `${t('works.title')} ${lang === 'fr' ? 'réalisées à' : 'created in'} ${locationName}`,
+      '@type': 'ImageGallery',
+      name: `${locationName} — Sidney Carron`,
+      description: locationDescription,
       url: `${siteUrl}${getLocalizedPath(lang, `/works/${location.slug}`)}`,
+      creator: { '@id': `${siteUrl}/#person` },
+      image: imageObjects,
     },
     {
       '@type': 'BreadcrumbList',
@@ -48,9 +61,13 @@ const hasSections = gallery.sections && gallery.sections.length > 0;
 
 <PageLayout
   title={`${locationName} — Sidney Carron`}
-  description={`${t('works.title')} ${lang === 'fr' ? 'réalisées à' : 'created in'} ${locationName}`}
+  description={locationDescription}
   jsonLd={jsonLd}
 >
+  <Fragment slot="head">
+    <meta name="geo.position" content={`${location.coords.lat};${location.coords.lng}`} />
+    <meta name="ICBM" content={`${location.coords.lat}, ${location.coords.lng}`} />
+  </Fragment>
   <section class="museum-section">
     <div class="museum-container">
       <ScrollReveal>
@@ -118,5 +135,5 @@ const hasSections = gallery.sections && gallery.sections.length > 0;
     </div>
   </section>
 
-  <Lightbox images={gallery.images} />
+  <Lightbox images={gallery.images} lang={lang} />
 </PageLayout>

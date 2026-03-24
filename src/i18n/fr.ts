@@ -121,6 +121,10 @@ export const fr = {
   'a11y.menu_open': 'Ouvrir le menu',
   'a11y.main_nav': 'Navigation principale',
   'a11y.menu_close': 'Fermer le menu',
+  'a11y.lightbox.label': 'Visionneuse d\'images',
+  'a11y.lightbox.close': 'Fermer',
+  'a11y.lightbox.prev': 'Image précédente',
+  'a11y.lightbox.next': 'Image suivante',
 } as const;
 
 export type TranslationKey = keyof typeof fr;

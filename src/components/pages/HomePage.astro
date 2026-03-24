@@ -34,14 +34,20 @@ const artistStatement = localize(lang, homeData.hero_statement_fr, homeData.hero
 
 const cartePath = lang === 'fr' ? '/carte/' : '/en/map/';
 
+const settings = getSettings();
+const siteDescription = localize(lang, settings.defaultSeo.description_fr, settings.defaultSeo.description_en);
+
 const jsonLd = {
   '@context': 'https://schema.org',
   '@graph': [
     {
       '@type': 'WebSite',
+      '@id': `${SITE_URL}/#website`,
       name: 'Sidney Carron',
       url: SITE_URL,
-      inLanguage: [lang === 'fr' ? 'fr-FR' : 'en-US'],
+      description: siteDescription,
+      publisher: { '@id': `${SITE_URL}/#person` },
+      inLanguage: ['fr', 'en'],
     },
     buildPersonSchema(lang),
   ],
@@ -59,7 +65,12 @@ const jsonLd = {
 
   <!-- 2. Exhibitions Section (Rinaldi-style) — right after hero -->
   {sortedExhibitions.length > 0 && (
-    <HomeExhibitionsSection lang={lang} exhibitions={sortedExhibitions} videoSrc="/videos/sid-reel.mp4" />
+    <HomeExhibitionsSection
+      lang={lang}
+      exhibitions={sortedExhibitions}
+      videoSrc={homeData.expo_media_type === 'video' ? (homeData.expo_video || undefined) : undefined}
+      imageSrc={homeData.expo_media_type === 'image' ? (homeData.expo_image || undefined) : undefined}
+    />
   )}
 
   <!-- 3. Featured Locations -->

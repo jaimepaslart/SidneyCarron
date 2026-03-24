@@ -14,6 +14,8 @@ export interface Location {
   coords: { lat: number; lng: number };
   photoCount: number;
   type: 'travel' | 'exhibition' | 'event';
+  description_fr?: string;
+  description_en?: string;
   cover?: string;
   images?: LocationImage[];
   video?: string;
@@ -34,6 +36,8 @@ export const locations: Location[] = Object.values(locationFiles).map((mod: any)
     coords: { lat: d.lat, lng: d.lng },
     photoCount: d.photoCount,
     type: d.type,
+    description_fr: d.description_fr,
+    description_en: d.description_en,
     cover: d.cover,
     images: d.images,
     video: d.video,

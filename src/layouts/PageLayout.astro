@@ -29,6 +29,7 @@ if (props.canonicalPath && props.enCanonicalPath) {
 ---
 
 <BaseLayout {...props}>
+  <slot name="head" slot="head" />
   {!hideHeader && <Header alternateHref={alternateHref} />}
   <main id="main-content" class="flex-1">
     <slot />

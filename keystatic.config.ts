@@ -9,11 +9,11 @@ export default config({
       },
 
   ui: {
-    brand: { name: 'Sidney Carron' },
+    brand: { name: 'Sidney Carron — Backoffice' },
     navigation: {
-      'Contenu': ['locations', 'exhibitions', 'press'],
-      'Pages': ['home', 'about'],
-      'Site': ['settings'],
+      '📷 Mes créations': ['locations', 'exhibitions', 'press'],
+      '📄 Pages du site': ['home', 'about', 'contact'],
+      '⚙️ Réglages': ['settings'],
     },
   },
 
@@ -23,6 +23,7 @@ export default config({
       slugField: 'slug',
       path: 'src/data/locations/*',
       format: { data: 'yaml' },
+      entryLayout: 'content',
       columns: ['name_fr', 'country_fr', 'type', 'photoCount'],
       schema: {
         slug: fields.slug({
@@ -36,16 +37,16 @@ export default config({
           description: 'Affiché sur le site en français (ex : Dakar, Alpes, Saint-Tropez)',
         }),
         name_en: fields.text({
-          label: 'Name (English)',
-          description: 'Displayed on the English version of the site',
+          label: 'Nom du lieu (anglais)',
+          description: 'Version anglaise du nom, affichée sur le site en anglais',
         }),
         country_fr: fields.text({
           label: 'Pays',
           description: 'Nom du pays en français (ex : Sénégal, France)',
         }),
         country_en: fields.text({
-          label: 'Country',
-          description: 'Country name in English',
+          label: 'Pays (anglais)',
+          description: 'Nom du pays en anglais (ex : Senegal, France)',
         }),
         type: fields.select({
           label: 'Type de lieu',
@@ -97,6 +98,16 @@ export default config({
             },
           }
         ),
+        description_fr: fields.text({
+          label: '💬 Description courte',
+          description: '✨ Ce texte apparaît dans les résultats de recherche Google quand quelqu\'un cherche vos photos de ce lieu. Rédigez 1 à 2 phrases naturelles (120 à 160 caractères idéalement). Exemple : "Empreintes solaires réalisées à Dakar — corps et lumière au cœur de l\'Afrique de l\'Ouest"',
+          multiline: true,
+        }),
+        description_en: fields.text({
+          label: '💬 Description courte (version anglaise)',
+          description: 'Même description traduite en anglais — pour les visiteurs internationaux et les résultats Google en anglais',
+          multiline: true,
+        }),
         video: fields.file({
           label: '🎬 Vidéo (fichier)',
           description: 'Téléverser une vidéo directement (formats : mp4, webm)',
@@ -115,12 +126,13 @@ export default config({
       slugField: 'slug',
       path: 'src/content/exhibitions/*',
       format: { data: 'yaml' },
+      entryLayout: 'content',
       columns: ['title_fr', 'city', 'start_date', 'status'],
       schema: {
         slug: fields.slug({
           name: {
             label: 'Identifiant URL',
-            description: 'Identifiant unique pour l\'URL de l\'exposition',
+            description: 'Identifiant unique pour l\'URL de l\'exposition (ex : galerie-sakana-2025)',
           },
         }),
         title_fr: fields.text({
@@ -128,16 +140,16 @@ export default config({
           description: 'Titre affiché sur le site en français',
         }),
         title_en: fields.text({
-          label: 'Title (English)',
-          description: 'Exhibition title for the English version',
+          label: 'Titre de l\'exposition (anglais)',
+          description: 'Titre pour la version anglaise du site — peut être identique si international',
         }),
         venue_fr: fields.text({
           label: 'Lieu',
           description: 'Nom de la galerie, du théâtre ou de l\'espace d\'exposition',
         }),
         venue_en: fields.text({
-          label: 'Venue (English)',
-          description: 'Name of the gallery or exhibition space in English',
+          label: 'Lieu (anglais)',
+          description: 'Nom de la galerie en anglais — souvent identique si c\'est un nom propre',
         }),
         city: fields.text({
           label: 'Ville',
@@ -172,12 +184,12 @@ export default config({
         }),
         description_fr: fields.text({
           label: 'Description',
-          description: 'Présentation de l\'exposition en français (quelques lignes)',
+          description: '💡 Présentation de l\'exposition en français — quelques lignes qui donnent envie de venir. Apparaît sur la page de l\'exposition et dans les résultats Google.',
           multiline: true,
         }),
         description_en: fields.text({
-          label: 'Description (English)',
-          description: 'Exhibition description in English',
+          label: 'Description (version anglaise)',
+          description: 'Présentation de l\'exposition en anglais — pour les visiteurs et journalistes internationaux',
           multiline: true,
         }),
         image: fields.object({
@@ -188,11 +200,12 @@ export default config({
             publicPath: '/images/exhibitions/',
           }),
           alt_fr: fields.text({
-            label: 'Description de l\'image (FR)',
-            description: 'Décrit l\'image pour l\'accessibilité et le référencement',
+            label: '♿ Description de l\'image',
+            description: '💡 Décrit l\'image en quelques mots — utilisé pour les personnes malvoyantes ET pour le référencement Google Images (ex : "Vue de l\'exposition à la Galerie Sakana, Paris")',
           }),
           alt_en: fields.text({
-            label: 'Image description (EN)',
+            label: '♿ Description de l\'image (anglais)',
+            description: 'Même description en anglais pour la version internationale du site',
           }),
         }, { label: '📷 Photo' }),
         video: fields.file({
@@ -218,7 +231,7 @@ export default config({
           }
         ),
         slug_en: fields.text({
-          label: 'Identifiant anglais',
+          label: 'Identifiant URL (anglais)',
           description: 'Laissez vide si identique à l\'identifiant français',
         }),
       },
@@ -229,6 +242,7 @@ export default config({
       slugField: 'title_fr',
       path: 'src/content/press/*',
       format: { data: 'yaml' },
+      entryLayout: 'content',
       columns: ['publication', 'date'],
       schema: {
         title_fr: fields.slug({
@@ -238,8 +252,8 @@ export default config({
           },
         }),
         title_en: fields.text({
-          label: 'Title (English)',
-          description: 'Article title in English (if available)',
+          label: 'Titre de l\'article (anglais)',
+          description: 'Titre en anglais si disponible (laisser vide sinon)',
         }),
         publication: fields.text({
           label: 'Publication',
@@ -259,8 +273,8 @@ export default config({
           multiline: true,
         }),
         excerpt_en: fields.text({
-          label: 'Excerpt (English)',
-          description: 'Quote or excerpt in English',
+          label: 'Extrait (version anglaise)',
+          description: 'Citation ou extrait traduit en anglais si disponible',
           multiline: true,
         }),
         image: fields.image({
@@ -286,20 +300,20 @@ export default config({
       format: { data: 'yaml' },
       schema: {
         hero_statement_fr: fields.text({
-          label: 'Citation principale',
+          label: '✍️ Citation principale',
           description: 'Grande citation affichée en haut de la page d\'accueil (ex : J\'écris avec la lumière)',
         }),
         hero_statement_en: fields.text({
-          label: 'Main quote (English)',
-          description: 'Quote displayed on the English homepage',
+          label: '✍️ Citation principale (anglais)',
+          description: 'Version anglaise de la citation pour les visiteurs internationaux',
         }),
         hero_subtitle_fr: fields.text({
           label: 'Sous-titre',
           description: 'Courte description sous la citation (ex : Artiste photographe)',
         }),
         hero_subtitle_en: fields.text({
-          label: 'Subtitle (English)',
-          description: 'Short description in English',
+          label: 'Sous-titre (anglais)',
+          description: 'Version anglaise du sous-titre (ex : Visual artist & photographer)',
         }),
         featured_locations: fields.array(
           fields.text({ label: 'Identifiant du lieu' }),
@@ -309,6 +323,27 @@ export default config({
             itemLabel: props => props.value || 'Lieu',
           }
         ),
+        expo_media_type: fields.select({
+          label: '🎬 Type de média (section Expositions)',
+          description: 'Choisissez si vous souhaitez afficher une vidéo ou une photo dans la section Expositions de la page d\'accueil',
+          options: [
+            { label: '🎬 Vidéo', value: 'video' },
+            { label: '📷 Photo', value: 'image' },
+          ],
+          defaultValue: 'video',
+        }),
+        expo_video: fields.file({
+          label: '🎬 Vidéo (section Expositions)',
+          description: 'Format recommandé : portrait 9:16 · Dimensions : 480×854px minimum · Formats acceptés : mp4, webm · Poids max conseillé : 10 Mo',
+          directory: 'public/videos',
+          publicPath: '/videos/',
+        }),
+        expo_image: fields.image({
+          label: '📷 Photo (section Expositions)',
+          description: 'Format recommandé : portrait 4:5 · Dimensions : 800×1000px minimum, idéal 1200×1500px · Formats acceptés : jpg, webp, png',
+          directory: 'public/images',
+          publicPath: '/images/',
+        }),
       },
     }),
 
@@ -329,8 +364,8 @@ export default config({
           multiline: true,
         }),
         intro_en: fields.text({
-          label: 'Introduction (English)',
-          description: 'Short tagline in English',
+          label: 'Introduction (version anglaise)',
+          description: 'Version anglaise du texte d\'accroche — 1 à 2 phrases',
           multiline: true,
         }),
         bio_fr: fields.text({
@@ -339,8 +374,8 @@ export default config({
           multiline: true,
         }),
         bio_en: fields.text({
-          label: 'Biography (English)',
-          description: 'Full biography in English',
+          label: 'Biographie (version anglaise)',
+          description: 'Version anglaise de la biographie complète',
           multiline: true,
         }),
         statement_fr: fields.text({
@@ -349,15 +384,15 @@ export default config({
           multiline: true,
         }),
         statement_en: fields.text({
-          label: 'Artist statement (English)',
-          description: 'Your artistic approach in English',
+          label: 'Démarche artistique (version anglaise)',
+          description: 'Version anglaise de votre démarche artistique',
           multiline: true,
         }),
         cv: fields.array(
           fields.object({
             year: fields.text({ label: 'Année / Période', description: 'Ex : 2023, 2019-2021, École du Louvre' }),
             text_fr: fields.text({ label: 'Description', description: 'Événement, résidence, prix, formation…' }),
-            text_en: fields.text({ label: 'Description (English)' }),
+            text_en: fields.text({ label: 'Description (version anglaise)', description: 'Même information en anglais' }),
           }),
           {
             label: '📋 Parcours / CV',
@@ -396,12 +431,12 @@ export default config({
           description: 'Votre nom complet — affiché dans le titre du site et les mentions légales',
         }),
         email: fields.text({
-          label: 'Email de contact',
-          description: 'Adresse email affichée sur la page Contact',
+          label: '📧 Email de contact',
+          description: 'Adresse email affichée sur la page Contact — c\'est l\'email que recevront vos visiteurs',
         }),
         heroImage: fields.image({
-          label: '🖼️ Image hero (accueil)',
-          description: 'Grande image affichée sur la page d\'accueil — format paysage 16:9 recommandé (min. 1920×1080px)',
+          label: '🖼️ Grande image d\'accueil',
+          description: 'Grande image affichée en bas du nom sur la page d\'accueil — format paysage 16:9 recommandé (min. 1920×1080px)',
           directory: 'public/images',
           publicPath: '/images/',
         }),
@@ -412,40 +447,85 @@ export default config({
           publicPath: '/images/',
         }),
         socials: fields.object({
-          instagram: fields.text({ label: 'Instagram', description: 'URL complète de votre profil Instagram' }),
-          facebook: fields.text({ label: 'Facebook', description: 'URL complète de votre page Facebook' }),
-          linkedin: fields.text({ label: 'LinkedIn', description: 'URL complète de votre profil LinkedIn' }),
-          youtube: fields.text({ label: 'YouTube', description: 'URL complète de votre chaîne YouTube' }),
+          instagram: fields.text({ label: '📸 Instagram', description: 'URL complète de votre profil Instagram (ex : https://instagram.com/sidneycarron)' }),
+          facebook: fields.text({ label: '👥 Facebook', description: 'URL complète de votre page Facebook (laisser vide si inutilisé)' }),
+          linkedin: fields.text({ label: '💼 LinkedIn', description: 'URL complète de votre profil LinkedIn (laisser vide si inutilisé)' }),
+          youtube: fields.text({ label: '▶️ YouTube', description: 'URL complète de votre chaîne YouTube (laisser vide si inutilisée)' }),
         }, {
           label: '📱 Réseaux sociaux',
-          description: 'Laissez vide les réseaux que vous ne souhaitez pas afficher',
+          description: 'Laissez vide les réseaux que vous ne souhaitez pas afficher sur le site',
         }),
         defaultSeo: fields.object({
           title_fr: fields.text({
-            label: 'Titre du site',
-            description: 'Affiché dans l\'onglet du navigateur et sur Google (max. 60 caractères recommandé)',
+            label: '🏷️ Titre du site (onglet navigateur)',
+            description: 'C\'est le texte affiché dans l\'onglet du navigateur ET sur Google quand quelqu\'un vous cherche. Exemple : "Sidney Carron — Artiste photographe". Max. 60 caractères.',
           }),
           title_en: fields.text({
-            label: 'Site title (English)',
-            description: 'Displayed in the browser tab and on Google for English pages',
+            label: '🏷️ Titre du site (version anglaise)',
+            description: 'Même titre pour les visiteurs anglophones. Exemple : "Sidney Carron — Visual Artist & Photographer"',
           }),
           description_fr: fields.text({
-            label: 'Description du site',
-            description: 'Résumé du site affiché sur Google et lors du partage — 120 à 160 caractères recommandés',
+            label: '📝 Description Google',
+            description: '💡 C\'est la petite phrase qui apparaît sous votre nom dans les résultats de recherche Google. Rédigez un texte naturel qui donne envie de cliquer ! Entre 120 et 160 caractères. Exemple : "Site officiel de Sidney Carron, artiste photographe. Empreintes solaires, corps et lumière."',
             multiline: true,
           }),
           description_en: fields.text({
-            label: 'Site description (English)',
-            description: 'Site summary for English pages — 120 to 160 characters recommended',
+            label: '📝 Description Google (version anglaise)',
+            description: 'Même description traduite en anglais pour les résultats de recherche internationaux. Entre 120 et 160 caractères recommandés.',
             multiline: true,
           }),
           ogImage: fields.image({
-            label: '🔗 Image de partage (réseaux sociaux)',
-            description: 'Image affichée lors du partage sur Instagram, Facebook, WhatsApp… · Format 1200×630px recommandé',
+            label: '🖼️ Image de partage (WhatsApp / Facebook / iMessage…)',
+            description: '💡 Quand quelqu\'un partage votre site par message ou sur les réseaux sociaux, c\'est cette image qui s\'affiche en aperçu. Choisissez une belle photo représentative. Format idéal : 1200×630px (paysage).',
             directory: 'public/images',
             publicPath: '/images/',
           }),
-        }, { label: '🔍 Référencement (SEO)' }),
+        }, { label: '🔍 Référencement Google + Partage sur les réseaux' }),
+      },
+    }),
+
+    contact: singleton({
+      label: '✉️ Page Contact',
+      path: 'src/data/contact',
+      format: { data: 'yaml' },
+      schema: {
+        intro_fr: fields.text({
+          label: 'Texte d\'introduction',
+          description: 'Paragraphe affiché en haut de la page Contact en français',
+          multiline: true,
+        }),
+        intro_en: fields.text({
+          label: 'Texte d\'introduction (version anglaise)',
+          description: 'Même paragraphe traduit en anglais pour les visiteurs internationaux',
+          multiline: true,
+        }),
+        subjects: fields.array(
+          fields.object({
+            label_fr: fields.text({
+              label: 'Option (français)',
+              description: 'Ex : Œuvre / Tirage, Exposition, Collaboration…',
+            }),
+            label_en: fields.text({
+              label: 'Option (anglais)',
+              description: 'Traduction de l\'option en anglais (ex : Artwork / Print, Exhibition…)',
+            }),
+          }),
+          {
+            label: '📋 Options du champ Sujet',
+            description: 'Propositions dans le menu déroulant Sujet — laissez vide pour un champ texte libre',
+            itemLabel: props => props.fields.label_fr.value || 'Option',
+          }
+        ),
+        success_fr: fields.text({
+          label: '✅ Message de confirmation',
+          description: 'Affiché après l\'envoi du formulaire en français — remerciez votre visiteur !',
+          multiline: true,
+        }),
+        success_en: fields.text({
+          label: '✅ Message de confirmation (version anglaise)',
+          description: 'Même message de confirmation traduit en anglais',
+          multiline: true,
+        }),
       },
     }),
   },

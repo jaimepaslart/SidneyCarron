@@ -1,11 +1,14 @@
 ---
 import type { GalleryImage } from '@/data/gallery-loader';
+import { getTranslation, type Lang } from '@/i18n';
 
 interface Props {
   images: GalleryImage[];
+  lang?: Lang;
 }
 
-const { images } = Astro.props;
+const { images, lang = 'fr' } = Astro.props;
+const t = getTranslation(lang);
 ---
 
 <div
@@ -13,7 +16,7 @@ const { images } = Astro.props;
   class="lightbox"
   role="dialog"
   aria-modal="true"
-  aria-label="Image viewer"
+  aria-label={t('a11y.lightbox.label')}
   aria-hidden="true"
 >
   <div class="lightbox-backdrop" id="lightbox-backdrop"></div>
@@ -35,7 +38,7 @@ const { images } = Astro.props;
   <button
     class="lightbox-btn lightbox-close"
     id="lightbox-close"
-    aria-label="Close"
+    aria-label={t('a11y.lightbox.close')}
     type="button"
   >
     <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
@@ -48,7 +51,7 @@ const { images } = Astro.props;
   <button
     class="lightbox-btn lightbox-prev"
     id="lightbox-prev"
-    aria-label="Previous image"
+    aria-label={t('a11y.lightbox.prev')}
     type="button"
   >
     <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
@@ -60,7 +63,7 @@ const { images } = Astro.props;
   <button
     class="lightbox-btn lightbox-next"
     id="lightbox-next"
-    aria-label="Next image"
+    aria-label={t('a11y.lightbox.next')}
     type="button"
   >
     <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">

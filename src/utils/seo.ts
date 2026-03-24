@@ -32,6 +32,7 @@ export function buildPersonSchema(lang: Lang) {
 
   return {
     '@type': 'Person',
+    '@id': `${SITE_URL}/#person`,
     name: settings.artistName,
     jobTitle: lang === 'en'
       ? 'Visual Artist & Photographer'
@@ -42,6 +43,16 @@ export function buildPersonSchema(lang: Lang) {
     url: SITE_URL,
     image: `${SITE_URL}${settings.defaultSeo.ogImage}`,
     email: settings.email,
+    nationality: { '@type': 'Country', name: 'France' },
+    birthPlace: { '@type': 'Place', name: 'Vienne, Isère, France' },
+    alumniOf: { '@type': 'EducationalOrganization', name: 'École du Louvre' },
+    knowsAbout: [
+      lang === 'en' ? 'Solar imprints' : 'Empreintes solaires',
+      'Cyanotype',
+      lang === 'en' ? 'Contemporary photography' : 'Photographie contemporaine',
+      lang === 'en' ? 'Photosensitive paper' : 'Papier photosensible',
+      lang === 'en' ? 'Light and body' : 'Lumière et corps',
+    ],
     ...(sameAs.length > 0 ? { sameAs } : {}),
   };
 }
