@@ -154,21 +154,31 @@ const sortedLocations = [...locations].sort((a, b) => b.photoCount - a.photoCoun
       }, { signal: controller.signal });
     });
 
-    // ─── Rinaldi reveal — stagger items on scroll ───
+    // ─── Rinaldi reveal — stagger items ───
     const prefersReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
     if (!prefersReduced) {
       const lists = document.querySelectorAll<HTMLElement>('.globe-list');
       lists.forEach(list => {
         const items = list.querySelectorAll<HTMLElement>('.globe-list__item');
-        inView(list, () => {
+        if (!items.length) return;
+
+        function revealItems() {
           items.forEach((item, i) => {
             animate(
               item,
               { opacity: [0, 1], y: [80, 0], skewY: [5, 0] },
-              { duration: 1.2, easing: POWER4_OUT, delay: i * 0.08 }
+              { duration: 1.2, easing: POWER4_OUT, delay: i * 0.09 }
             );
           });
-        }, { margin: '0px 0px -10% 0px' });
+        }
+
+        // Hero page: synchronise avec l'apparition du bloc globe
+        // Autres pages (carte…): inView classique
+        if (list.closest('[data-hero-globe-container]')) {
+          document.addEventListener('hero:phase-menu-left', revealItems, { once: true });
+        } else {
+          inView(list, revealItems, { margin: '0px 0px -10% 0px' });
+        }
       });
     }
 
