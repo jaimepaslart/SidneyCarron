@@ -13,14 +13,14 @@ const { lang } = Astro.props;
 <div class="hero__globe" data-hero-globe-container>
   <div class="hero__globe-grid">
 
-    <!-- Globe centré dans sa colonne -->
-    <div class="hero__globe-sphere">
-      <CobeGlobe lang={lang} showPins={true} rotationSpeed={0.004} heroMode={true} />
-    </div>
-
-    <!-- Liste des lieux — visible sur tous les breakpoints -->
+    <!-- Liste des lieux — colonne gauche sur desktop -->
     <div class="hero__globe-list">
       <GlobeLocationList lang={lang} />
+    </div>
+
+    <!-- Globe — colonne droite sur desktop -->
+    <div class="hero__globe-sphere">
+      <CobeGlobe lang={lang} showPins={true} rotationSpeed={0.004} heroMode={true} />
     </div>
 
   </div>
@@ -42,14 +42,14 @@ const { lang } = Astro.props;
                 transform 1.2s cubic-bezier(0.22, 0.61, 0.36, 1);
   }
 
-  /* Mobile : colonne — globe en haut, liste en bas */
+  /* Mobile : liste d'abord, globe ensuite */
   .hero__globe-grid {
     display: flex;
-    flex-direction: column;
+    flex-direction: column-reverse;
     gap: 2.5rem;
   }
 
-  /* Globe centré dans sa colonne */
+  /* Globe centré sur mobile */
   .hero__globe-sphere {
     display: flex;
     justify-content: center;
@@ -59,7 +59,6 @@ const { lang } = Astro.props;
     width: 100%;
   }
 
-  /* Mobile sphere: raisonnable */
   .hero__globe-sphere :global(.cobe-globe__sphere) {
     max-width: min(86vw, 380px);
     margin: 0 auto;
@@ -70,7 +69,7 @@ const { lang } = Astro.props;
     display: block;
   }
 
-  /* Desktop (≥ 768px) : 2 colonnes — globe | liste */
+  /* Desktop (≥ 768px) : 2 colonnes égales — liste | globe */
   @media (min-width: 768px) {
     .hero__globe {
       margin-top: 3rem;
@@ -79,29 +78,28 @@ const { lang } = Astro.props;
 
     .hero__globe-grid {
       display: grid;
-      grid-template-columns: 3fr 2fr;
+      grid-template-columns: 1fr 1fr;
       gap: 4rem;
       align-items: center;
-      max-width: 980px;
-      margin-left: auto;
-      margin-right: auto;
     }
 
     .hero__globe-sphere :global(.cobe-globe__sphere) {
       max-width: min(52vw, 480px);
+      margin: 0 auto;
     }
   }
 
-  /* Grand écran (≥ 1024px) */
+  /* Grand écran (≥ 1024px) — aligne avec expo-section */
   @media (min-width: 1024px) {
     .hero__globe {
       margin-top: 7rem;
-      padding: 0 2rem 5rem;
+      padding: 0 7.5% 5rem;
     }
 
     .hero__globe-grid {
-      max-width: 1100px;
-      gap: 6rem;
+      grid-template-columns: 1fr 1fr;
+      gap: 4rem;
+      align-items: center;
     }
 
     .hero__globe-sphere :global(.cobe-globe__sphere) {
@@ -114,6 +112,12 @@ const { lang } = Astro.props;
     }
 
     .hero__globe-list > :global(div) {
+      width: 100%;
+    }
+
+    /* La liste remplit sa colonne comme la liste expo — supprime le plafond 480px */
+    .hero__globe-list :global(.globe-list) {
+      max-width: none;
       width: 100%;
     }
   }

@@ -5,6 +5,7 @@
 [build]
   command = "pnpm translate && pnpm build"
   publish = "dist"
+  edge_functions = "netlify/edge-functions"
 
 [build.environment]
   NODE_VERSION = "20"

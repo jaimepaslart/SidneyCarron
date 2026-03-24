@@ -1,8 +1,11 @@
-portrait: /images/portrait-sidney-carron.jpg
-
-intro_fr: "Née à Vienne dans l'Isère, Sidney Carron est une artiste photographe dont le travail explore la lumière comme matière première, les empreintes du corps et la mémoire des rivages."
-intro_en: "Born in Vienne, Isère, Sidney Carron is a visual artist and photographer whose work explores light as raw material, body imprints, and the memory of shores."
-
+portrait: /images/portrait.jpg
+intro_fr: >-
+  Née à Vienne dans l'Isère, Sidney Carron est une artiste photographe dont le
+  travail explore la lumière comme matière première, les empreintes du corps et
+  la mémoire des rivages.
+intro_en: >-
+  Born in Vienne, Isère, Sidney Carron is a visual artist and photographer whose
+  work explores light as raw material, body imprints, and the memory of shores.
 bio_fr: >-
   Sidney Carron aborde la photographie à partir de sa matrice originelle, le
   travail de la lumière, qu'elle développe avec une liberté pleinement assumée.
@@ -12,105 +15,106 @@ bio_fr: >-
   intervenir dans l'image.
 
 
-  Ses œuvres sont faites de silhouettes flottantes, de peaux devenues lumière
-  et de traces presque fantomatiques. À mi-chemin entre photographie et
-  peinture, ces empreintes se confondent avec la vague ou le nuage, comme si
-  chaque œuvre était un fragment de mémoire laissé sur le rivage.
+  Ses œuvres sont faites de silhouettes flottantes, de peaux devenues lumière et
+  de traces presque fantomatiques. À mi-chemin entre photographie et peinture,
+  ces empreintes se confondent avec la vague ou le nuage, comme si chaque œuvre
+  était un fragment de mémoire laissé sur le rivage.
 
 
   Formée à l'École du Louvre en joaillerie, dont elle sort deuxième, elle
-  commence par fabriquer des bijoux place Vendôme avant de tout laisser
-  tomber pour se consacrer à la photographie. Voyageuse infatigable, elle
-  s'envole en Afrique, en Amérique et en Asie pour des reportages
-  photographiques, avant de développer son procédé unique d'empreintes
-  solaires.
+  commence par fabriquer des bijoux place Vendôme avant de tout laisser tomber
+  pour se consacrer à la photographie. Voyageuse infatigable, elle s'envole en
+  Afrique, en Amérique et en Asie pour des reportages photographiques, avant de
+  développer son procédé unique d'empreintes solaires.
 
 
   Biographie par Frédéric Beigbeder
-
 bio_en: >-
   Sidney Carron approaches photography from its original matrix, the work of
-  light, which she develops with a fully assumed freedom. She works outdoors,
-  by the water, arranging bodies, plant fragments, branches, stones and other
+  light, which she develops with a fully assumed freedom. She works outdoors, by
+  the water, arranging bodies, plant fragments, branches, stones and other
   natural elements directly on the photosensitive surface, letting the sun,
   wind, sand and sea intervene in the image.
 
 
-  Her works are made of floating silhouettes, of skin turned to light and
-  almost ghostly traces. Halfway between photography and painting, these
-  imprints merge with the wave or the cloud, as if each work were a fragment
-  of memory left on the shore.
+  Her works are made of floating silhouettes, of skin turned to light and almost
+  ghostly traces. Halfway between photography and painting, these imprints merge
+  with the wave or the cloud, as if each work were a fragment of memory left on
+  the shore.
 
 
   Trained at the École du Louvre in jewelry design, graduating second in her
-  class, she began making jewelry at Place Vendôme before leaving everything
-  to devote herself to photography. A tireless traveler, she flew to Africa,
-  the Americas and Asia for photographic reportages, before developing her
-  unique solar imprint process.
+  class, she began making jewelry at Place Vendôme before leaving everything to
+  devote herself to photography. A tireless traveler, she flew to Africa, the
+  Americas and Asia for photographic reportages, before developing her unique
+  solar imprint process.
 
 
   Biography by Frédéric Beigbeder
-
 statement_fr: >-
   J'écris avec la lumière.
 
 
-  Pour être en osmose, en accord total avec la nature, j'ai remplacé
-  l'appareil photo par le soleil. Les éléments se mettent en mouvement...
-  Lumière : c'est le feu ! L'Air active le ph, transforme la matière.
-  La Mer, arrête l'image qui se transforme... Et puis la terre, sur laquelle
-  reposent les corps, laisse une réaction chimique, là où tu es.
+  Pour être en osmose, en accord total avec la nature, j'ai remplacé l'appareil
+  photo par le soleil. Les éléments se mettent en mouvement... Lumière : c'est
+  le feu ! L'Air active le ph, transforme la matière. La Mer, arrête l'image qui
+  se transforme... Et puis la terre, sur laquelle reposent les corps, laisse une
+  réaction chimique, là où tu es.
 
 
-  J'ai trouvé un procédé alchimique qui est un témoignage. Emprunter la
-  lumière, les embruns et la mer, pour empreinter les Corps sur cette Terre.
+  J'ai trouvé un procédé alchimique qui est un témoignage. Emprunter la lumière,
+  les embruns et la mer, pour empreinter les Corps sur cette Terre.
 
 
   Texte par Sidney Carron & Marion Poussier
-
 statement_en: >-
   I write with light.
 
 
-  To be in osmosis, in total harmony with nature, I replaced the camera with
-  the sun. The elements set in motion... Light: it is fire! Air activates
-  the ph, transforms matter. The Sea, stops the image as it transforms...
-  And then the earth, on which the bodies rest, leaves a chemical reaction,
-  where you are.
+  To be in osmosis, in total harmony with nature, I replaced the camera with the
+  sun. The elements set in motion... Light: it is fire! Air activates the ph,
+  transforms matter. The Sea, stops the image as it transforms... And then the
+  earth, on which the bodies rest, leaves a chemical reaction, where you are.
 
 
-  I found an alchemical process that is a testimony. Borrowing light,
-  sea spray and the sea, to imprint Bodies on this Earth.
+  I found an alchemical process that is a testimony. Borrowing light, sea spray
+  and the sea, to imprint Bodies on this Earth.
 
 
   Text by Sidney Carron & Marion Poussier
-
 cv:
-  - year: "École du Louvre"
-    text_fr: "Études de joaillerie — sortie deuxième de promotion"
-    text_en: "Jewelry studies — graduated second in class"
-  - year: "Place Vendôme"
-    text_fr: "Création de bijoux, Paris"
-    text_en: "Jewelry creation, Paris"
-  - year: "2023"
-    text_fr: "« À la lumière du Brésil », exposition individuelle, Espace Sylvia Rielle, Paris"
-    text_en: "\"In the Light of Brazil\", solo exhibition, Espace Sylvia Rielle, Paris"
-  - year: "2023"
-    text_fr: "« JonOne, Tribute to the Automobile with Sidney Carron », Bastille Design Center, Paris"
-    text_en: "\"JonOne, Tribute to the Automobile with Sidney Carron\", Bastille Design Center, Paris"
-  - year: "2024"
-    text_fr: "« Big Bang Blue », show/performance, Théâtre Antoine, Paris"
-    text_en: "\"Big Bang Blue\", show/performance, Théâtre Antoine, Paris"
-  - year: "2024"
-    text_fr: "« Passeurs de lumière », exposition personnelle, Galerie Rachel Hardouin, Paris"
-    text_en: "\"Light Bearers\", solo exhibition, Galerie Rachel Hardouin, Paris"
-  - year: "2025"
-    text_fr: "Invitée Art Sunset, Galerie A, Grimaud (Var)"
-    text_en: "Guest at Art Sunset, Galerie A, Grimaud (Var)"
-  - year: "2025"
-    text_fr: "Expositions et collaborations, Galerie ArtCube, Paris 7e"
-    text_en: "Exhibitions and collaborations, Galerie ArtCube, Paris 7th"
-
-pdf_bio: /files/biographie-sidney-carron.pdf
-pdf_exhibitions: /files/expositions-sidney-carron.pdf
-pdf_poem: /files/poeme-sidney-carron.pdf
+  - year: École du Louvre
+    text_fr: Études de joaillerie — sortie deuxième de promotion
+    text_en: Jewelry studies — graduated second in class
+  - year: Place Vendôme
+    text_fr: Création de bijoux, Paris
+    text_en: Jewelry creation, Paris
+  - year: '2023'
+    text_fr: >-
+      « À la lumière du Brésil », exposition individuelle, Espace Sylvia Rielle,
+      Paris
+    text_en: '"In the Light of Brazil", solo exhibition, Espace Sylvia Rielle, Paris'
+  - year: '2023'
+    text_fr: >-
+      « JonOne, Tribute to the Automobile with Sidney Carron », Bastille Design
+      Center, Paris
+    text_en: >-
+      "JonOne, Tribute to the Automobile with Sidney Carron", Bastille Design
+      Center, Paris
+  - year: '2024'
+    text_fr: « Big Bang Blue », show/performance, Théâtre Antoine, Paris
+    text_en: '"Big Bang Blue", show/performance, Théâtre Antoine, Paris'
+  - year: '2024'
+    text_fr: >-
+      « Passeurs de lumière », exposition personnelle, Galerie Rachel Hardouin,
+      Paris
+    text_en: '"Light Bearers", solo exhibition, Galerie Rachel Hardouin, Paris'
+  - year: '2025'
+    text_fr: Invitée Art Sunset, Galerie A, Grimaud (Var)
+    text_en: Guest at Art Sunset, Galerie A, Grimaud (Var)
+  - year: '2025'
+    text_fr: Expositions et collaborations, Galerie ArtCube, Paris 7e
+    text_en: Exhibitions and collaborations, Galerie ArtCube, Paris 7th
+pdf_bio: /files/pdf_bio.pdf
+pdf_exhibitions: /files/pdf_exhibitions.pdf
+pdf_poem: /files/pdf_poem.pdf
