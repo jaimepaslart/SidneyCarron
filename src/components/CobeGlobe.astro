@@ -84,11 +84,6 @@ const serializedLocations = JSON.stringify(
 </div>
 
 <script>
-  import {
-    Scene, OrthographicCamera, WebGLRenderer,
-    SphereGeometry, ShaderMaterial, Mesh, TextureLoader,
-    RepeatWrapping, SRGBColorSpace,
-  } from 'three';
   import { triggerZoomTransition } from '@/utils/globe-transition';
 
   // ─── Cyanotype vertex shader ───
@@ -172,7 +167,7 @@ const serializedLocations = JSON.stringify(
     }
   `;
 
-  function initGlobe() {
+  async function initGlobe() {
     const canvas = document.querySelector<HTMLCanvasElement>('.cobe-globe__canvas');
     if (!canvas) return;
 
@@ -182,8 +177,16 @@ const serializedLocations = JSON.stringify(
     const sphereContainer = canvas.closest('.cobe-globe__sphere') as HTMLElement | null;
     if (!sphereContainer) return;
 
+    // Guard before the async import — prevents double-init on fast navigation
     if ((wrapper as any).__cobeInitialized) return;
     (wrapper as any).__cobeInitialized = true;
+
+    // Dynamic import: Three.js (~580 KB) loads after the page is interactive
+    const {
+      Scene, OrthographicCamera, WebGLRenderer,
+      SphereGeometry, ShaderMaterial, Mesh, TextureLoader,
+      RepeatWrapping, SRGBColorSpace,
+    } = await import('three');
 
     const locationsRaw = canvas.dataset.locations;
     const locations: { slug: string; lat: number; lng: number; photoCount: number }[] =
