@@ -23,11 +23,13 @@
     text-rendering: optimizeLegibility;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
+    overflow-x: hidden;
   }
 
   body {
     @apply bg-white font-sans text-body;
     color: #1A1A1A;
+    overflow-x: hidden;
     min-height: 100dvh;
   }
 
