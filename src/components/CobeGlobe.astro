@@ -54,9 +54,6 @@ const serializedLocations = JSON.stringify(
     ></canvas>
   </div>
 
-  {heroMode && (
-    <div class="cobe-globe__mobile-hint" aria-hidden="true">← swipe →</div>
-  )}
 
   {showPins && mapLocations.map((loc) => (
     <a
@@ -377,54 +374,57 @@ const serializedLocations = JSON.stringify(
       resumeTimeout = setTimeout(() => { autoRotate = true; }, 3000);
     }
 
-    // ─── Pointer events (drag + momentum) ───
-    canvas.addEventListener('pointerdown', (e: PointerEvent) => {
-      isDragging = true;
-      dragStartX = e.clientX;
-      dragStartY = e.clientY;
-      dragStartPhi = phi;
-      dragStartTheta = theta;
-      lastPointerX = e.clientX;
-      lastPointerY = e.clientY;
-      lastPointerTime = performance.now();
-      velocityPhi = 0;
-      velocityTheta = 0;
-      autoRotate = false;
-      if (resumeTimeout) clearTimeout(resumeTimeout);
-    }, { signal });
+    // ─── Pointer events (drag + momentum) — desktop only ───
+    const isMobile = window.matchMedia('(max-width: 767px)').matches;
 
-    window.addEventListener('pointermove', (e: PointerEvent) => {
-      if (!isDragging) return;
-      const dx = e.clientX - dragStartX;
-      const dy = e.clientY - dragStartY;
-      targetPhi = dragStartPhi - dx * 0.005;
-      targetTheta = Math.max(-Math.PI / 2, Math.min(Math.PI / 2, dragStartTheta + dy * 0.005));
-      const now = performance.now();
-      const dt = now - lastPointerTime;
-      if (dt > 0 && dt < 100) {
-        const frameDt = dt / 16;
-        velocityPhi = -(e.clientX - lastPointerX) * 0.005 / frameDt;
-        velocityTheta = (e.clientY - lastPointerY) * 0.005 / frameDt;
-      }
-      lastPointerX = e.clientX;
-      lastPointerY = e.clientY;
-      lastPointerTime = now;
-    }, { signal });
+    if (!isMobile) {
+      canvas.addEventListener('pointerdown', (e: PointerEvent) => {
+        isDragging = true;
+        dragStartX = e.clientX;
+        dragStartY = e.clientY;
+        dragStartPhi = phi;
+        dragStartTheta = theta;
+        lastPointerX = e.clientX;
+        lastPointerY = e.clientY;
+        lastPointerTime = performance.now();
+        velocityPhi = 0;
+        velocityTheta = 0;
+        autoRotate = false;
+        if (resumeTimeout) clearTimeout(resumeTimeout);
+      }, { signal });
 
-    window.addEventListener('pointerup', () => {
-      if (!isDragging) return;
-      isDragging = false;
-      scheduleResume();
-    }, { signal });
+      window.addEventListener('pointermove', (e: PointerEvent) => {
+        if (!isDragging) return;
+        const dx = e.clientX - dragStartX;
+        const dy = e.clientY - dragStartY;
+        targetPhi = dragStartPhi - dx * 0.005;
+        targetTheta = Math.max(-Math.PI / 2, Math.min(Math.PI / 2, dragStartTheta + dy * 0.005));
+        const now = performance.now();
+        const dt = now - lastPointerTime;
+        if (dt > 0 && dt < 100) {
+          const frameDt = dt / 16;
+          velocityPhi = -(e.clientX - lastPointerX) * 0.005 / frameDt;
+          velocityTheta = (e.clientY - lastPointerY) * 0.005 / frameDt;
+        }
+        lastPointerX = e.clientX;
+        lastPointerY = e.clientY;
+        lastPointerTime = now;
+      }, { signal });
 
-    // Browser fires pointercancel when it claims the gesture (e.g. pan-y scroll on mobile)
-    window.addEventListener('pointercancel', () => {
-      if (!isDragging) return;
-      isDragging = false;
-      velocityPhi = 0;
-      velocityTheta = 0;
-      scheduleResume();
-    }, { signal });
+      window.addEventListener('pointerup', () => {
+        if (!isDragging) return;
+        isDragging = false;
+        scheduleResume();
+      }, { signal });
+
+      window.addEventListener('pointercancel', () => {
+        if (!isDragging) return;
+        isDragging = false;
+        velocityPhi = 0;
+        velocityTheta = 0;
+        scheduleResume();
+      }, { signal });
+    }
 
     // ─── Focus (spring-animated) ───
     (window as any).__cobeGlobeFocus = function (lat: number, lng: number) {
@@ -652,10 +652,11 @@ const serializedLocations = JSON.stringify(
     touch-action: none;
   }
 
-  /* Mobile: allow vertical page scroll; only horizontal swipes rotate the globe */
+  /* Mobile: drag disabled — let the browser handle all touch gestures freely */
   @media (max-width: 767px) {
     .cobe-globe__canvas {
-      touch-action: pan-y;
+      touch-action: auto;
+      cursor: default;
     }
   }
 
@@ -821,42 +822,12 @@ const serializedLocations = JSON.stringify(
     }
   }
 
-  /* Mobile drag hint */
-  .cobe-globe__mobile-hint {
-    display: none;
-  }
-
-  @media (max-width: 767px) {
-    .cobe-globe__mobile-hint {
-      display: block;
-      text-align: center;
-      font-family: 'Inter', sans-serif;
-      font-size: 10px;
-      letter-spacing: 2px;
-      color: rgba(102, 102, 102, 0.55);
-      margin-top: 0.625rem;
-      pointer-events: none;
-      opacity: 0;
-      animation: globe-hint-fade 4s ease 1s forwards;
-    }
-
-    @keyframes globe-hint-fade {
-      0%   { opacity: 0; }
-      15%  { opacity: 1; }
-      75%  { opacity: 1; }
-      100% { opacity: 0; }
-    }
-  }
-
   @media (prefers-reduced-motion: reduce) {
     .cobe-globe__pin {
       transition: none;
     }
     .cobe-globe__tack {
       animation: none;
-    }
-    .cobe-globe__mobile-hint {
-      display: none;
     }
   }
 </style>
