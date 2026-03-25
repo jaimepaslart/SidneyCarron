@@ -8,7 +8,7 @@ city: Paris
 start_date: "2025-06-01"
 end_date: "2025-12-31"
 type: group
-status: current
+status: past
 image:
   src: /images/exhibitions/artcube-2025.jpg
   alt_fr: "Œuvre de Sidney Carron à la Galerie ArtCube"

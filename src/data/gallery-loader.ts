@@ -20,7 +20,10 @@ export function getGallery(slug: string): Gallery | undefined {
   // YAML (Keystatic) has priority — edits via CMS take effect immediately
   const loc = getLocation(slug);
   if (loc?.images && loc.images.length > 0) {
-    return { slug, images: loc.images };
+    const sections = [...new Set(
+      loc.images.map(img => img.section).filter((s): s is string => !!s)
+    )];
+    return { slug, images: loc.images, sections: sections.length > 0 ? sections : undefined };
   }
 
   // Fallback: legacy JSON gallery
