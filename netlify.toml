@@ -111,15 +111,6 @@
 # ============================================
 # Redirects — Anciennes URLs works individuels
 # ============================================
-[[redirects]]
-  from = "/carte/"
-  to = "/"
-  status = 301
-
-[[redirects]]
-  from = "/en/map/"
-  to = "/en/"
-  status = 301
 
 [[redirects]]
   from = "/works/empreinte-*"
